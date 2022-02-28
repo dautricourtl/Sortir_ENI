@@ -27,7 +27,7 @@ class Lieu
     #[ORM\Column(type: 'string', length: 255)]
     private $Longitude;
 
-    #[ORM\ManyToOne(targetEntity: Ville::class, inversedBy: 'lieus')]
+    #[ORM\ManyToOne(targetEntity: Ville::class, inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private $Ville;
 

@@ -1,0 +1,18 @@
+*{
+    box-sizing: border-box;
+    margin:0;
+    padding: 0;
+}
+
+nav{
+    height:50px;
+    
+}
+
+a{
+    text-decoration: none;
+}
+
+.sortie_item{
+    box-shadow: 00px 0px 5px rgba(0,0,0,0.2);
+}
