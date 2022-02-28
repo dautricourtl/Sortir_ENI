@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private $Pseudo;
+    private $pseudo;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -27,10 +27,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Prenom;
+    private $surname;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $Tel;
@@ -39,18 +39,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $Mail;
 
     #[ORM\Column(type: 'boolean')]
-    private $Actif;
+    private $isActive;
 
-    #[ORM\OneToMany(mappedBy: 'Organisateur', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class)]
     private $events;
 
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'Membres')]
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private $groups;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private $participant;
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->participant = new ArrayCollection();
     }
 
 
@@ -61,12 +65,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPseudo(): ?string
     {
-        return $this->Pseudo;
+        return $this->pseudo;
     }
 
-    public function setPseudo(string $Pseudo): self
+    public function setPseudo(string $pseudo): self
     {
-        $this->Pseudo = $Pseudo;
+        $this->pseudo = $pseudo;
 
         return $this;
     }
@@ -143,26 +147,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getSurname(): ?string
     {
-        return $this->Prenom;
+        return $this->surname;
     }
 
-    public function setPrenom(string $Prenom): self
+    public function setSurname(string $surname): self
     {
-        $this->Prenom = $Prenom;
+        $this->surname = $surname;
 
         return $this;
     }
@@ -191,14 +195,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getActif(): ?bool
+    public function getIsActive(): ?bool
     {
-        return $this->Actif;
+        return $this->isActive;
     }
 
-    public function setActif(bool $Actif): self
+    public function setIsActive(bool $isActive): self
     {
-        $this->Actif = $Actif;
+        $this->isActive = $isActive;
 
         return $this;
     }
@@ -215,7 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setOrganisateur($this);
+            $event->setOrganizer($this);
         }
 
         return $this;
@@ -225,8 +229,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getOrganisateur() === $this) {
-                $event->setOrganisateur(null);
+            if ($event->getOrganizer() === $this) {
+                $event->setOrganizer(null);
             }
         }
 
@@ -245,7 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->groups->contains($group)) {
             $this->groups[] = $group;
-            $group->addMembre($this);
+            $group->addMember($this);
         }
 
         return $this;
@@ -254,7 +258,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeGroup(Group $group): self
     {
         if ($this->groups->removeElement($group)) {
-            $group->removeMembre($this);
+            $group->removeMember($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getParticipant(): Collection
+    {
+        return $this->participant;
+    }
+
+    public function addParticipant(Event $participant): self
+    {
+        if (!$this->participant->contains($participant)) {
+            $this->participant[] = $participant;
+            $participant->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Event $participant): self
+    {
+        if ($this->participant->removeElement($participant)) {
+            $participant->removeParticipant($this);
         }
 
         return $this;

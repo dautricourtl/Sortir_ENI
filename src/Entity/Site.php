@@ -16,9 +16,9 @@ class Site
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
-    #[ORM\OneToMany(mappedBy: 'Site', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'site', targetEntity: Event::class)]
     private $events;
 
     public function __construct()
@@ -31,14 +31,14 @@ class Site
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }

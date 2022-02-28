@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\LieuRepository;
+use App\Repository\locationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LieuRepository::class)]
-class Lieu
+#[ORM\Entity(repositoryClass: LocationRepository::class)]
+class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,10 +16,10 @@ class Lieu
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Adresse;
+    private $adress;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $Latitude;
@@ -27,11 +27,11 @@ class Lieu
     #[ORM\Column(type: 'string', length: 255)]
     private $Longitude;
 
-    #[ORM\ManyToOne(targetEntity: Ville::class, inversedBy: 'lieux')]
+    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'locations')]
     #[ORM\JoinColumn(nullable: false)]
-    private $Ville;
+    private $city;
 
-    #[ORM\OneToMany(mappedBy: 'Lieu', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Event::class)]
     private $events;
 
     public function __construct()
@@ -44,26 +44,26 @@ class Lieu
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getAdresse(): ?string
+public function getAdress(): ?string
     {
-        return $this->Adresse;
+        return $this->adress;
     }
 
-    public function setAdresse(string $Adresse): self
+    public function setAdress(string $adress): self
     {
-        $this->Adresse = $Adresse;
+        $this->adress = $adress;
 
         return $this;
     }
@@ -92,14 +92,14 @@ class Lieu
         return $this;
     }
 
-    public function getVille(): ?Ville
+    public function getCity(): ?City
     {
-        return $this->Ville;
+        return $this->city;
     }
 
-    public function setVille(?Ville $Ville): self
+    public function setCity(?City $city): self
     {
-        $this->Ville = $Ville;
+        $this->city = $city;
 
         return $this;
     }
@@ -116,7 +116,7 @@ class Lieu
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setLieu($this);
+            $event->setLocation($this);
         }
 
         return $this;
@@ -126,8 +126,8 @@ class Lieu
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getLieu() === $this) {
-                $event->setLieu(null);
+            if ($event->getLocation() === $this) {
+                $event->setLocation(null);
             }
         }
 
