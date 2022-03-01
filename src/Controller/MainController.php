@@ -33,4 +33,16 @@ class MainController extends AbstractController
     {
         return $this->redirectToRoute('login');
     }
+
+    #[Route('/sign', name: 'sign')]
+    public function sign(): Response
+    {
+
+        $event = UserController::getInstance();
+        $retour = $event ->LoadUser();
+
+        return $this->render('main/sign.html.twig', [
+            'controller_name' => $retour,
+        ]);
+    }
 }
