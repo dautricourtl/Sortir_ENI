@@ -6,36 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserController
+class UserController extends AbstractController
 {
-     /**
-   * @var UserController
-   * @access private
-   * @static
-   */
-   private static $_instance = null;
- 
-   /**
-    * @param void
-    * @return void
-    */
-   private function __construct() {  
-   }
- 
-   /**
-    * @param void
-    * @return UserController
-    */
-    
-   public static function getInstance() {
- 
-     if(is_null(self::$_instance)) {
-       self::$_instance = new UserController();  
-     }
- 
-     return self::$_instance;
-   }
-
    public function LoadUser(){
        return "toto";
    }

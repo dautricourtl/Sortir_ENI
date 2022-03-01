@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+ {{ form_start(form_location) }}
+    {{ form_widget(form_location) }}
+    {# <input class="btn btn-outline-primary" type="submit" value="Send !"> #}
+    {{ form_end(form_location) }}
+{% endblock %}
