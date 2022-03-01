@@ -23,12 +23,20 @@ class MainController extends AbstractController
     }
 
     #[Route('/login', name: 'login')]
-    public function login(): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = $authenticationUtils->getLastUsername();
         return $this->render('main/login.html.twig', [
             'last_username' => $lastUsername,
             'error'         => $error,
         ]);
+    }
+    
+    #[Route('logout', name:'logout')]
+    public function logout(): Response
+    {
+        throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
 
     #[Route('/profile', name: 'profile')]
