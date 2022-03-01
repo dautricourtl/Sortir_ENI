@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CityType extends AbstractType
 {
@@ -15,7 +16,7 @@ class CityType extends AbstractType
         $builder
             ->add('name')
             ->add('zipCode')
-            ->add('Envoyer', ButtonType::Class)
+            ->add('Envoyer', SubmitType::Class)
         ;
     }
 
