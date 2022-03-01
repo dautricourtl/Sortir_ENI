@@ -27,4 +27,10 @@ class MainController extends AbstractController
     {
         return $this->render('main/profile.html.twig');
     }
+
+    #[Route('/disconnect', name: 'disconnect')]
+    public function disconnect(): Response
+    {
+        return $this->redirectToRoute('login');
+    }
 }
