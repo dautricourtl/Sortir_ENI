@@ -126,7 +126,7 @@ class Event
 
     public function getInscriptionMax(): ?int
     {
-        return $this->InscriptionMax;
+        return $this->inscriptionMax;
     }
 
     public function setInscriptionMax(int $inscriptionMax): self

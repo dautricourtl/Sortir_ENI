@@ -13,14 +13,13 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('location')
             ->add('beginAt')
             ->add('endAt')
             ->add('nbDaysBeforeClosing')
             ->add('inscriptionMax')
             ->add('description')
             ->add('photo')
-            ->add('site')
-            ->add('location')
         ;
     }
 

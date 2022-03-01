@@ -1,10 +1,36 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Page d'ajout des événement!{% endblock %}
 
 {% block body %}
 <h1 class="text-primary">Ajoutez un événement</h1 >
-
-{{form(eventForm)}}
+ {% form_theme eventForm 'bootstrap_5_layout.html.twig' %}
+{{ form_start(eventForm) }}
+        {{ form_row(eventForm.name, {
+            label : "Nom de l'événement"
+            }) }}
+        {{ form_row(eventForm.location, {
+            label : "Lieu de l'événement"
+            }) }}
+        {{ form_row(eventForm.beginAt, {
+            label : "Date de début de l'événement"
+        }) }}
+        {{ form_row(eventForm.endAt, {
+            label: "Date de fin de l'événement"
+        }) }}
+        {{ form_row(eventForm.nbDaysBeforeClosing, {
+            label: "Inscription close dans (jours)"
+        }) }}
+        {{ form_row(eventForm.inscriptionMax, {
+            label: "Nombre de participants maximum"
+        }) }}
+         {{ form_row(eventForm.description, {
+            label: "Description de l'événement"
+         }) }}           
+         {{ form_row(eventForm.photo, {
+            label: "Ajout d'une photo"
+         }) }}  
+        <button class="btn btn-outline-primary" type="submit" class="btn">Enregistrer</button>
+    {{ form_end(eventForm) }}
 
 
 {% endblock %}
