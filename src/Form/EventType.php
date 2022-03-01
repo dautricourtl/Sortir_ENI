@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EventType extends AbstractType
@@ -13,7 +15,10 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('location')
+            ->add('location', 
+                EntityType::class, ['class' => Location::class, 
+                'choice_label' => 'name'
+                ])
             ->add('beginAt')
             ->add('endAt')
             ->add('nbDaysBeforeClosing')
