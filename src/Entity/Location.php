@@ -95,12 +95,12 @@ class Location
 
     public function getCity(): ?City
     {
-        return $this->City;
+        return $this->city;
     }
 
-    public function setCity(?City $City): self
+    public function setCity(?City $city): self
     {
-        $this->City = $City;
+        $this->city = $city;
 
         return $this;
     }
