@@ -51,5 +51,10 @@ class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/listuser', name: 'list')]
+    public function list(): Response
+    {
+        return $this->render('user/user.html.twig');
+    }
     
 }
