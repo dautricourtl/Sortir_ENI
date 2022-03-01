@@ -33,4 +33,10 @@ class MainController extends AbstractController
     {
         return $this->redirectToRoute('login');
     }
+
+    #[Route('/sign', name: 'sign')]
+    public function sign(): Response
+    {
+        return $this->render('main/sign.html.twig');
+    }
 }
