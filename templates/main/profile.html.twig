@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+<h1 class="text-primary">Votre profil</h1 >
+<div class="container col-12 m-0 row">
+    <div class="gauche col-12 col-md-4">
+        {# <div class="show">
+            <div class="mt-3">Nom</div>
+            <div class="mt-3">Prenom</div>
+            <div class="mt-3">Age</div>
+            <div class="mt-3">Adresse</div>
+            <div class="mt-3">Tel</div>
+            <div class="mt-3">Email</div>
+            <button type="button" class="btn btn-primary mt-3">Update</button> 
+        </div> #}
+        <div class="edit">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Nom</label>
+                <input type="text" class="form-control" id="exampleInputNom1" aria-describedby="NomHelp" placeholder="Enter Nom">
+                <small id="NomHelp" class="form-text text-muted">Must be unique</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPrenom1">Prenom</label>
+                <input type="text" class="form-control" id="exampleInputPrenom1" aria-describedby="PrenomHelp" placeholder="Enter Prenom">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPrenom1">Adresse</label>
+                <input type="text" class="form-control" id="exampleInputAdresse1" aria-describedby="AdresseHelp" placeholder="Enter Adresse">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputTel">Tel</label>
+                <input type="text" class="form-control" id="exampleInputTel1" aria-describedby="TelHelp" placeholder="Enter Tel">
+            </div>
+            <button type="button" class="btn btn-primary mt-3">Save</button> 
+        </div>
+        
+    </div>
+    <div class="droite col-12 col-md-8">
+        
+        <!-- LISTE DES SORTIES EFFECTUEES-->
+    <div class="sortiesContainer container d-flex flex-row flex--md-col flex-wrap m-0 p-3">
+
+        <div class="sortie_item m-2 col-12 col-md-3 p-2 rounded">
+            <img src="https://via.placeholder.com/300" class="w-100" alt="miniature sortie"/>
+            <div class="p-3 bg-white">
+                <h4 class="text-primary">Titre</h4>
+                <div>Description</div>
+            </div>
+        </div>
+
+        <div class="sortie_item m-2 col-12 col-md-3  p-2 rounded">
+            <img src="https://via.placeholder.com/300" class="w-100" alt="miniature sortie"/>
+            <div class="p-3 bg-white">
+                <h4 class="text-primary">Titre</h4>
+                <div>Description</div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+{% endblock %}
