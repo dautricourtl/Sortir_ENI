@@ -23,7 +23,7 @@ class LocationType extends AbstractType
             ->add('longitude',TextType::Class)
             ->add('city',EntityType::Class , [
                 'class' => City::class,
-                'choice_label' => 'displayName',
+                'choice_label' => 'name',
             ])
             ->add('submit',SubmitType::Class)
         ;

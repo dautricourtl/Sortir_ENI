@@ -32,7 +32,7 @@ class LocationController extends AbstractController
         }
 
 
-        return $this->render('location/newLocation.html.twig', [
+        return $this->render('main/newLocation.html.twig', [
             'form_location' => $locationForm,
         ]);
     }
