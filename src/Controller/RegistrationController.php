@@ -25,8 +25,7 @@ class RegistrationController extends AbstractController
             // encode the plain password
            
             
-            $user->setActif(true);
-            dd($user);
+            $user->isActive(true);
             $user->setPassword(
             $userPasswordHasher->hashPassword(
                     $user,
