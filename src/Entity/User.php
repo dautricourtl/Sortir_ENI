@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private $Pseudo;
+    private $pseudo;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -27,32 +27,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Prenom;
+    private $surname;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Tel;
+    private $tel;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Mail;
+    private $mail;
 
     #[ORM\Column(type: 'boolean')]
-    private $Actif;
+    private $isActive;
 
-    #[ORM\OneToMany(mappedBy: 'Organisateur', targetEntity: Event::class)]
+    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'participants')]
     private $events;
 
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'Membres')]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Group::class)]
     private $groups;
+
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
+    private $myGroups;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'whiteList')]
+    private $whiteListedEvents;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Event::class)]
+    private $organizedEvents;
+
+    #[ORM\ManyToOne(targetEntity: Site::class, inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $site;
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->myGroups = new ArrayCollection();
+        $this->whiteListedEvents = new ArrayCollection();
+        $this->organizedEvents = new ArrayCollection();
     }
 
+   
 
     public function getId(): ?int
     {
@@ -61,12 +78,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPseudo(): ?string
     {
-        return $this->Pseudo;
+        return $this->pseudo;
     }
 
-    public function setPseudo(string $Pseudo): self
+    public function setPseudo(string $pseudo): self
     {
-        $this->Pseudo = $Pseudo;
+        $this->pseudo = $pseudo;
 
         return $this;
     }
@@ -78,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->Pseudo;
+        return (string) $this->pseudo;
     }
 
     /**
@@ -86,7 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->Pseudo;
+        return (string) $this->pseudo;
     }
 
     /**
@@ -143,62 +160,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getSurname(): ?string
     {
-        return $this->Prenom;
+        return $this->surname;
     }
 
-    public function setPrenom(string $Prenom): self
+    public function setSurname(string $surname): self
     {
-        $this->Prenom = $Prenom;
+        $this->surname = $surname;
 
         return $this;
     }
 
     public function getTel(): ?string
     {
-        return $this->Tel;
+        return $this->tel;
     }
 
-    public function setTel(string $Tel): self
+    public function setTel(string $tel): self
     {
-        $this->Tel = $Tel;
+        $this->tel = $tel;
 
         return $this;
     }
 
     public function getMail(): ?string
     {
-        return $this->Mail;
+        return $this->mail;
     }
 
-    public function setMail(string $Mail): self
+    public function setMail(string $mail): self
     {
-        $this->Mail = $Mail;
+        $this->mail = $mail;
 
         return $this;
     }
 
-    public function getActif(): ?bool
+    public function getIsActive(): ?bool
     {
-        return $this->Actif;
+        return $this->IsActive;
     }
 
-    public function setActif(bool $Actif): self
+    public function setActif(bool $IsActive): self
     {
-        $this->Actif = $Actif;
+        $this->IsActive = $IsActive;
 
         return $this;
     }
@@ -215,7 +232,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setOrganisateur($this);
         }
 
         return $this;
@@ -223,12 +239,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeEvent(Event $event): self
     {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getOrganisateur() === $this) {
-                $event->setOrganisateur(null);
-            }
-        }
+        $this->events->removeElement($event);
 
         return $this;
     }
@@ -245,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->groups->contains($group)) {
             $this->groups[] = $group;
-            $group->addMembre($this);
+            $group->setOwner($this);
         }
 
         return $this;
@@ -254,10 +265,110 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeGroup(Group $group): self
     {
         if ($this->groups->removeElement($group)) {
-            $group->removeMembre($this);
+            // set the owning side to null (unless already changed)
+            if ($group->getOwner() === $this) {
+                $group->setOwner(null);
+            }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Group>
+     */
+    public function getMyGroups(): Collection
+    {
+        return $this->myGroups;
+    }
+
+    public function addMyGroup(Group $myGroup): self
+    {
+        if (!$this->myGroups->contains($myGroup)) {
+            $this->myGroups[] = $myGroup;
+            $myGroup->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMyGroup(Group $myGroup): self
+    {
+        if ($this->myGroups->removeElement($myGroup)) {
+            $myGroup->removeMember($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getWhiteListedEvents(): Collection
+    {
+        return $this->whiteListedEvents;
+    }
+
+    public function addWhiteListedEvent(Event $whiteListedEvent): self
+    {
+        if (!$this->whiteListedEvents->contains($whiteListedEvent)) {
+            $this->whiteListedEvents[] = $whiteListedEvent;
+            $whiteListedEvent->addWhiteList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWhiteListedEvent(Event $whiteListedEvent): self
+    {
+        if ($this->whiteListedEvents->removeElement($whiteListedEvent)) {
+            $whiteListedEvent->removeWhiteList($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getOrganizedEvents(): Collection
+    {
+        return $this->organizedEvents;
+    }
+
+    public function addOrganizedEvent(Event $organizedEvent): self
+    {
+        if (!$this->organizedEvents->contains($organizedEvent)) {
+            $this->organizedEvents[] = $organizedEvent;
+            $organizedEvent->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganizedEvent(Event $organizedEvent): self
+    {
+        if ($this->organizedEvents->removeElement($organizedEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($organizedEvent->getOwner() === $this) {
+                $organizedEvent->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
 
 }

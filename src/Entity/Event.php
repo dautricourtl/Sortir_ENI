@@ -16,58 +16,57 @@ class Event
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
     #[ORM\Column(type: 'datetime')]
-    private $DebutDate;
+    private $beginAt;
 
     #[ORM\Column(type: 'datetime')]
-    private $FinDate;
+    private $endAt;
 
     #[ORM\Column(type: 'integer')]
-    private $NbJoursAvantCloture;
+    private $nbDaysBeforeClosing;
 
     #[ORM\Column(type: 'integer')]
-    private $InscriptionMax;
+    private $inscriptionMax;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $Description;
+    private $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $Photo;
+    private $photo;
 
-    #[ORM\ManyToOne(targetEntity: Lieu::class, inversedBy: 'events')]
+    #[ORM\ManyToOne(targetEntity: State::class, inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    private $Lieu;
-
-    #[ORM\ManyToOne(targetEntity: Etat::class, inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $Etat;
+    private $state;
 
     #[ORM\Column(type: 'integer')]
-    private $Visibilite;
+    private $isDisplay;
 
     #[ORM\Column(type: 'boolean')]
-    private $Actif;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $Organisateur;
-
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
-    private $Participants;
-
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'Event')]
-    private $groups;
+    private $isActive;
 
     #[ORM\ManyToOne(targetEntity: Site::class, inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    private $Site;
+    private $site;
+
+    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'events')]
+    private $location;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
+    private $participants;
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'whiteListedEvents')]
+    private $whiteList;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organizedEvents')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $owner;
 
     public function __construct()
     {
-        $this->Participants = new ArrayCollection();
-        $this->groups = new ArrayCollection();
+        $this->participants = new ArrayCollection();
+        $this->whiteList = new ArrayCollection();
     }
 
 
@@ -77,50 +76,50 @@ class Event
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getDebutDate(): ?\DateTimeInterface
+    public function getBeginAt(): ?\DateTimeInterface
     {
-        return $this->DebutDate;
+        return $this->beginAt;
     }
 
-    public function setDebutDate(\DateTimeInterface $DebutDate): self
+    public function setBeginAt(\DateTimeInterface $beginAt): self
     {
-        $this->DebutDate = $DebutDate;
+        $this->beginAt = $beginAt;
 
         return $this;
     }
 
-    public function getFinDate(): ?\DateTimeInterface
+    public function getEndAt(): ?\DateTimeInterface
     {
-        return $this->FinDate;
+        return $this->endAt;
     }
 
-    public function setFinDate(\DateTimeInterface $FinDate): self
+    public function setEndAt(\DateTimeInterface $endAt): self
     {
-        $this->FinDate = $FinDate;
+        $this->endAt = $endAt;
 
         return $this;
     }
 
-    public function getNbJoursAvantCloture(): ?int
+    public function getNbDaysBeforeClosing(): ?int
     {
-        return $this->NbJoursAvantCloture;
+        return $this->nbDaysBeforeClosing;
     }
 
-    public function setNbJoursAvantCloture(int $NbJoursAvantCloture): self
+    public function setNbDaysBeforeClosing(int $nbDaysBeforeClosing): self
     {
-        $this->NbJoursAvantCloture = $NbJoursAvantCloture;
+        $this->nbDaysBeforeClosing = $nbDaysBeforeClosing;
 
         return $this;
     }
@@ -130,93 +129,106 @@ class Event
         return $this->InscriptionMax;
     }
 
-    public function setInscriptionMax(int $InscriptionMax): self
+    public function setInscriptionMax(int $inscriptionMax): self
     {
-        $this->InscriptionMax = $InscriptionMax;
+        $this->inscriptionMax = $inscriptionMax;
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): self
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
+        $this->description = $description;
 
         return $this;
     }
 
     public function getPhoto(): ?string
     {
-        return $this->Photo;
+        return $this->photo;
     }
 
-    public function setPhoto(?string $Photo): self
+    public function setPhoto(?string $photo): self
     {
-        $this->Photo = $Photo;
+        $this->photo = $photo;
 
         return $this;
     }
 
-    public function getLieu(): ?Lieu
+    public function getLocation(): ?Location
     {
-        return $this->Lieu;
+        return $this->location;
     }
 
-    public function setLieu(?Lieu $Lieu): self
+    public function setLocation(?Location $location): self
     {
-        $this->Lieu = $Lieu;
+        $this->location = $location;
 
         return $this;
     }
 
-    public function getEtat(): ?Etat
+    public function getState(): ?State
     {
-        return $this->Etat;
+        return $this->state;
     }
 
-    public function setEtat(?Etat $Etat): self
+    public function setState(?State $state): self
     {
-        $this->Etat = $Etat;
+        $this->state = $state;
 
         return $this;
     }
 
-    public function getVisibilite(): ?int
+    public function getIsDisplay(): ?int
     {
-        return $this->Visibilite;
+        return $this->isDisplay;
     }
 
-    public function setVisibilite(int $Visibilite): self
+    public function setIsDisplay(int $isDisplay): self
     {
-        $this->Visibilite = $Visibilite;
+        $this->isDisplay = $isDisplay;
 
         return $this;
     }
 
-    public function getActif(): ?bool
+    public function getIsActive(): ?bool
     {
-        return $this->Actif;
+        return $this->isActive;
     }
 
-    public function setActif(bool $Actif): self
+    public function setIsActive(bool $isActive): self
     {
-        $this->Actif = $Actif;
+        $this->isActive = $isActive;
 
         return $this;
     }
 
-    public function getOrganisateur(): ?User
+    public function getOrganizer(): ?User
     {
-        return $this->Organisateur;
+        return $this->organizer;
     }
 
-    public function setOrganisateur(?User $Organisateur): self
+    public function setOrganizer(?User $organizer): self
     {
-        $this->Organisateur = $Organisateur;
+        $this->organizer = $organizer;
+
+        return $this;
+    }
+
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
 
         return $this;
     }
@@ -226,13 +238,14 @@ class Event
      */
     public function getParticipants(): Collection
     {
-        return $this->Participants;
+        return $this->participants;
     }
 
     public function addParticipant(User $participant): self
     {
-        if (!$this->Participants->contains($participant)) {
-            $this->Participants[] = $participant;
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+            $participant->addEvent($this);
         }
 
         return $this;
@@ -240,46 +253,45 @@ class Event
 
     public function removeParticipant(User $participant): self
     {
-        $this->Participants->removeElement($participant);
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeEvent($this);
+        }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Group>
+     * @return Collection<int, User>
      */
-    public function getGroups(): Collection
+    public function getWhiteList(): Collection
     {
-        return $this->groups;
+        return $this->whiteList;
     }
 
-    public function addGroup(Group $group): self
+    public function addWhiteList(User $whiteList): self
     {
-        if (!$this->groups->contains($group)) {
-            $this->groups[] = $group;
-            $group->addEvent($this);
+        if (!$this->whiteList->contains($whiteList)) {
+            $this->whiteList[] = $whiteList;
         }
 
         return $this;
     }
 
-    public function removeGroup(Group $group): self
+    public function removeWhiteList(User $whiteList): self
     {
-        if ($this->groups->removeElement($group)) {
-            $group->removeEvent($this);
-        }
+        $this->whiteList->removeElement($whiteList);
 
         return $this;
     }
 
-    public function getSite(): ?Site
+    public function getOwner(): ?User
     {
-        return $this->Site;
+        return $this->owner;
     }
 
-    public function setSite(?Site $Site): self
+    public function setOwner(?User $owner): self
     {
-        $this->Site = $Site;
+        $this->owner = $owner;
 
         return $this;
     }

@@ -17,37 +17,45 @@ class Group
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
-
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups')]
-    private $Membres;
+    private $name;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'groups')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $Createur;
+    private $owner;
 
-    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'groups')]
-    private $Event;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'myGroups')]
+    private $members;
 
     public function __construct()
     {
-        $this->Membres = new ArrayCollection();
-        $this->Event = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
+   
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }
@@ -55,60 +63,26 @@ class Group
     /**
      * @return Collection<int, User>
      */
-    public function getMembres(): Collection
+    public function getMembers(): Collection
     {
-        return $this->Membres;
+        return $this->members;
     }
 
-    public function addMembre(User $membre): self
+    public function addMember(User $member): self
     {
-        if (!$this->Membres->contains($membre)) {
-            $this->Membres[] = $membre;
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
         }
 
         return $this;
     }
 
-    public function removeMembre(User $membre): self
+    public function removeMember(User $member): self
     {
-        $this->Membres->removeElement($membre);
+        $this->members->removeElement($member);
 
         return $this;
     }
 
-    public function getCreateur(): ?User
-    {
-        return $this->Createur;
-    }
-
-    public function setCreateur(?User $Createur): self
-    {
-        $this->Createur = $Createur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getEvent(): Collection
-    {
-        return $this->Event;
-    }
-
-    public function addEvent(Event $event): self
-    {
-        if (!$this->Event->contains($event)) {
-            $this->Event[] = $event;
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        $this->Event->removeElement($event);
-
-        return $this;
-    }
+    
 }

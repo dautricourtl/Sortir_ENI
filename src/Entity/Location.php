@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\LieuRepository;
+use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LieuRepository::class)]
-class Lieu
+#[ORM\Entity(repositoryClass: LocationRepository::class)]
+class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,27 +16,28 @@ class Lieu
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Adresse;
+    private $adress;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Latitude;
+    private $latitude;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Longitude;
+    private $longitude;
 
-    #[ORM\ManyToOne(targetEntity: Ville::class, inversedBy: 'lieus')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $Ville;
+    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'location')]
+    private $city;
 
-    #[ORM\OneToMany(mappedBy: 'Lieu', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Event::class)]
     private $events;
+
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->event = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -44,62 +45,62 @@ class Lieu
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getAdresse(): ?string
+    public function getAdress(): ?string
     {
-        return $this->Adresse;
+        return $this->adress;
     }
 
-    public function setAdresse(string $Adresse): self
+    public function setAdress(string $adress): self
     {
-        $this->Adresse = $Adresse;
+        $this->adress = $adress;
 
         return $this;
     }
 
     public function getLatitude(): ?string
     {
-        return $this->Latitude;
+        return $this->latitude;
     }
 
-    public function setLatitude(string $Latitude): self
+    public function setLatitude(string $latitude): self
     {
-        $this->Latitude = $Latitude;
+        $this->latitude = $latitude;
 
         return $this;
     }
 
     public function getLongitude(): ?string
     {
-        return $this->Longitude;
+        return $this->longitude;
     }
 
-    public function setLongitude(string $Longitude): self
+    public function setLongitude(string $longitude): self
     {
-        $this->Longitude = $Longitude;
+        $this->longitude = $longitude;
 
         return $this;
     }
 
-    public function getVille(): ?Ville
+    public function getCity(): ?City
     {
-        return $this->Ville;
+        return $this->City;
     }
 
-    public function setVille(?Ville $Ville): self
+    public function setCity(?City $City): self
     {
-        $this->Ville = $Ville;
+        $this->City = $City;
 
         return $this;
     }
@@ -116,7 +117,7 @@ class Lieu
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setLieu($this);
+            $event->setLocation($this);
         }
 
         return $this;
@@ -126,11 +127,19 @@ class Lieu
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getLieu() === $this) {
-                $event->setLieu(null);
+            if ($event->getLocation() === $this) {
+                $event->setLocation(null);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvent(): Collection
+    {
+        return $this->event;
     }
 }

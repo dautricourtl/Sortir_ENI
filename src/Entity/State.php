@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EtatRepository;
+use App\Repository\StateRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EtatRepository::class)]
-class Etat
+#[ORM\Entity(repositoryClass: StateRepository::class)]
+class State
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,9 +16,9 @@ class Etat
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Nom;
+    private $name;
 
-    #[ORM\OneToMany(mappedBy: 'Etat', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'state', targetEntity: Event::class)]
     private $events;
 
     public function __construct()
@@ -31,14 +31,14 @@ class Etat
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->Nom;
+        return $this->name;
     }
 
-    public function setNom(string $Nom): self
+    public function setName(string $name): self
     {
-        $this->Nom = $Nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -55,7 +55,7 @@ class Etat
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setEtat($this);
+            $event->setState($this);
         }
 
         return $this;
@@ -65,8 +65,8 @@ class Etat
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getEtat() === $this) {
-                $event->setEtat(null);
+            if ($event->getState() === $this) {
+                $event->setState(null);
             }
         }
 
