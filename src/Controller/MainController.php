@@ -32,7 +32,6 @@ class MainController extends AbstractController
             'error'         => $error,
         ]);
     }
-    
     #[Route('logout', name:'logout')]
     public function logout(): Response
     {
@@ -58,4 +57,7 @@ class MainController extends AbstractController
         return $this->render('user/user.html.twig');
     }
     
+
+
+
 }
