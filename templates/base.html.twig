@@ -29,9 +29,14 @@
         </div>
     </nav>
     <main class="p-3">
-        {% block body %}
-        
-        {% endblock %}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash alert-{{ label }}">
+                {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}{% endblock %}
         </main>
     </body>
 </html>

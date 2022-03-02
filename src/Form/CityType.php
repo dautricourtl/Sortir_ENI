@@ -16,7 +16,7 @@ class CityType extends AbstractType
         $builder
             ->add('name')
             ->add('zipCode')
-            ->add('Envoyer', SubmitType::Class)
+            ->add('Envoyer', SubmitType::class)
         ;
     }
 

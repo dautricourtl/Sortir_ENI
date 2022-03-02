@@ -6,6 +6,7 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -16,17 +17,22 @@ class Event
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'il faut ajouter un nom')]
     private $name;
 
+    #[Assert\GreaterThanOrEqual('today', message: 'La date doit être supérieur ou égale à celle du jour')]
     #[ORM\Column(type: 'datetime')]
     private $beginAt;
 
+    #[Assert\GreaterThanOrEqual('today', message: 'La date doit être supérieur ou égale à celle du jour')]
     #[ORM\Column(type: 'datetime')]
-    private $endAt;
+    private $limitInscriptionAt;
 
+    #[Assert\GreaterThan(0)]
     #[ORM\Column(type: 'integer')]
-    private $nbDaysBeforeClosing;
+    private $duration;
 
+    #[Assert\GreaterThanOrEqual(0)]
     #[ORM\Column(type: 'integer')]
     private $inscriptionMax;
 
@@ -100,26 +106,26 @@ class Event
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeInterface
+    public function getLimitInscriptionAt(): ?\DateTimeInterface
     {
-        return $this->endAt;
+        return $this->limitInscriptionAt;
     }
 
-    public function setEndAt(\DateTimeInterface $endAt): self
+    public function setLimitInscriptionAt(\DateTimeInterface $limitInscriptionAt): self
     {
-        $this->endAt = $endAt;
+        $this->limitInscriptionAt = $limitInscriptionAt;
 
         return $this;
     }
 
-    public function getNbDaysBeforeClosing(): ?int
+    public function getDuration(): ?int
     {
-        return $this->nbDaysBeforeClosing;
+        return $this->duration;
     }
 
-    public function setNbDaysBeforeClosing(int $nbDaysBeforeClosing): self
+    public function setDuration(int $duration): self
     {
-        $this->nbDaysBeforeClosing = $nbDaysBeforeClosing;
+        $this->duration = $duration;
 
         return $this;
     }

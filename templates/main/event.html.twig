@@ -2,35 +2,91 @@
 {% block title %}Page d'ajout des événement!{% endblock %}
 
 {% block body %}
-<h1 class="text-primary">Ajoutez un événement</h1 >
- {% form_theme eventForm 'bootstrap_5_layout.html.twig' %}
-{{ form_start(eventForm) }}
-        {{ form_row(eventForm.name, {
-            label : "Nom de l'événement"
-            }) }}
-        {{ form_row(eventForm.location, {
-            label : "Lieu de l'événement"
-            }) }}
-        {{ form_row(eventForm.beginAt, {
-            label : "Date de début de l'événement"
-        }) }}
-        {{ form_row(eventForm.endAt, {
-            label: "Date de fin de l'événement"
-        }) }}
-        {{ form_row(eventForm.nbDaysBeforeClosing, {
-            label: "Inscription close dans (jours)"
-        }) }}
-        {{ form_row(eventForm.inscriptionMax, {
-            label: "Nombre de participants maximum"
-        }) }}
-         {{ form_row(eventForm.description, {
-            label: "Description de l'événement"
-         }) }}           
-         {{ form_row(eventForm.photo, {
-            label: "Ajout d'une photo"
-         }) }}  
-        <button class="btn btn-outline-primary" type="submit" class="btn">Enregistrer</button>
-    {{ form_end(eventForm) }}
+<h1 class="text-primary">Ajouter un événement</h1 >
+
+<div class="form_container d-flex justify-content-center">
+    <div class="col-12 col-md-6 col-xl-4">
+    {{ form_start(eventForm) }}
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Nom de la sortie</label>
+                    {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                  
+                </div>
+
+                 <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Date de début de l'événement</label>
+                    {{ form_widget(eventForm.beginAt, {'attr': {'class': 'form-control'}}) }}
+              
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Date limite d'inscription</label>
+                    {{ form_widget(eventForm.limitInscriptionAt, {'attr': {'class': 'form-control'}}) }}
+    
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Nombre de participants maximum</label>
+                 {{ form_widget(eventForm.inscriptionMax, {'attr': {'class': 'form-control'}}) }}
+
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Durée</label>
+                    {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}              
+                </div>
+
+                
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Description de l'événement</label>
+                 {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Ville organisatrice</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                </div> #}
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Lieu de l'événement</label>
+                    {{ form_widget(eventForm.location, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Rue</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                </div> #}
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Code Postal</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                </div> #}
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Latitude</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                </div> #}
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Longitude</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                </div> #}
+
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Ajout d'une photo</label>
+                 {{ form_widget(eventForm.photo, {'attr': {'class': 'form-control'}}) }}
+                </div>
+    
+
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Enregistrer</button>
+                </div>
+
+            
+  {{ form_end(eventForm) }}
+    </div>
+</div>
 
 
 {% endblock %}

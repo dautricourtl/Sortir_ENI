@@ -10,7 +10,6 @@ use App\Entity\Location;
 use Doctrine\ORM\EntityManager;
 use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
-use App\Controller\EventController;
 use App\Repository\StateRepository;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,7 +54,7 @@ class EventController extends AbstractController
    $owner -> setSurname("bloup");
    $owner -> setTel("bloup");
    $owner -> setMail("bloup");   
-   $owner -> setActive(true);  
+   $owner -> isActive(true);  
    $site = $siteRepository->findById(1)[0];
    $owner ->setSite($site);
    $em ->persist($owner);
@@ -64,12 +63,14 @@ class EventController extends AbstractController
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository){
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository) : Response {
       $event = new Event();
       $formbuilder = $this ->createForm(EventType::class, $event);
       #$event ->setSite($this->getUser()->getSite());
       #$event ->setOwner($this->getUser()->getUserIdentifier())
       $state = $stateRepository->findById(1)[0];
+      $event ->setBeginAt(new \DateTime('now'));
+      $event ->setLimitInscriptionAt(new \DateTime('now'));
       $event ->setState($state);
       $site = $siteRepository->findById(1)[0];
       $event ->setSite($site);
@@ -80,15 +81,25 @@ class EventController extends AbstractController
 
       $formbuilder->handleRequest($request);
       if($formbuilder->isSubmitted() && $formbuilder->isValid()){
+        $dateDebutVerification = $event->getBeginAt();
+        $dateLimiteVerification = $event->getLimitInscriptionAt();
+
+        if($dateLimiteVerification >= $dateDebutVerification) {
+          $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
+        
+         $eventForm = $formbuilder->createView();
+        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+        } else {
+
         $em->persist($event);
-        $em->flush();
+        $em->flush();  
+        $this ->addFlash('success', 'La sortie a bien été ajoutée');
         return $this->redirectToRoute('main');
       }
-
-      $formbuilder ->handleRequest($request);
+    }
 
     $eventForm = $formbuilder->createView();
-      return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+    return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
 
 
