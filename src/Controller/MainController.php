@@ -32,16 +32,11 @@ class MainController extends AbstractController
             'error'         => $error,
         ]);
     }
+    
     #[Route('logout', name:'logout')]
     public function logout(): Response
     {
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
-    }
-
-    #[Route('/profile', name: 'profile')]
-    public function profile(): Response
-    {
-        return $this->render('main/profile.html.twig');
     }
 
     #[Route('/disconnect', name: 'disconnect')]
@@ -57,7 +52,4 @@ class MainController extends AbstractController
         return $this->render('user/user.html.twig');
     }
     
-
-
-
 }
