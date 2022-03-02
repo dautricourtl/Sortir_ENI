@@ -66,38 +66,52 @@ class EventController extends AbstractController
   public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository) : Response {
       $event = new Event();
       $formbuilder = $this ->createForm(EventType::class, $event);
-      #$event ->setSite($this->getUser()->getSite());
-      #$event ->setOwner($this->getUser()->getUserIdentifier())
+
+
+      $owner = $this->getUser();
+      $event ->setOwner($userRepository->findById($owner)[0]);
+
       $state = $stateRepository->findById(1)[0];
       $event ->setBeginAt(new \DateTime('now'));
       $event ->setLimitInscriptionAt(new \DateTime('now'));
       $event ->setState($state);
+
       $site = $siteRepository->findById(1)[0];
       $event ->setSite($site);
-      $owner = $userRepository->findById(1)[0];
-      $event ->setOwner($owner);
+
       $event ->setIsDisplay(1);
       $event ->setIsActive(true);
 
       $formbuilder->handleRequest($request);
+      
       if($formbuilder->isSubmitted() && $formbuilder->isValid()){
         $dateDebutVerification = $event->getBeginAt();
         $dateLimiteVerification = $event->getLimitInscriptionAt();
-
-        if($dateLimiteVerification >= $dateDebutVerification) {
-          $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
+        $durationVerification = $event->getDuration();
+        $nbinscriptionVerifcation = $event->getInscriptionMax();
         
-         $eventForm = $formbuilder->createView();
-        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
-        } else {
+        if($durationVerification < 0 ||$nbinscriptionVerifcation < 0||$dateLimiteVerification >= $dateDebutVerification ){
 
+          if($durationVerification < 0) {
+            $this ->addFlash('danger', 'La durée doit être positive');
+          } 
+          if($nbinscriptionVerifcation < 0) {
+              $this ->addFlash('danger', 'Le nombre d\'inscrits doit être positif');
+          }
+          if($dateLimiteVerification >= $dateDebutVerification) {
+            $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
+          }
+          $eventForm = $formbuilder->createView();
+          return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+      }
+            
         $em->persist($event);
         $em->flush();  
         $this ->addFlash('success', 'La sortie a bien été ajoutée');
         return $this->redirectToRoute('main');
       }
-    }
-
+    
+ 
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }

@@ -17,7 +17,6 @@ class Event
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank(message: 'il faut ajouter un nom')]
     private $name;
 
     #[Assert\GreaterThanOrEqual('today', message: 'La date doit être supérieur ou égale à celle du jour')]
@@ -28,11 +27,11 @@ class Event
     #[ORM\Column(type: 'datetime')]
     private $limitInscriptionAt;
 
-    #[Assert\GreaterThan(0)]
+
     #[ORM\Column(type: 'integer')]
     private $duration;
 
-    #[Assert\GreaterThanOrEqual(0)]
+
     #[ORM\Column(type: 'integer')]
     private $inscriptionMax;
 

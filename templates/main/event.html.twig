@@ -42,34 +42,39 @@
                  {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Site organisateur : </label>
+                    {{app.user.site.name }}              
+                </div> 
+
                 {# <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Ville organisatrice</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                <label class="form-label" for="form3Example1cg">Ville</label>
+                    {{ form_widget(eventForm.city.name, {'attr': {'class': 'form-control'}}) }}
                 </div> #}
 
                 <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Lieu de l'événement</label>
+                <label class="form-label" for="form3Example1cg">Lieu</label>
                     {{ form_widget(eventForm.location, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
-                {# <div class="form-outline mb-3">
+                 {# <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Rue</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
-                </div> #}
+                         
+                </div>  #}
 
                 {# <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Code Postal</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                    {{  }}              
                 </div> #}
 
                 {# <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Latitude</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                    {{  }}              
                 </div> #}
 
                 {# <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Longitude</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}              
+                    {{ }}              
                 </div> #}
 
 

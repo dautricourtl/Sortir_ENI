@@ -8,8 +8,9 @@ use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class EventType extends AbstractType
@@ -27,7 +28,20 @@ class EventType extends AbstractType
                 EntityType::class, ['class' => Location::class, 
                 'choice_label' => 'name'
                 ])
-            ->add('photo')
+            ->add('photo', FileType::class, [
+                'label' => 'photo (png, jpg file)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/png',
+                            'image/jpeg'
+                        ]
+                    ])
+                ]
+            ])
         ;
     }
 
