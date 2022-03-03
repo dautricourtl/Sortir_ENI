@@ -9,7 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/lux/bootstrap.min.css" rel="stylesheet" >
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="stylesheet" media="screen" type="text/css"  href="style.css"/>
+        <link rel="stylesheet" media="screen" type="text/css"  href="{{ asset('style.css') }}"/>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.0/axios.js"></script>
 
         {% block javascripts %}
@@ -45,7 +45,7 @@
             {% endfor %}
         {% endfor %}
         {% block body %}{% endblock %}
-        </main>
+    </main>
         <script type="text/javascript" src="script.js"></script>
     </body>
 </html>
