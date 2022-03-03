@@ -6,6 +6,7 @@ use App\Entity\Site;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,7 +30,16 @@ class ProfileType extends AbstractType
             ->add('profilePicture', FileType::class, [
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new Image([
+                        'mimeTypes' => [
+                            'image/*'
+                        ],
+                        'mimeTypesMessage' => 'Téléchargez une image en .jpg ou .png uniquement'
+                    ])
+                ]
             ])
+            
         ;
     }
 
