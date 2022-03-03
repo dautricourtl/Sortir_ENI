@@ -8,7 +8,7 @@
 
     <div class="form_container d-flex justify-content-center">
     <div class="col-12 col-md-6 col-xl-4">
-    {{ form_start(registrationForm, {'attr': {'id': 'registrationForm'}})  }}
+    {{ form_start(registrationForm) }}
                 <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Pseudo</label>
                     {{ form_widget(registrationForm.pseudo, {'attr': {'class': 'form-control'}}) }}
@@ -36,24 +36,19 @@
                 <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Password</label>
                     {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                  {# <input type="password" id="form3Example4cg" class="form-control" /> #}
                 </div>
 
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Pseudo</label>
+                  <label class="form-label" for="form3Example4cdg">Repeat your password</label>
+                                      {{ form_widget(registrationForm.password, {'attr': {'class': 'form-control'}}) }} #}
+                  {# <input type="password" id="form3Example4cdg" class="form-control" /> #}
+                {# </div> #}
 
                 <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Phone Number</label>
-                    {{ form_widget(registrationForm.tel, {'attr': {'class': 'form-control'}}) }}
-                </div>
-
-                <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Site</label>
-                                      {{ form_widget(registrationForm.site, {'attr': {'class': 'form-control'}}) }}
-
-                  {# <input type="text" id="form3Example4cdg" class="form-control" /> #}
-                </div>
-
-                 <div class="form-outline mb-3">
-                <label class="checkbox" for="form3Example1cg">Agree Terms</label>
-                                      {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'CheckboxType'}}) }}
+                                      {{ form_widget(registrationForm.tel, {'attr': {'class': 'form-control'}}) }}
 
                   {# <input type="text" id="form3Example4cdg" class="form-control" /> #}
                 </div>
@@ -68,8 +63,6 @@
   {{ form_end(registrationForm) }}
     </div>
 </div>
-
-<button type="button" class="btn btn-primary" onclick="test();">TestForm</button>
 
 {% endblock %}
 

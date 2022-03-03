@@ -25,6 +25,7 @@ class LocationType extends AbstractType
                 'class' => City::class,
                 'choice_label' => 'name',
             ])
+            ->add('submit',SubmitType::class)
         ;
     }
 

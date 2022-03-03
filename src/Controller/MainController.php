@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\City;
+use App\Repository\EventRepository;
 use App\Form\CityType;
 use App\Controller\CityController;
 use App\Controller\UserController;
@@ -15,10 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'main')]
-    public function index(): Response
+    public function index(EventRepository $eventrepo): Response
     {
+        $events = $eventrepo ->findAll();
+        // dd($events);
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
+            'events' =>$events,
         ]);
     }
 
@@ -37,12 +40,6 @@ class MainController extends AbstractController
     public function logout(): Response
     {
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
-    }
-
-    #[Route('/profile', name: 'profile')]
-    public function profile(): Response
-    {
-        return $this->render('main/profile.html.twig');
     }
 
     #[Route('/disconnect', name: 'disconnect')]

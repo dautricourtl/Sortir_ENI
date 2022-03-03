@@ -62,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $site;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $photo;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -365,9 +368,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->site;
     }
 
-    public function setSite(?Site $site): self
+    public function setSite(Site $site): self
     {
         $this->site = $site;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

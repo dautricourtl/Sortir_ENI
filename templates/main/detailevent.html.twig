@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <h1>Sortie</h1>
+<div class="container col-12 m-0 row">
+<div class="mt-3">
+ <img class="img-fluid img-thumbnail" src="{{asset('/uploads/images/event/')}}{{event.photo}}" alt="" />
+ </div>
+<div class="mt-3">Nom de la sortie : {{event.name}}</div>
+<div class="mt-3">Date et heure de la sortie : {{event.beginAt | date('d-m-Y à H:i')}}</div>
+<div class="mt-3">Date limite d'inscritpion : {{event.limitInscriptionAt | date('d-m-Y')}}</div>
+<div class="mt-3">Nombre de places : {{event.inscriptionMax}}</div>
+<div class="mt-3">Durée : {{event.duration}} minutes</div>
+<div class="mt-3">Description et infos : {{event.description}}</div>
+
+ <div class="mt-3">Ville organisatrice : {{event.owner.site.name}}</div> 
+<div class="mt-3">Lieu : {{event.location.name}}</div>
+<div class="mt-3">Rue : {{event.location.adress}}</div>
+{# <div class="mt-3">Ville : {{event.location.city.name}}</div>
+<div class="mt-3">Code Postal : {{event.location.city.zipCode}}</div> #}
+<div class="mt-3">Latitude : {{event.location.latitude}}</div>
+<div class="mt-3">Longitude : {{event.location.latitude}}</div>
+</div>
+<div class="container col-12 m-0 row">
+<div class="mt-3">Ici bientôt la liste des participants</div>
+</div>
+{% endblock %}

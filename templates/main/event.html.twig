@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% block title %}Page d'ajout des événement!{% endblock %}
+
+{% block body %}
+<h1 class="text-primary">Ajouter un événement</h1 >
+
+<div class="form_container d-flex justify-content-center">
+    <div class="col-12 col-md-6 col-xl-4">
+    {{ form_start(eventForm) }}
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Nom de la sortie</label>
+                    {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                  
+                </div>
+
+                 <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Date de début de l'événement</label>
+                    {{ form_widget(eventForm.beginAt, {'attr': {'class': 'form-control'}}) }}
+              
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Date limite d'inscription</label>
+                    {{ form_widget(eventForm.limitInscriptionAt, {'attr': {'class': 'form-control'}}) }}
+    
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Nombre de participants maximum</label>
+                 {{ form_widget(eventForm.inscriptionMax, {'attr': {'class': 'form-control'}}) }}
+
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Durée (en minutes)</label>
+                    {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}              
+                </div>
+
+                
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Description de l'événement</label>
+                 {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Site organisateur : </label>
+                    {{app.user.site.name }}              
+                </div> 
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Ville</label>
+                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}
+                </div>   #}
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Lieu</label>
+                    {{ form_widget(eventForm.location, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                 {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Rue</label>
+                      {{ form_widget(eventForm.location.adress, {'attr': {'class': 'form-control'}}) }}      
+                </div>  
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Code Postal</label>
+                    {{  }}              
+                </div> #}
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Latitude</label>
+                    {{  }}              
+                </div> #}
+
+                {# <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Longitude</label>
+                    {{ }}              
+                </div> #}
+
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Ajout d'une photo</label>
+                 {{ form_widget(eventForm.imageFile, {'attr': {'class': 'form-control'}}) }}
+                </div>
+    
+
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Enregistrer</button>
+                </div>
+
+            
+  {{ form_end(eventForm) }}
+    </div>
+</div>
+
+
+{% endblock %}
