@@ -34,20 +34,36 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
             // encode the plain password
             $user->isActive(true);
-            $entityManager->persist($user);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
+            $uploadedFile = $form['profilePicture']->getData();  
+        if($uploadedFile){
+        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/profilepicture';  
+        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
+            $uploadedFile->move(
+                $destination,
+                $newFilename
+            );
+        $user->setPhoto($newFilename);
+      }
+      $entityManager->persist($user);
+      $entityManager->flush();
+        $this ->addFlash('success', 'Photo ajoutée');
+        return $this->redirectToRoute('main');
 
-            return $this->redirectToRoute('main');
-        }
-
-        return $this->render('main/edit.html.twig', [
-            'profileForm' => $form->createView(),
-        ]);
+        
     }
+    return $this->render('main/edit.html.twig', [
+        'profileForm' => $form->createView(),
+    ]);
+    
 }
+    
+ 
 
+      
 
+}
 
