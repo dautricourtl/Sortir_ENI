@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\City;
 use App\Entity\Site;
 use App\Entity\User;
 use App\Entity\Event;
 use App\Entity\State;
 use App\Form\EventType;
 use App\Entity\Location;
+use App\Repository\CityRepository;
+use PhpParser\Builder\Method;
 use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
+use App\Repository\EventRepository;
 use App\Repository\StateRepository;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,20 +20,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EventController extends AbstractController
 {
 
   #[Route('/ajoutLocation', name:'add_location')]
-  public function ajouterLocation(EntityManagerInterface $em, LocationRepository $LocationRepository) {
+  public function ajouterLocation(EntityManagerInterface $em, LocationRepository $LocationRepository, CityRepository $cityRepository) {
     $location = new Location();
 
-    $location -> setName('Le site de test');
-    $location -> setAdress("l'adresse de test");
-    $location -> setLatitude("la latitude de test");
-    $location -> setLongitude("la longitude de test");
+    $location -> setName('Un bar');
+    $location -> setAdress("l'adresse du bar");
+    $location -> setLatitude("la latitude du bar");
+    $location -> setLongitude("la longitude du bar");
+    $location -> setCity(new City("Nantes", "44000"));
+
     $em ->persist($location);
     $em ->flush();
+
     return new Response("Jeu d'essai inséré");
   }
 
@@ -39,6 +47,26 @@ class EventController extends AbstractController
 
     $state -> setName("etat");
     $em ->persist($state);
+    $em ->flush();
+   return new Response("Jeu d'essai inséré");
+  }
+
+  #[Route('/ajoutSite', name:'add_site')]
+  public function ajouterStite(EntityManagerInterface $em) {
+    $site = new Site();
+
+    $site -> setName("site");
+    $em ->persist($site);
+    $em ->flush();
+   return new Response("Jeu d'essai inséré");
+  }
+
+  #[Route('/ajoutCity', name:'add_city')]
+  public function ajouterCity(EntityManagerInterface $em) {
+    $city = new City();
+    $city -> setName("Nantes");
+    $city -> setZipCode("44000");
+    $em ->persist($city);
     $em ->flush();
    return new Response("Jeu d'essai inséré");
   }
@@ -61,12 +89,12 @@ class EventController extends AbstractController
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository, LocationRepository $locationRepository) : Response {
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository, CityRepository $cityRepository) : Response {
       $event = new Event();
       $formbuilder = $this ->createForm(EventType::class, $event);
 
       $owner = $this->getUser();
-            $event ->setOwner($userRepository->findById($owner)[0]);
+      $event ->setOwner($userRepository->findById($owner)[0]);
   
 
       $event ->setBeginAt(new \DateTime('now'));
@@ -74,7 +102,6 @@ class EventController extends AbstractController
 
       $state = $stateRepository->findById(1)[0];
       $event ->setState($state);
-
       
       $event ->setIsDisplay(1);
       $event ->setIsActive(true);
@@ -124,6 +151,17 @@ class EventController extends AbstractController
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
 
+  #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id'=> '\d+'], methods:['GET'])]
+  public function detail($id, EventRepository $eventRepository):Response {
+
+    $event = $eventRepository->find($id);
+    if(!$event){
+      throw new NotFoundHttpException();
+    }else {
+      return $this->render('main/detailevent.html.twig', compact("id", "event"));
+    }
+
+    }
+  }
 
 
-}

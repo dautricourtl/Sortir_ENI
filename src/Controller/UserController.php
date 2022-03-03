@@ -40,7 +40,6 @@ class UserController extends AbstractController
             $uploadedFile = $form['profilePicture']->getData();  
         if($uploadedFile){
         $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/profilepicture';  
-        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
             $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
             $uploadedFile->move(
                 $destination,
