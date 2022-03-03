@@ -28,19 +28,9 @@ class EventType extends AbstractType
                 EntityType::class, ['class' => Location::class, 
                 'choice_label' => 'name'
                 ])
-            ->add('photo', FileType::class, [
-                'label' => 'photo (png, jpg file)',
+            ->add('imageFile', FileType::class, [
                 'mapped' => false,
                 'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/png',
-                            'image/jpeg'
-                        ]
-                    ])
-                ]
             ])
         ;
     }

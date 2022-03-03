@@ -7,7 +7,6 @@ use App\Entity\Event;
 use App\Entity\State;
 use App\Form\EventType;
 use App\Entity\Location;
-use Doctrine\ORM\EntityManager;
 use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\StateRepository;
@@ -104,7 +103,17 @@ class EventController extends AbstractController
           $eventForm = $formbuilder->createView();
           return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
       }
-            
+        $uploadedFile = $formbuilder['imageFile']->getData();  
+        if($uploadedFile){
+        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images';  
+        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = ($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
+            $uploadedFile->move(
+                $destination,
+                $newFilename
+            );
+        $event->setPhoto($newFilename);
+      }
         $em->persist($event);
         $em->flush();  
         $this ->addFlash('success', 'La sortie a bien été ajoutée');
