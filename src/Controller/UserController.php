@@ -50,7 +50,7 @@ class UserController extends AbstractController
       }
       $entityManager->persist($user);
       $entityManager->flush();
-        $this ->addFlash('success', 'Photo ajoutée');
+        $this ->addFlash('success', 'Profile Edited');
         return $this->redirectToRoute('main');
 
         
