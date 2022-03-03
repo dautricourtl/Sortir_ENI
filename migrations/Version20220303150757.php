@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220303111446 extends AbstractMigration
+final class Version20220303150757 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,6 +20,7 @@ final class Version20220303111446 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE city ADD COLUMN is_active BOOLEAN DEFAULT 1 NOT NULL');
         $this->addSql('DROP INDEX IDX_3BAE0AA77E3C61F9');
         $this->addSql('DROP INDEX IDX_3BAE0AA764D218E');
         $this->addSql('DROP INDEX IDX_3BAE0AA7F6BD1646');
@@ -60,16 +61,17 @@ final class Version20220303111446 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_5E9E89CB8BAC62AF');
         $this->addSql('CREATE TEMPORARY TABLE __temp__location AS SELECT id, city_id, name, adress, latitude, longitude FROM location');
         $this->addSql('DROP TABLE location');
-        $this->addSql('CREATE TABLE location (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, city_id INTEGER DEFAULT NULL, name VARCHAR(255) NOT NULL, adress VARCHAR(255) NOT NULL, latitude VARCHAR(255) NOT NULL, longitude VARCHAR(255) NOT NULL, CONSTRAINT FK_5E9E89CB8BAC62AF FOREIGN KEY (city_id) REFERENCES city (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        $this->addSql('CREATE TABLE location (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, city_id INTEGER DEFAULT NULL, name VARCHAR(255) NOT NULL, adress VARCHAR(255) NOT NULL, latitude VARCHAR(255) NOT NULL, longitude VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, CONSTRAINT FK_5E9E89CB8BAC62AF FOREIGN KEY (city_id) REFERENCES city (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO location (id, city_id, name, adress, latitude, longitude) SELECT id, city_id, name, adress, latitude, longitude FROM __temp__location');
         $this->addSql('DROP TABLE __temp__location');
         $this->addSql('CREATE INDEX IDX_5E9E89CB8BAC62AF ON location (city_id)');
+        $this->addSql('ALTER TABLE site ADD COLUMN is_active BOOLEAN DEFAULT 1 NOT NULL');
         $this->addSql('DROP INDEX IDX_8D93D649F6BD1646');
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM user');
         $this->addSql('DROP TABLE user');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
-        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN NOT NULL, photo VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_8D93D649F6BD1646 FOREIGN KEY (site_id) REFERENCES site (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_8D93D649F6BD1646 FOREIGN KEY (site_id) REFERENCES site (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO user (id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active) SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
         $this->addSql('CREATE INDEX IDX_8D93D649F6BD1646 ON user (site_id)');
@@ -88,6 +90,11 @@ final class Version20220303111446 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE TEMPORARY TABLE __temp__city AS SELECT id, name, zip_code FROM city');
+        $this->addSql('DROP TABLE city');
+        $this->addSql('CREATE TABLE city (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, zip_code VARCHAR(10) NOT NULL)');
+        $this->addSql('INSERT INTO city (id, name, zip_code) SELECT id, name, zip_code FROM __temp__city');
+        $this->addSql('DROP TABLE __temp__city');
         $this->addSql('DROP INDEX IDX_3BAE0AA75D83CC1');
         $this->addSql('DROP INDEX IDX_3BAE0AA764D218E');
         $this->addSql('DROP INDEX IDX_3BAE0AA77E3C61F9');
@@ -132,6 +139,11 @@ final class Version20220303111446 extends AbstractMigration
         $this->addSql('INSERT INTO location (id, city_id, name, adress, latitude, longitude) SELECT id, city_id, name, adress, latitude, longitude FROM __temp__location');
         $this->addSql('DROP TABLE __temp__location');
         $this->addSql('CREATE INDEX IDX_5E9E89CB8BAC62AF ON location (city_id)');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__site AS SELECT id, name FROM site');
+        $this->addSql('DROP TABLE site');
+        $this->addSql('CREATE TABLE site (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL)');
+        $this->addSql('INSERT INTO site (id, name) SELECT id, name FROM __temp__site');
+        $this->addSql('DROP TABLE __temp__site');
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
         $this->addSql('DROP INDEX IDX_8D93D649F6BD1646');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM user');
