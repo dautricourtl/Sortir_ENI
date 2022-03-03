@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Entity\Site;
 use App\Entity\User;
+use App\Entity\State;
 use App\Entity\Location;
 use App\Repository\CityRepository;
 use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
+use App\Repository\StateRepository;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -284,6 +286,77 @@ class APIController extends AbstractController
         $data = [];
         foreach($result as $item){
             array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+        }
+        return $this->json($data);
+    }
+
+
+
+    #[Route('/getState', name: 'getState')]
+    public function getState(StateRepository $StateRepository, EntityManagerInterface $em){
+        
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(State::class, 'c');
+            
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName()));
+        }
+        return $this->json($data);
+    }
+
+    #[Route('/deleteState/{id}', name: 'deleteState')]
+    public function deleteState(int $id, StateRepository $StateRepository,EntityManagerInterface $em){
+
+        $toDelete = $StateRepository->findOneById($id);
+
+        
+        $em->persist($toDelete);
+        $em->flush();
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(State::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName()));
+        }
+        return $this->json($data);
+    }
+
+    /**
+     * @Route("/newState", name="newState", methods={"POST"})
+     */
+    public function newState(StateRepository $StateRepository,Request $request, EntityManagerInterface $em): Response
+    {
+
+       $content = json_decode($request->getContent());
+       $newState = new State();
+       $newState->setName((string)$content->Name);
+        
+       $em->persist($newState);
+       $em->flush();
+
+       $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(State::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName()));
         }
         return $this->json($data);
     }
