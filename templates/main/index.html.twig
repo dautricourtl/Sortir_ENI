@@ -64,15 +64,20 @@
         </div>
         <button type="submit" class="btn border mb-3">Rechercher</button>
     </div>
-</form>
-<div class="sortiesContainer container d-flex col-12 m-0 p-3">
-    <div class="sortie_item  col-12 col-md-3 col-xl-2 p-2 rounded">
-        <img src="https://via.placeholder.com/300" class="w-100" alt="miniature sortie"/>
-        <div class="p-3 bg-white">
-            <h4 class="text-primary">Titre</h4>
-            <div>Description</div>
+</form>    
+
+    <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
+    {% for event in events %}
+        <div class="sortie_item m-3 col-12 col-md-3 col-xl-2 p-2 rounded">
+            <img src="{{asset('/uploads/images/profilepicture/')}}{{ event.photo }}" class="w-100" alt="miniature sortie"/>
+            <div class="p-3 bg-white">
+                <h4 class="text-primary">{{ event.name }}</h4>
+                <div>{{ event.description }}</div>
+            </div>
         </div>
+        {% endfor %}
     </div>
-</div>
+
+
 
 {% endblock %}
