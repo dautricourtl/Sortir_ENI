@@ -17,6 +17,10 @@
         <div class="nameSite">Nom</div>
         <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteSite(this)">delete</button>
     </div>
+    <div class="d-flex justify-content-between StateTemplate template-stripped"  id="templateState">
+        <div class="nameState">Nom</div>
+        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteState(this)">delete</button>
+    </div>
 </div>
 
 <div class="col-12 d-flex justify-content-around mb-3" >
@@ -25,6 +29,7 @@
     <div class="cursor-pointer" onclick="SwitchTemplate(2)">Utilisateurs</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(3)">Organisations</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(4)">Evenements</div>
+    <div class="cursor-pointer" onclick="SwitchTemplate(5)">Etats</div>
 </div>
 <div class="container">
 
@@ -91,7 +96,7 @@
         
 
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un lieu</h3>
+            <h3 class="flex-1">Ajouter un utilisateur</h3>
         </div>
 
        
@@ -121,6 +126,25 @@
     </div>
     <div class="categoryContainer d-none py-3" id="EventContainer">
         EventContainer
+    </div>
+    <div class="categoryContainer d-none py-3" id="StateContainer">
+        
+        
+        <div class="d-flex justify-content-between ">
+            <h3 class="flex-1">Ajouter un State</h3>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformStateActive(this)"></i>
+        </div>
+
+        {{ form_start(newformState, {'attr': {'id': 'newformState'}}) }}
+            <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Name</label>
+                {{ form_widget(newformState.name, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <button type="button" class="btn btn-primary" onclick="AddState()">Valider</button>
+        {{ form_end(newformState) }}
+        <div id="listState" class="stripped mt-3"></div>
+
+
     </div>
 </div>
 

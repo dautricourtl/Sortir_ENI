@@ -24,7 +24,8 @@ var websiteData = {
     Location:[],
     User:[],
     Site:[],
-    Event:[]
+    Event:[],
+    State:[],
 }
 
 ////// CITY /////////
@@ -397,6 +398,95 @@ function DeleteSite(id){
     });
 }
 
+//////SITE/////
+/////STATE/////
+
+function GetState(){
+    
+    axios({
+        method: 'get',
+        url: '/api/getState/',
+        responseType: 'stream'
+      })
+        .then(function (response) {
+            console.log(response.data);
+            websiteData.State=response.data;
+            
+            let template = document.getElementById("templateState");
+            document.getElementById("listState").innerHTML = "";
+            for(let i =0; i<websiteData.State.length; i++){
+                var clone = template.cloneNode(true);
+                clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
+
+                listState.appendChild(clone);
+            }
+        });
+}
+
+function AddState() {
+    let newStateForm = document.getElementById('newformState');
+    
+    formData = new FormData(newStateForm);
+    let newState = {
+        Name:formData.get("state[name]")
+    }
+    axios({
+        method: 'post',
+        url: '/api/newState',
+        responseType: 'stream',
+        data: newState
+      })
+      .then(function (response) {
+        websiteData.State=response.data;
+        let template = document.getElementById("templateState");
+        document.getElementById("listState").innerHTML = ""; 
+        for(let i =0; i<websiteData.State.length; i++){
+            var clone = template.cloneNode(true);
+            clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
+            let button = clone.getElementsByClassName("btn")[0];
+            button.setAttribute("js-id",websiteData.State[i].Id );
+            button.innerHTML = websiteData.State[i].IsActive ? "desactiver":"reactiver";
+            if(websiteData.State[i].IsActive ){
+                button.classList.add("btn-danger");
+                button.classList.remove("btn-success");
+            }else{
+                button.classList.remove("btn-danger");
+                button.classList.add("btn-success");
+            }
+            listState.appendChild(clone);
+        }
+    });
+}
+
+
+function DeleteState(id){
+    let idToDelete = id.getAttribute("js-id");
+    axios({
+        method: 'get',
+        url: '/api/deleteState/'+idToDelete,
+        responseType: 'stream'
+      })
+      .then(function (response) {
+        websiteData.State=response.data;
+        let template = document.getElementById("templateState");
+        document.getElementById("listState").innerHTML = ""; 
+        for(let i =0; i<websiteData.State.length; i++){
+            var clone = template.cloneNode(true);
+            clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
+            let button = clone.getElementsByClassName("btn")[0];
+            button.setAttribute("js-id",websiteData.State[i].Id );
+            button.innerHTML = websiteData.State[i].IsActive ? "desactiver":"reactiver";
+            if(websiteData.State[i].IsActive ){
+                button.classList.add("btn-danger");
+                button.classList.remove("btn-success");
+            }else{
+                button.classList.remove("btn-danger");
+                button.classList.add("btn-success");
+            }
+            listState.appendChild(clone);
+        }
+    });
+}
 
 
 
@@ -408,6 +498,7 @@ var templates =
         {Id : 2, Name:"User"},
         {Id : 3, Name:"Site"},
         {Id : 4, Name:"Event"},
+        {Id : 5, Name:"State"},
     ];
 
 SwitchTemplate(1);
@@ -428,6 +519,10 @@ function SwitchTemplate(templateId)
             GetSite();
         break;
         case 4:
+            
+        break;
+        case 5:
+            GetState();
         break;
     }
     let containers = document.getElementsByClassName("categoryContainer");
