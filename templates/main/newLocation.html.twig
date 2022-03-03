@@ -3,8 +3,36 @@
 {% block title %}Hello MainController!{% endblock %}
 
 {% block body %}
+<div class="form_container d-flex justify-content-center">
+    <div class="col-12 col-md-6 col-xl-4">
  {{ form_start(form_location) }}
-    {{ form_widget(form_location) }}
-    {# <input class="btn btn-outline-primary" type="submit" value="Send !"> #}
+
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Name</label>
+        {{ form_widget(form_location.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Adress</label>
+        {{ form_widget(form_location.adress, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Latitude</label>
+        {{ form_widget(form_location.latitude, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Longitude</label>
+        {{ form_widget(form_location.longitude, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Ville</label>
+        {{ form_widget(form_location.city, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        {{ form_widget(form_location.submit, {'attr': {'class': 'btn btn-primary form-control'}}) }}
+    </div>
+
+
     {{ form_end(form_location) }}
+    </div>
+</div>
 {% endblock %}

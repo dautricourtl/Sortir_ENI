@@ -24,6 +24,9 @@ class City
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Location::class)]
     private $location;
 
+    #[ORM\Column(type: 'boolean', options: ["default"=>true])]
+    private $isActive = true;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
@@ -95,5 +98,17 @@ class City
     public function getLocation(): Collection
     {
         return $this->location;
+    }
+
+    public function getIsActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
     }
 }

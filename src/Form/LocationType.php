@@ -17,15 +17,14 @@ class LocationType extends AbstractType
     {
 
         $builder
-            ->add('name',TextType::Class)
-            ->add('adress',TextType::Class)
-            ->add('latitude',TextType::Class)
-            ->add('longitude',TextType::Class)
-            ->add('city',EntityType::Class , [
+            ->add('name',TextType::class)
+            ->add('adress',TextType::class)
+            ->add('latitude',TextType::class)
+            ->add('longitude',TextType::class)
+            ->add('city',EntityType::class , [
                 'class' => City::class,
                 'choice_label' => 'name',
             ])
-            ->add('submit',SubmitType::Class)
         ;
     }
 

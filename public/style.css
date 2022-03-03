@@ -16,3 +16,27 @@ a{
 .sortie_item{
     box-shadow: 00px 0px 5px rgba(0,0,0,0.2);
 }
+
+.cursor-pointer{
+    cursor: pointer;
+}
+.stripped div{
+    padding:10px;
+}
+.stripped .template-stripped:nth-child(even){
+    background-color: rgba(0,0,0,0.1);
+}
+
+.categoryContainer div i{
+    font-size: 150%;
+    transition: all 0.5s;
+    transform-origin: center;
+    width:22px;
+    height:22px;
+}
+
+.cityIconRotate{
+    transform-origin: center;
+    transition: all 0.5s;
+    transform: rotate(45deg);
+}

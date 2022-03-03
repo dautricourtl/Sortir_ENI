@@ -17,7 +17,7 @@ class LocationController extends AbstractController
     {
 
         $location = new Location();
-        $form  = $this->createForm(LocationType::Class, $location);
+        $form  = $this->createForm(LocationType::class, $location);
         $locationForm = $form->createView();
 
         $form->handleRequest($request);
@@ -25,7 +25,6 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
           
-          $em = $this->getDoctrine()->getManager();
           
           $em->persist($location);
           $em->flush();

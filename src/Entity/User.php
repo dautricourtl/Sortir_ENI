@@ -40,8 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $mail;
 
-    #[ORM\Column(type: 'boolean')]
-    private $isActive;
+    #[ORM\Column(type: 'boolean', options: ["default"=>true])]
+    private $isActive = true;
 
     #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'participants')]
     private $events;

@@ -14,7 +14,6 @@ class SiteType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('submit', SubmitType::class)
         ;
     }
 

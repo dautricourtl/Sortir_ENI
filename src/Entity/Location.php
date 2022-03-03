@@ -33,6 +33,9 @@ class Location
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Event::class)]
     private $events;
 
+    #[ORM\Column(type: 'boolean', options: ["default"=>true])]
+    private $isActive = true;
+
 
     public function __construct()
     {
@@ -141,5 +144,17 @@ class Location
     public function getEvent(): Collection
     {
         return $this->event;
+    }
+
+    public function getIsActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
     }
 }

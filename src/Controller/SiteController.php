@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SiteController extends AbstractController
 {
-    #[Route('/newsite', name: 'new_site')]
+    #[Route('/admin/newsite', name: 'new_site')]
     public function newSite(Request $request, EntityManagerInterface $em): Response
     {
 
@@ -25,7 +25,7 @@ class SiteController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
           
-          $em = $this->getDoctrine()->getManager();
+          //$em = $this->getDoctrine()->getManager();
           
           $em->persist($site);
           $em->flush();
