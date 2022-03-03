@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\City;
 use App\Repository\EventRepository;
+use App\Entity\Event;
 use App\Form\CityType;
 use App\Controller\CityController;
 use App\Controller\UserController;
