@@ -24,62 +24,61 @@ class EventController extends AbstractController
   public function ajouterLocation(EntityManagerInterface $em, LocationRepository $LocationRepository) {
     $location = new Location();
 
-   $location -> setName('Le site de test');
-   $location -> setAdress("l'adresse de test");
-   $location -> setLatitude("la latitude de test");
-   $location -> setLongitude("la longitude de test");
-   $em ->persist($location);
-   $em ->flush();
-   return new Response("Jeu d'essai inséré");
+    $location -> setName('Le site de test');
+    $location -> setAdress("l'adresse de test");
+    $location -> setLatitude("la latitude de test");
+    $location -> setLongitude("la longitude de test");
+    $em ->persist($location);
+    $em ->flush();
+    return new Response("Jeu d'essai inséré");
   }
 
   #[Route('/ajoutState', name:'add_state')]
   public function ajouterState(EntityManagerInterface $em) {
     $state = new State();
 
-   $state -> setName("etat");
-   $em ->persist($state);
-   $em ->flush();
+    $state -> setName("etat");
+    $em ->persist($state);
+    $em ->flush();
    return new Response("Jeu d'essai inséré");
   }
 
   #[Route('/ajoutOwner', name:'add_owner')]
   public function ajouterOwner(EntityManagerInterface $em, SiteRepository $siteRepository) {
     $owner = new User();
-
-   $owner -> setPseudo("bloup");
-   $owner -> setPassword("bloup");
-   $owner -> setName("bloup");
-   $owner -> setSurname("bloup");
-   $owner -> setTel("bloup");
-   $owner -> setMail("bloup");   
-   $owner -> isActive(true);  
-   $site = $siteRepository->findById(1)[0];
-   $owner ->setSite($site);
-   $em ->persist($owner);
-   $em ->flush();
+    $owner -> setPseudo("bloup");
+    $owner -> setPassword("bloup");
+    $owner -> setName("bloup");
+    $owner -> setSurname("bloup");
+    $owner -> setTel("bloup");
+    $owner -> setMail("bloup");   
+    $owner -> isActive(true);  
+    $site = $siteRepository->findById(1)[0];
+    $owner ->setSite($site);
+    $em ->persist($owner);
+    $em ->flush();
    return new Response("Jeu d'essai inséré");
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository) : Response {
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, SiteRepository $siteRepository, UserRepository $userRepository, LocationRepository $locationRepository) : Response {
       $event = new Event();
       $formbuilder = $this ->createForm(EventType::class, $event);
 
-
       $owner = $this->getUser();
-      $event ->setOwner($userRepository->findById($owner)[0]);
+            $event ->setOwner($userRepository->findById($owner)[0]);
+  
 
-      $state = $stateRepository->findById(1)[0];
       $event ->setBeginAt(new \DateTime('now'));
       $event ->setLimitInscriptionAt(new \DateTime('now'));
+
+      $state = $stateRepository->findById(1)[0];
       $event ->setState($state);
 
-      $site = $siteRepository->findById(1)[0];
-      $event ->setSite($site);
-
+      
       $event ->setIsDisplay(1);
       $event ->setIsActive(true);
+
 
       $formbuilder->handleRequest($request);
       
@@ -100,14 +99,14 @@ class EventController extends AbstractController
           if($dateLimiteVerification >= $dateDebutVerification) {
             $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
           }
+
           $eventForm = $formbuilder->createView();
           return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
       }
         $uploadedFile = $formbuilder['imageFile']->getData();  
         if($uploadedFile){
-        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images';  
-        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $newFilename = ($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
+        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/event';  
+            $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
             $uploadedFile->move(
                 $destination,
                 $newFilename

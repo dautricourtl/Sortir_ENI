@@ -51,10 +51,6 @@ class Event
     #[ORM\Column(type: 'boolean')]
     private $isActive;
 
-    #[ORM\ManyToOne(targetEntity: Site::class, inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $site;
-
     #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'events')]
     private $location;
 
@@ -221,19 +217,6 @@ class Event
     public function setOrganizer(?User $organizer): self
     {
         $this->organizer = $organizer;
-
-        return $this;
-    }
-
-
-    public function getSite(): ?Site
-    {
-        return $this->site;
-    }
-
-    public function setSite(?Site $site): self
-    {
-        $this->site = $site;
 
         return $this;
     }

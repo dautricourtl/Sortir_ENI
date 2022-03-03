@@ -18,9 +18,6 @@ class Site
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'site', targetEntity: Event::class)]
-    private $events;
-
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: User::class)]
     private $participants;
 
@@ -47,35 +44,6 @@ class Site
         return $this;
     }
 
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
-
-    public function addEvent(Event $event): self
-    {
-        if (!$this->events->contains($event)) {
-            $this->events[] = $event;
-            $event->setSite($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getSite() === $this) {
-                $event->setSite(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, User>
@@ -100,7 +68,7 @@ class Site
         if ($this->participants->removeElement($participant)) {
             // set the owning side to null (unless already changed)
             if ($participant->getSite() === $this) {
-                $participant->setSite(null);
+                $participant->setSite($this);
             }
         }
 
