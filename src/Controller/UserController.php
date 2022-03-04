@@ -16,18 +16,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserController extends AbstractController
 {
     
-    #[Route('/profile/{id}', name: 'profile')]
-    public function profile(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo, int $id): Response
+    #[Route('/profile/{id}', name: 'profile', requirements: ['id'=> '\d+'])]
+    public function profile(Request $request,$id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
     {
         $user = $userrepo ->findOneById($id);
        
 
-        return $this->render('main/profile.html.twig', [
-            'profil' =>$user,
-        ]);
+        return $this->render('main/profile.html.twig', compact("id", "user"));
     }
-   #[Route('/edit/{id}', name: 'edit')]
-    public function edit(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo, int $id): Response
+   #[Route('/edit/{id}', name: 'edit' , requirements: ['id'=> '\d+'])]
+    public function edit(Request $request, $id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
     {
         $user = $userrepo ->findOneById($id);
         $form = $this->createForm(ProfileType::class, $user);
@@ -50,7 +48,7 @@ class UserController extends AbstractController
       $entityManager->persist($user);
       $entityManager->flush();
         $this ->addFlash('success', 'Profile Edited');
-        return $this->redirectToRoute('main');
+        return $this->redirectToRoute('profile', ['id' => $id]);
 
         
     }
