@@ -30,14 +30,23 @@ class RegistrationController extends AbstractController
             $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
-                )
-                
+                )                
             );
-
+            $uploadedFile = $form['profilePicture']->getData();  
+        if($uploadedFile){
+        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/profilepicture';  
+            $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
+            $uploadedFile->move(
+                $destination,
+                $newFilename
+            );
+        $user->setPhoto($newFilename);
+        }
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
 
+            $this ->addFlash('success', 'Utilisateur inscrit');
             return $this->redirectToRoute('main');
         }
 
