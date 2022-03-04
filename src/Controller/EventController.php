@@ -45,12 +45,11 @@ class EventController extends AbstractController
     $event->setBeginAt(new \DateTime('now'));
     $event->setLimitInscriptionAt(new \DateTime('now'));
 
-    $state = $stateRepository->findById(1)[0];
+    $state = $stateRepository->findById(2)[0];
     $event->setState($state);
 
     $event->setIsDisplay(1);
     $event->setIsActive(true);
-    $event->getState()->setName('Ouverte');
 
     $formbuilder->handleRequest($request);
 
@@ -93,9 +92,7 @@ class EventController extends AbstractController
       $em->flush();
       $this->addFlash('success', 'La sortie a bien été enregistrée');
 
-      $eventId = $event->getId();
-
-      return $this->redirectToRoute('event_detail', ['event'=> $event, 'id' => $eventId]);
+      return $this->redirectToRoute('main');
     }
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
@@ -166,7 +163,7 @@ class EventController extends AbstractController
 
 
   #[Route('/cancelEvent/{id}', name: 'event_cancel', requirements: ['id' => '\d+'])]
-  public function cancel($id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  public function cancel($id, EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
   {
     $event = $eventRepository->findOneById($id);
 
@@ -180,7 +177,8 @@ class EventController extends AbstractController
     } else {
 
       $event->setIsActive(false);
-      $event->getState()->setName("Annulée");
+      $state = $stateRepository->findById(1)[0];
+      $event->setState($state);
 
       $em->persist($event);
       $em->flush();
