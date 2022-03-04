@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\City;
 use App\Entity\Site;
 use App\Entity\User;
@@ -27,140 +28,137 @@ class EventController extends AbstractController
 {
 
   #[Route('/addParticipant', name: 'add_participant')]
-  public function addParticipant($id, EventRepository $eventRepository):Response {
+  public function addParticipant($id, EventRepository $eventRepository): Response
+  {
 
     $event = $eventRepository->find($id);
 
     return $this->render('main/detailevent.html.twig');
-
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository, CityRepository $cityRepository) : Response {
-      $event = new Event();
-      $formbuilder = $this ->createForm(EventType::class, $event);
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository, CityRepository $cityRepository): Response
+  {
+    $event = new Event();
+    $formbuilder = $this->createForm(EventType::class, $event);
 
-      $owner = $this->getUser();
-      $event ->setOwner($userRepository->findById($owner)[0]);
-  
-
-      $event ->setBeginAt(new \DateTime('now'));
-      $event ->setLimitInscriptionAt(new \DateTime('now'));
-
-      $state = $stateRepository->findById(1)[0];
-      $event ->setState($state);
-      
-      $event ->setIsDisplay(1);
-      $event ->setIsActive(true);
+    $owner = $this->getUser();
+    $event->setOwner($userRepository->findById($owner)[0]);
 
 
-      $formbuilder->handleRequest($request);
-      
-      if($formbuilder->isSubmitted() && $formbuilder->isValid()){
-        $dateDebutVerification = $event->getBeginAt();
-        $dateLimiteVerification = $event->getLimitInscriptionAt();
-        $durationVerification = $event->getDuration();
-        $nbinscriptionVerifcation = $event->getInscriptionMax();
-        
-        if($durationVerification < 0 ||$nbinscriptionVerifcation < 0||$dateLimiteVerification >= $dateDebutVerification ){
+    $event->setBeginAt(new \DateTime('now'));
+    $event->setLimitInscriptionAt(new \DateTime('now'));
 
-          if($durationVerification < 0) {
-            $this ->addFlash('danger', 'La durée doit être positive');
-          } 
-          if($nbinscriptionVerifcation < 0) {
-              $this ->addFlash('danger', 'Le nombre d\'inscrits doit être positif');
-          }
-          if($dateLimiteVerification >= $dateDebutVerification) {
-            $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
-          }
+    $state = $stateRepository->findById(1)[0];
+    $event->setState($state);
 
-          $eventForm = $formbuilder->createView();
-          return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+    $event->setIsDisplay(1);
+    $event->setIsActive(true);
+
+
+    $formbuilder->handleRequest($request);
+
+    if ($formbuilder->isSubmitted() && $formbuilder->isValid()) {
+      $dateDebutVerification = $event->getBeginAt();
+      $dateLimiteVerification = $event->getLimitInscriptionAt();
+      $durationVerification = $event->getDuration();
+      $nbinscriptionVerifcation = $event->getInscriptionMax();
+
+      if ($durationVerification < 0 || $nbinscriptionVerifcation < 0 || $dateLimiteVerification >= $dateDebutVerification) {
+
+        if ($durationVerification < 0) {
+          $this->addFlash('danger', 'La durée doit être positive');
+        }
+        if ($nbinscriptionVerifcation < 0) {
+          $this->addFlash('danger', 'Le nombre d\'inscrits doit être positif');
+        }
+        if ($dateLimiteVerification >= $dateDebutVerification) {
+          $this->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
+        }
+
+        $eventForm = $formbuilder->createView();
+        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
       }
-        $uploadedFile = $formbuilder['imageFile']->getData();  
-        if($uploadedFile){
-        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/event';  
-            $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
-            $uploadedFile->move(
-                $destination,
-                $newFilename
-            );
+      $uploadedFile = $formbuilder['imageFile']->getData();
+      if ($uploadedFile) {
+        $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/images/event';
+        $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+        $uploadedFile->move(
+          $destination,
+          $newFilename
+        );
         $event->setPhoto($newFilename);
       }
-        $em->persist($event);
-        $em->flush();  
-        $this ->addFlash('success', 'La sortie a bien été ajoutée');
-        return $this->redirectToRoute('main');
-      }
-    
- 
+      $em->persist($event);
+      $em->flush();
+      $this->addFlash('success', 'La sortie a bien été ajoutée');
+      return $this->redirectToRoute('main');
+    }
+
+
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
 
-  #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id'=> '\d+'], methods:['GET'])]
-  public function detail($id, EventRepository $eventRepository):Response {
+  #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id' => '\d+'])]
+  public function detail($id, EventRepository $eventRepository): Response
+  {
 
     $event = $eventRepository->find($id);
-    if(!$event){
+    if (!$event) {
       throw new NotFoundHttpException();
-    }else {
-      return $this->render('main/detailevent.html.twig', compact("id", "event"));
+    } else {
+      return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $id]);
     }
-
-    }
-
-
-  #[Route('/updateEvent/{id}', name: 'event_update', requirements: ['id'=> '\d+'], methods:['GET'])]
-    public function update(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository): Response {
-        
-        $event = $eventRepository ->findOneById($id);
-        $formbuilder = $this->createForm(EventType::class, $event);
-        $formbuilder->handleRequest($request);
-
-        if($formbuilder->isSubmitted() && $formbuilder->isValid()){
-          $dateDebutVerification = $event->getBeginAt();
-          $dateLimiteVerification = $event->getLimitInscriptionAt();
-          $durationVerification = $event->getDuration();
-          $nbinscriptionVerifcation = $event->getInscriptionMax();
-          
-          if($durationVerification < 0 ||$nbinscriptionVerifcation < 0||$dateLimiteVerification >= $dateDebutVerification ){
-  
-            if($durationVerification < 0) {
-              $this ->addFlash('danger', 'La durée doit être positive');
-            } 
-            if($nbinscriptionVerifcation < 0) {
-                $this ->addFlash('danger', 'Le nombre d\'inscrits doit être positif');
-            }
-            if($dateLimiteVerification >= $dateDebutVerification) {
-              $this ->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
-            }
-  
-            $eventForm = $formbuilder->createView();
-            return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
-        }
-          $uploadedFile = $formbuilder['imageFile']->getData();  
-          if($uploadedFile){
-          $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/event';  
-              $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
-              $uploadedFile->move(
-                  $destination,
-                  $newFilename
-              );
-          $event->setPhoto($newFilename);
-        }
-          $em->persist($event);
-          $em->flush();  
-          $this ->addFlash('success', 'La sortie a bien été éditée');
-          return $this->redirectToRoute('event_detail', ['id' =>$id]);
-        }
-      
-   
-      $eventForm = $formbuilder->createView();
-      return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
-    }
-    
-
   }
 
 
+  #[Route('/updateEvent/{id}', name: 'event_update', requirements: ['id' => '\d+'])]
+  public function update(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  {
+
+    $event = $eventRepository->findOneById($id);
+    $formbuilder = $this->createForm(EventType::class, $event);
+    $formbuilder->handleRequest($request);
+
+    if ($formbuilder->isSubmitted() && $formbuilder->isValid()) {
+      $dateDebutVerification = $event->getBeginAt();
+      $dateLimiteVerification = $event->getLimitInscriptionAt();
+      $durationVerification = $event->getDuration();
+      $nbinscriptionVerifcation = $event->getInscriptionMax();
+
+      if ($durationVerification < 0 || $nbinscriptionVerifcation < 0 || $dateLimiteVerification >= $dateDebutVerification) {
+
+        if ($durationVerification < 0) {
+          $this->addFlash('danger', 'La durée doit être positive');
+        }
+        if ($nbinscriptionVerifcation < 0) {
+          $this->addFlash('danger', 'Le nombre d\'inscrits doit être positif');
+        }
+        if ($dateLimiteVerification >= $dateDebutVerification) {
+          $this->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de début');
+        }
+
+        $eventForm = $formbuilder->createView();
+        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+      }
+      $uploadedFile = $formbuilder['imageFile']->getData();
+      if ($uploadedFile) {
+        $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/images/event';
+        $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+        $uploadedFile->move(
+          $destination,
+          $newFilename
+        );
+        $event->setPhoto($newFilename);
+      }
+      $em->persist($event);
+      $em->flush();
+      $this->addFlash('success', 'La sortie a bien été éditée');
+      return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+    }
+
+    $eventForm = $formbuilder->createView();
+    return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+  }
+}
