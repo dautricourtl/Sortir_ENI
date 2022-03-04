@@ -2,21 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\City;
-use App\Entity\Site;
-use App\Entity\User;
+
 use App\Entity\Event;
-use App\Entity\State;
 use App\Form\EventType;
-use App\Entity\Location;
-use App\Form\ProfileType;
-use PhpParser\Builder\Method;
-use App\Repository\CityRepository;
-use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
-use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,17 +18,22 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EventController extends AbstractController
 {
 
-  #[Route('/addParticipant', name: 'add_participant')]
-  public function addParticipant($id, EventRepository $eventRepository): Response
+  #[Route('/addParticipant/{id}', name: 'add_participant', requirements: ['id' => '\d+'])]
+  public function addParticipant($id, EventRepository $eventRepository, EntityManagerInterface $em): Response
   {
-
+    $participant = $this->getUser();
     $event = $eventRepository->find($id);
 
-    return $this->render('main/detailevent.html.twig');
+    $event->addParticipant($participant);
+
+    $em->persist($event);
+    $em->flush();
+
+    return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $id]);
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository, CityRepository $cityRepository): Response
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository): Response
   {
     $event = new Event();
     $formbuilder = $this->createForm(EventType::class, $event);
@@ -54,6 +50,7 @@ class EventController extends AbstractController
 
     $event->setIsDisplay(1);
     $event->setIsActive(true);
+    $event->getState()->setName('Ouverte');
 
     $formbuilder->handleRequest($request);
 
@@ -87,11 +84,18 @@ class EventController extends AbstractController
           $newFilename
         );
         $event->setPhoto($newFilename);
+      } else {
+        $this->addFlash('danger', 'Format de photo jpg, png, 500Ko maximum');
+        $eventForm = $formbuilder->createView();
+        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
       }
       $em->persist($event);
       $em->flush();
-      $this->addFlash('success', 'La sortie a bien été ajoutée');
-      return $this->redirectToRoute('main');
+      $this->addFlash('success', 'La sortie a bien été enregistrée');
+
+      $eventId = $event->getId();
+
+      return $this->redirectToRoute('event_detail', ['event'=> $event, 'id' => $eventId]);
     }
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
@@ -162,14 +166,55 @@ class EventController extends AbstractController
 
 
   #[Route('/cancelEvent/{id}', name: 'event_cancel', requirements: ['id' => '\d+'])]
-  public function cancel(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  public function cancel($id, EntityManagerInterface $em, EventRepository $eventRepository): Response
   {
     $event = $eventRepository->findOneById($id);
-    $event->setIsActive(false);
 
-    $em->persist($event);
-    $em->flush();
-    return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+    $eventDate = $event->getBeginAt();
+
+    $date = new \DateTime('now');
+
+    if ($eventDate <= $date) {
+      $this->addFlash('warning', 'La sortie est en cours et ne peut être annulée');
+      return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+    } else {
+
+      $event->setIsActive(false);
+      $event->getState()->setName("Annulée");
+
+      $em->persist($event);
+      $em->flush();
+      return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+    }
   }
 
+  #[Route('/removeEvent/{id}', name: 'event_remove', requirements: ['id' => '\d+'])]
+  public function remove($id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  {
+    $event = $eventRepository->findOneById($id);
+    $owner = $event->getOwner();
+    $user = $this->getUser();
+    if ($user == $owner) {
+      $em->remove($event);
+      $em->flush();
+      $this->addFlash('success', 'La sortie est supprimée');
+      return $this->redirectToRoute('main');
+    } else {
+      $this->addFlash('danger', "Vous n'avez pas les droits pour supprimer cette sortie");
+      return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+    }
+  }
+
+  // #[Route('/publishEvent/{id}', name: 'event_publish', requirements: ['id' => '\d+'])]
+  // public function publish($id, EventRepository $eventRepository, EntityManagerInterface $em): Response
+  // {
+  //     $event = $eventRepository->find($id);
+  //     $event->getState()->setName("Ouvert");
+  //     $event->setIsDisplay(0);
+  //     $em->persist($event);
+  //     $em->flush();
+  //     $this->addFlash('success', 'La sortie est publiée');
+  //     return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+  //   }
+  
 }
