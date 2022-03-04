@@ -68,8 +68,7 @@
 
     <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
     {% for event in events %}
-        <div class="sortie_item cursor-pointer m-3 col-12 col-md-3 col-xl-2 p-2 rounded">
-     <a class="sortie_item m-3 col-12 col-md-3 col-xl-2 rounded" href="{{ path('event_detail', {id: event.id}) }}" class="text-white col-2 d-flex align-items-center justify-content-center">
+     <a class="cursor-pointer p-3 sortie_item m-3 col-12 col-md-3 col-xl-2 rounded" href="{{ path('event_detail', {id: event.id}) }}" class="text-white col-2 d-flex align-items-center justify-content-center">
             <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
             <div class="p-3 bg-white">
                 <h4 class="text-primary">{{ event.name }}</h4>
