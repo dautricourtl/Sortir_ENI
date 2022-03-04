@@ -13,6 +13,12 @@
         <div class="cityLocation">Ville</div>
         <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteLocation(this)">delete</button>
     </div>
+    <div class="d-flex justify-content-between LocationTemplate template-stripped"  id="templateUsers">
+        <div class="nameUser">Nom</div>
+        <div class="surnameUser">Prenom</div>
+        <div class="pseudoUser">Pseudo</div>
+        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteUser(this)">delete</button>
+    </div>
     <div class="d-flex justify-content-between SiteTemplate template-stripped"  id="templateSite">
         <div class="nameSite">Nom</div>
         <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteSite(this)">delete</button>
@@ -99,7 +105,7 @@
             <h3 class="flex-1">Ajouter un utilisateur</h3>
         </div>
 
-       
+       <input class="form-control" placeholder="Rechercher" id="searchUser" onkeyup="SearchUsers(this.value)"/>
         <div id="listUsers" class="stripped mt-3"></div>
 
 
@@ -110,7 +116,7 @@
         
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un Site</h3>
-            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformSiteActive(this)"></i>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newSiteFormActive(this)"></i>
         </div>
 
         {{ form_start(newformSite, {'attr': {'id': 'newformSite'}}) }}
