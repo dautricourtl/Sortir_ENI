@@ -144,7 +144,7 @@ class EventController extends AbstractController
           $em->persist($event);
           $em->flush();  
           $this ->addFlash('success', 'La sortie a bien été éditée');
-          return $this->redirectToRoute('event_detail');
+          return $this->redirectToRoute('event_detail', ['id' =>$id]);
         }
       
    
