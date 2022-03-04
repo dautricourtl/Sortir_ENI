@@ -55,7 +55,6 @@ class EventController extends AbstractController
     $event->setIsDisplay(1);
     $event->setIsActive(true);
 
-
     $formbuilder->handleRequest($request);
 
     if ($formbuilder->isSubmitted() && $formbuilder->isValid()) {
@@ -94,16 +93,15 @@ class EventController extends AbstractController
       $this->addFlash('success', 'La sortie a bien été ajoutée');
       return $this->redirectToRoute('main');
     }
-
-
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
 
+
+
   #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id' => '\d+'])]
   public function detail($id, EventRepository $eventRepository): Response
   {
-
     $event = $eventRepository->find($id);
     if (!$event) {
       throw new NotFoundHttpException();
@@ -161,4 +159,17 @@ class EventController extends AbstractController
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
+
+
+  #[Route('/cancelEvent/{id}', name: 'event_cancel', requirements: ['id' => '\d+'])]
+  public function cancel(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  {
+    $event = $eventRepository->findOneById($id);
+    $event->setIsActive(false);
+
+    $em->persist($event);
+    $em->flush();
+    return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+  }
+
 }
