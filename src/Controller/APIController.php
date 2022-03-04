@@ -185,7 +185,7 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "Surname"=>$item->getSurname(), "Pseudo"=>$item->getPseudo(), "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
@@ -195,9 +195,9 @@ class APIController extends AbstractController
 
         $toDelete = $UserRepository->findOneById($id);
         if($toDelete->getIsActive() == 0){
-            $toDelete->setIsActive(1);
+            $toDelete->isActive(1);
         }else{
-            $toDelete->setIsActive(0);
+            $toDelete->isActive(0);
         }
         $em->persist($toDelete);
         $em->flush();
@@ -211,7 +211,7 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "Surname"=>$item->getSurname(), "Pseudo"=>$item->getPseudo(), "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
@@ -361,4 +361,48 @@ class APIController extends AbstractController
         return $this->json($data);
     }
     
+
+    #[Route('/uploadFileUser', name: 'uploadFileUser', methods:['POST'])]
+    public function uploadFileUser(Request $request, EntityManagerInterface $em, SiteRepository $siteRepository):Response {
+
+        $content = json_decode($request->getContent());
+
+        $path = $this->getParameter('kernel.project_dir').'/public/uploads/csv/users/user.csv';  
+        $ifp = fopen( $path , 'wb' ); 
+        $data = explode( ',', (string)$content->Base64);
+        fwrite( $ifp, base64_decode( $data[ 1 ] ) );
+        fclose( $ifp );
+
+        $csvFile = file($path);
+        for($i = 1; $i < count($csvFile); $i++)
+        {
+            $user = new User();
+            $user->setSurname(str_getcsv($csvFile[$i])[0]);
+            $user->setName(str_getcsv($csvFile[$i])[1]);
+            $user->setMail(str_getcsv($csvFile[$i])[2]);
+            $user->setPseudo(str_getcsv($csvFile[$i])[3]);
+            $user->setPassword(str_getcsv($csvFile[$i])[3]);
+            $site = $siteRepository->findOneById(str_getcsv($csvFile[$i])[4]);
+            $user->setSite($site);
+            $user->setTel("0606060606");
+            $user->isActive(true);
+            $em->persist($user);
+       
+        }
+        $em->flush();
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(User::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "Surname"=>$item->getSurname(), "Pseudo"=>$item->getPseudo(), "IsActive"=>$item->getIsActive()));
+        }
+
+        return $this->json($data);
+    }
 }
