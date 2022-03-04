@@ -68,14 +68,22 @@
 
     <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
     {% for event in events %}
-     <a class="sortie_item m-3 p-3 col-12 col-md-3 col-xl-2 rounded" href="{{ path('event_detail', {id: event.id}) }}" "text-white col-2 d-flex align-items-center justify-content-center">
-            <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
-            <div class="p-3 bg-white">
-                <h4 class="text-primary">{{ event.name }}</h4>
-                <div>{{ event.description }}</div>
-            </div>
-    </a>
-        {% endfor %}
+        <div class="sortie_item m-3 p-3 col-12 col-md-3 col-xl-2 rounded">
+                <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
+                <div class="p-3 bg-white">
+                    <h4 class="text-primary">{{ event.name }}</h4>
+                    <div>{{ event.description }}</div>
+                </div>
+                <div class="row">
+                    <a class="col-6" href="{{ path('event_detail', {id: event.id}) }}" >
+                        <button class="btn">Détails</button>
+                    </a>
+                    {% if app.user %}
+                    <button class="btn col-6">S'inscrire</button>
+                    {% endif %}
+                </div>
+        </div>
+    {% endfor %}
     </div>
 
 
