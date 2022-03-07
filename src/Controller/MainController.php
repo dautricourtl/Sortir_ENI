@@ -22,9 +22,10 @@ class MainController extends AbstractController
         /** @var User $participant */
         $participant = $this->getUser();
         
-        
-        foreach($events as $event){
-            $event->setisInEvent($participant);
+        if( $participant != null){
+            foreach($events as $event){
+                $event->setisInEvent($participant);
+            }
         }
         // dd($events);
         return $this->render('main/index.html.twig', [
