@@ -3,15 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\City;
-use App\Repository\EventRepository;
 use App\Form\CityType;
 use App\Controller\CityController;
-use App\Controller\UserController;
+use App\Repository\EventRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MainController extends AbstractController
 {
@@ -19,6 +19,13 @@ class MainController extends AbstractController
     public function index(EventRepository $eventrepo): Response
     {
         $events = $eventrepo ->findAll();
+        /** @var User $participant */
+        $participant = $this->getUser();
+        
+        
+        foreach($events as $event){
+            $event->setisInEvent($participant);
+        }
         // dd($events);
         return $this->render('main/index.html.twig', [
             'events' =>$events,

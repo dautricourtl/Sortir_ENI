@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Form\EventType;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
@@ -14,42 +15,42 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventController extends AbstractController
 {
 
   #[Route('/addParticipant/{id}', name: 'add_participant')]
-  public function addParticipant(int $id, EventRepository $eventRepository, UserRepository $userRepository, EntityManagerInterface $em):Response {
+  public function addParticipant(Event $event, UserInterface $participant, EventRepository $eventRepository, UserRepository $userRepository, EntityManagerInterface $em):Response
+  {
 
-    $participant = $this->getUser();
-    $event = $eventRepository->find($id);
+    /** @var User $participant */
+
     $events = $eventRepository->findAll();
-    $participant = $this->getUser();
+    
     $exist = false;
-    foreach($event->getParticipants() as $users){
-      if($users->getId() == $participant->getUserIdentifier()){
-        $exist = true;
-      }
-    }
+    $event->setisInEvent($participant);
+    
+    $exist = $event->isInEvent();
     if($exist){
       $event->removeParticipant($participant);
     }else{
       $event->addParticipant($participant);
     }
-    
 
     $em->persist($event);
     $em->flush();  
 
     return $this->render('main/index.html.twig', [
       'events' =>$events,
+      'isInEvent' => $event->participantExistInEvent($participant),
     ]);
     $event->addParticipant($participant);
 
     $em->persist($event);
     $em->flush();
 
-    return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $id]);
+    return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $event->getId()]);
   }
 
   #[Route('/addEvent', name: 'app_event')]

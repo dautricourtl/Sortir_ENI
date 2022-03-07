@@ -84,14 +84,22 @@
                         <button class="btn">Détails</button>
                     </a>
                     {% if app.user %}
-                    <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
-                        <button class="btn col-6">S'inscrire</button>
-                    </a>
-                    {% if event.isActive == false %}
-                    <button class="btn col-6">{{event.state.name}}</button>
-                    {% else %}
-                    <button class="btn col-6">S'inscrire</button>
-                    {% endif %}
+                        {% if event.isActive == false %}
+                        <button class="btn col-6">{{event.state.name}}</button>
+
+                        {% else %}
+                        <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
+                            <button class="btn col-6">
+                                {% if event.isInEvent %}
+                                   Se désinscrire
+                                {% else %}
+                                    
+                                    S'inscrire
+                                {% endif %}
+                            </button>
+                        </a>
+                        {% endif %}
+
                     {% endif %}
                 </div>
         </div>
