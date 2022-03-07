@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\City;
-use App\Form\CityType;
-use App\Controller\CityController;
+use App\Entity\State;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\EventRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -15,6 +14,35 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MainController extends AbstractController
 {
+    #[Route('/addState', name: 'main_state')]
+    public function addState(EntityManagerInterface $em)
+    {
+        $state = new State();
+        $state->setName('Ouvert');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Fermé');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('En création');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Annulé');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('En cours');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Passé');
+        $em->persist($state);
+        $em->flush();
+
+        $this->addFlash('success', 'Les états ont bien été enregistrés');
+
+        return $this->redirectToRoute('main');
+    }
+
+
     #[Route('/', name: 'main')]
     public function index(EventRepository $eventrepo): Response
     {
