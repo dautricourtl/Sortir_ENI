@@ -6,6 +6,7 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
@@ -31,6 +32,7 @@ class Event
     #[ORM\Column(type: 'integer')]
     private $duration;
 
+    private $isInEvent;
 
     #[ORM\Column(type: 'integer')]
     private $inscriptionMax;
@@ -234,6 +236,7 @@ class Event
         if (!$this->participants->contains($participant)) {
             $this->participants[] = $participant;
             $participant->addEvent($this);
+            $this->isInEvent = true;
         }
 
         return $this;
@@ -243,6 +246,7 @@ class Event
     {
         if ($this->participants->removeElement($participant)) {
             $participant->removeEvent($this);
+            $this->isInEvent = false;
         }
 
         return $this;
@@ -283,5 +287,25 @@ class Event
 
         return $this;
     }
+    public function participantExistInEvent(?User $user): bool
+    {
+        foreach($this->getParticipants() as $participant){
+            if($participant->getId() == $user->getId()){
+                $this->isInEvent = true;
+                return true;
+            }
+        }
+        $this->isInEvent = false;
+        return false;
+    }
+
+    public function isInEvent() : bool{
+        return $this->isInEvent;
+    }
+   public function setisInEvent(User $user) : bool{
+        $this->isInEvent =  $this->participantExistInEvent($user);
+
+        return (bool)$this;
+   }
 
 }
