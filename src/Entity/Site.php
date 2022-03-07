@@ -21,9 +21,6 @@ class Site
     #[ORM\Column(type: 'boolean', options: ["default"=>true])]
     private $isActive = true;
 
-    #[ORM\OneToMany(mappedBy: 'site', targetEntity: Event::class)]
-    private $events;
-
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: User::class)]
     private $participants;
 

@@ -16,7 +16,7 @@
                   
                 </div>
 
-                 <div class="form-outline mb-3">
+                <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Date de début de l'événement</label>
                     {{ form_widget(eventForm.beginAt, {'attr': {'class': 'form-control'}}) }}
               
@@ -86,10 +86,12 @@
                  {{ form_widget(eventForm.imageFile, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
-                <div class="d-flex">
-                  <button type="submit" class="btn btn-primary m-3 btn-lg gradient-custom-4 text-body" value="enregistrer">Enregistrer</button>
+                <div class="form-outline m-3">
+                {{ form_widget(eventForm.save, {'attr': {'class': 'form-control'}}) }}                
                 </div>
-
+                <div class="form-outline m-3">
+                {{ form_widget(eventForm.publish, {'attr': {'class': 'form-control'}}) }}                
+                </div>
 
             
   {{ form_end(eventForm) }}

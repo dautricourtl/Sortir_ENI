@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 
-use App\Entity\Event;
 use App\Entity\User;
+use App\Entity\Event;
 use App\Form\EventType;
+use Symfony\Component\Form\Form;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
@@ -13,12 +14,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventController extends AbstractController
 {
+
 
   #[Route('/addParticipant/{id}', name: 'add_participant')]
   public function addParticipant(Event $event, UserInterface $participant, EventRepository $eventRepository, UserRepository $userRepository, EntityManagerInterface $em):Response
@@ -66,9 +68,6 @@ class EventController extends AbstractController
     $event->setBeginAt(new \DateTime('now'));
     $event->setLimitInscriptionAt(new \DateTime('now'));
 
-    $state = $stateRepository->findById(2)[0];
-    $event->setState($state);
-
     $event->setIsDisplay(1);
     $event->setIsActive(true);
 
@@ -109,16 +108,31 @@ class EventController extends AbstractController
         $eventForm = $formbuilder->createView();
         return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
       }
-      $em->persist($event);
-      $em->flush();
-      $this->addFlash('success', 'La sortie a bien été enregistrée');
 
-      return $this->redirectToRoute('main');
+     if($formbuilder instanceof Form) {
+       if($formbuilder->getClickedButton() && 'save' === $formbuilder->getClickedButton()->getName()){
+        $state = $stateRepository->findById(3)[0];
+        $event->setState($state);
+        $event->setIsDisplay(0);
+        $em->persist($event);
+        $em->flush();
+        $this->addFlash('success', 'La sortie a bien été enregistrée');
+        $eventId = $event->getId();
+        return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $eventId]);
+       } else {
+        $state = $stateRepository->findById(1)[0];
+        $event->setState($state);
+        $event->setIsDisplay(1);
+        $em->persist($event);
+        $em->flush();
+        $this->addFlash('success', 'La sortie a bien été publiée');
+        return $this->redirectToRoute('main');
+       }
+     }
     }
     $eventForm = $formbuilder->createView();
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
-
 
 
   #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id' => '\d+'])]
@@ -134,7 +148,7 @@ class EventController extends AbstractController
 
 
   #[Route('/updateEvent/{id}', name: 'event_update', requirements: ['id' => '\d+'])]
-  public function update(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository): Response
+  public function update(Request $request, $id, EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
   {
 
     $event = $eventRepository->findOneById($id);
@@ -172,10 +186,28 @@ class EventController extends AbstractController
         );
         $event->setPhoto($newFilename);
       }
-      $em->persist($event);
-      $em->flush();
-      $this->addFlash('success', 'La sortie a bien été éditée');
-      return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
+
+      if($formbuilder instanceof Form) {
+        if($formbuilder->getClickedButton() && 'save' === $formbuilder->getClickedButton()->getName()){
+         $state = $stateRepository->findById(3)[0];
+         $event->setState($state);  
+         $event->setIsDisplay(0);    
+         $em->persist($event);
+         $em->flush();
+         $this->addFlash('success', 'La sortie a bien été enregistrée');
+         $eventId = $event->getId();
+         return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $eventId]);
+        } else {
+         $state = $stateRepository->findById(1)[0];
+         $event->setState($state);
+         $event->setIsDisplay(1);
+         $em->persist($event);
+         $em->flush();
+         $this->addFlash('success', 'La sortie a bien été publiée');
+         return $this->redirectToRoute('main');
+        }
+      }
+
     }
 
     $eventForm = $formbuilder->createView();
@@ -198,7 +230,7 @@ class EventController extends AbstractController
     } else {
 
       $event->setIsActive(false);
-      $state = $stateRepository->findById(1)[0];
+      $state = $stateRepository->findById(4)[0];
       $event->setState($state);
 
       $em->persist($event);
@@ -224,6 +256,8 @@ class EventController extends AbstractController
     }
   }
 
+
+
   // #[Route('/publishEvent/{id}', name: 'event_publish', requirements: ['id' => '\d+'])]
   // public function publish($id, EventRepository $eventRepository, EntityManagerInterface $em): Response
   // {
@@ -235,5 +269,8 @@ class EventController extends AbstractController
   //     $this->addFlash('success', 'La sortie est publiée');
   //     return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
   //   }
+ 
   
+
+
 }
