@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Site;
 use App\Entity\User;
+use App\Entity\Question;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -33,6 +34,11 @@ class RegistrationFormType extends AbstractType
                 'class' => Site::class,
                 'choice_label' => 'name',
             ])
+            ->add('question',EntityType::class , [
+                'class' => Question::class,
+                'choice_label' => 'question',
+            ])
+            ->add('reponse', TextType::class)
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
