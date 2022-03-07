@@ -79,7 +79,9 @@
                         <button class="btn">Détails</button>
                     </a>
                     {% if app.user %}
-                    <button class="btn col-6">S'inscrire</button>
+                    <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
+                        <button class="btn col-6">S'inscrire</button>
+                    </a>
                     {% endif %}
                 </div>
         </div>

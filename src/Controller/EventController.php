@@ -26,12 +26,31 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EventController extends AbstractController
 {
 
-  #[Route('/addParticipant', name: 'add_participant')]
-  public function addParticipant($id, EventRepository $eventRepository):Response {
+  #[Route('/addParticipant/{id}', name: 'add_participant')]
+  public function addParticipant(int $id, EventRepository $eventRepository, UserRepository $userRepository, EntityManagerInterface $em):Response {
 
     $event = $eventRepository->find($id);
+    $events = $eventRepository->findAll();
+    $participant = $this->getUser();
+    $exist = false;
+    foreach($event->getParticipants() as $users){
+      if($users->getId() == $participant->getUserIdentifier()){
+        $exist = true;
+      }
+    }
+    if($exist){
+      $event->removeParticipant($participant);
+    }else{
+      $event->addParticipant($participant);
+    }
+    
 
-    return $this->render('main/detailevent.html.twig');
+    $em->persist($event);
+    $em->flush();  
+
+    return $this->render('main/index.html.twig', [
+      'events' =>$events,
+    ]);
 
   }
 
