@@ -57,6 +57,17 @@
                  {{ form_widget(registrationForm.profilePicture, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
+               {# <select name="select" class="form-select" aria-label="Default select example">
+               <option selected>Question secrète</option>
+                <option value="1"><div class="mt-3">Question secrète:  {{ form_widget(registrationForm.Question, {'attr': {'class': 'form-control'}}) }}</div></option>
+                
+                </select>
+
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">Réponse:</label>
+                    {{ form_widget(registrationForm.reponse, {'attr': {'class': 'form-control'}}) }}
+                </div> #}
+
                  <div class="form-outline mb-3">
                 <label class="checkbox" for="form3Example1cg">Agree Terms</label>
                                       {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'CheckboxType'}}) }}
@@ -75,7 +86,6 @@
     </div>
 </div>
 
-<button type="button" class="btn btn-primary" onclick="test();">TestForm</button>
 
 {% endblock %}
 
