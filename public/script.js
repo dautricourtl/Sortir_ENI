@@ -41,6 +41,36 @@ function newCityFormActive(icon){
     }
 }
 
+function newLocationFormActive(icon){
+    newLocationForm.style.display =  newLocationForm.style.display== "block" ? "none":"block";
+    if(newLocationForm.style.display == "block"){
+        icon.classList.add("cityIconRotate");
+    }
+    else{
+        icon.classList.remove("cityIconRotate");
+    }
+}
+
+function newSiteFormActive(icon){
+    newformSite.style.display =  newformSite.style.display== "block" ? "none":"block";
+    if(newformSite.style.display == "block"){
+        icon.classList.add("cityIconRotate");
+    }
+    else{
+        icon.classList.remove("cityIconRotate");
+    }
+}
+
+function newformStateActive(icon){
+    newformState.style.display =  newformState.style.display== "block" ? "none":"block";
+    if(newformState.style.display == "block"){
+        icon.classList.add("cityIconRotate");
+    }
+    else{
+        icon.classList.remove("cityIconRotate");
+    }
+}
+
 function GetCity(){
     
     newCityForm.style.display = "none";
@@ -144,15 +174,7 @@ function DeleteCity(id){
 /////// LOCATION ////////
 
 
-function newLocationFormActive(icon){
-    newLocationForm.style.display =  newLocationForm.style.display== "block" ? "none":"block";
-    if(newLocationForm.style.display == "block"){
-        icon.classList.add("LocationIconRotate");
-    }
-    else{
-        icon.classList.remove("LocationIconRotate");
-    }
-}
+
 
 function GetLocation(){
     newLocationForm.style.display = "none";
@@ -274,14 +296,14 @@ function GetUsers(){
         responseType: 'stream'
       })
         .then(function (response) {
-            console.log()
             websiteData.User=response.data;
             document.getElementById("listUsers").innerHTML = "";
             let template = document.getElementById("templateUsers");
             for(let i =0; i<websiteData.User.length; i++){
                 var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameUsers")[0].innerHTML = websiteData.User[i].Name;
-                clone.getElementsByClassName("cityUsers")[0].innerHTML = websiteData.User[i].Ville;
+                clone.getElementsByClassName("nameUser")[0].innerHTML = websiteData.User[i].Name;
+                clone.getElementsByClassName("surnameUser")[0].innerHTML = websiteData.User[i].Surname;
+                clone.getElementsByClassName("pseudoUser")[0].innerHTML = websiteData.User[i].Pseudo;
                 let button = clone.getElementsByClassName("btn")[0];
                 button.setAttribute("js-id",websiteData.User[i].Id );
                 button.innerHTML = websiteData.User[i].IsActive ? "desactiver":"reactiver";
@@ -297,6 +319,41 @@ function GetUsers(){
                 listUsers.appendChild(clone);
             }
         });
+}
+
+function DeleteUser(id){
+    
+    let idToDelete = id.getAttribute("js-id");
+    axios({
+        method: 'get',
+        url: '/api/deleteUser/'+idToDelete,
+        responseType: 'stream'
+      })
+      .then(function (response) {
+          
+            websiteData.User=response.data;
+            document.getElementById("listUsers").innerHTML = "";
+            let template = document.getElementById("templateUsers");
+            for(let i =0; i<websiteData.User.length; i++){
+                var clone = template.cloneNode(true);
+                clone.getElementsByClassName("nameUser")[0].innerHTML = websiteData.User[i].Name;
+                clone.getElementsByClassName("surnameUser")[0].innerHTML = websiteData.User[i].Surname;
+                clone.getElementsByClassName("pseudoUser")[0].innerHTML = websiteData.User[i].Pseudo;
+                let button = clone.getElementsByClassName("btn")[0];
+                button.setAttribute("js-id",websiteData.User[i].Id );
+                button.innerHTML = websiteData.User[i].IsActive ? "desactiver":"reactiver";
+                if(websiteData.User[i].IsActive ){
+                    button.classList.add("btn-danger");
+                    button.classList.remove("btn-success");
+                }else{
+                    button.classList.remove("btn-danger");
+                    button.classList.add("btn-success");
+                }
+
+                
+                listUsers.appendChild(clone);
+        }
+    });
 }
 
 ////// USERS ///////
@@ -489,7 +546,38 @@ function DeleteState(id){
 }
 
 
-
+function SearchUsers(input){
+    let template = document.getElementById("templateUsers");
+    let listUser=document.getElementById("listUsers");
+    let data = websiteData.User;
+    if(input != ""){
+        let selection = websiteData.User.filter(c=> c.Pseudo.includes(input) || c.Name.includes(input) || c.Surname.includes(input) );
+        document.getElementById("listUsers").innerHTML = ""; 
+        data = selection;
+        
+    }else{
+        document.getElementById("listUsers").innerHTML = ""; 
+        data = websiteData.User;
+    }
+    for(let i =0; i<data.length; i++){
+        var clone = template.cloneNode(true);
+        clone.getElementsByClassName("nameUser")[0].innerHTML = data[i].Name;
+        clone.getElementsByClassName("surnameUser")[0].innerHTML = data[i].Surname;
+        clone.getElementsByClassName("pseudoUser")[0].innerHTML = data[i].Pseudo;
+        let button = clone.getElementsByClassName("btn")[0];
+        button.setAttribute("js-id",data[i].Id );
+        button.innerHTML = data[i].IsActive ? "desactiver":"reactiver";
+        if(data[i].IsActive ){
+            button.classList.add("btn-danger");
+            button.classList.remove("btn-success");
+        }else{
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-success");
+        }
+        listUser.appendChild(clone);
+    }
+    
+}
 
 var templates = 
     [
@@ -501,7 +589,7 @@ var templates =
         {Id : 5, Name:"State"},
     ];
 
-SwitchTemplate(1);
+SwitchTemplate(2);
 
 function SwitchTemplate(templateId)
 {

@@ -85,16 +85,17 @@
                 <label class="form-label" for="form3Example1cg">Ajout d'une photo</label>
                  {{ form_widget(eventForm.imageFile, {'attr': {'class': 'form-control'}}) }}
                 </div>
-    
 
-                <div class="d-flex justify-content-center">
-                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Enregistrer</button>
+                <div class="d-flex">
+                  <button type="submit" class="btn btn-primary m-3 btn-lg gradient-custom-4 text-body" value="enregistrer">Enregistrer</button>
                 </div>
+
 
             
   {{ form_end(eventForm) }}
-    </div>
+
 </div>
+
 
 
 {% endblock %}
