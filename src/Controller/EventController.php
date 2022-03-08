@@ -47,8 +47,9 @@ class EventController extends AbstractController
   }
 
   #[Route('/addEvent', name: 'app_event')]
-  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository, UserRepository $userRepository): Response
+  public function addEvent(Request $request, EntityManagerInterface $em, StateRepository $stateRepository,UserInterface $participant, UserRepository $userRepository): Response
   {
+      /** @var User $participant */
     $event = new Event();
     $formbuilder = $this->createForm(EventType::class, $event);
 
@@ -62,6 +63,7 @@ class EventController extends AbstractController
     $event->setIsDisplay(1);
     $event->setIsActive(true);
 
+    $event->addParticipant($participant);
     $formbuilder->handleRequest($request);
 
     if ($formbuilder->isSubmitted() && $formbuilder->isValid()) {
@@ -127,12 +129,18 @@ class EventController extends AbstractController
 
 
   #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id' => '\d+'])]
-  public function detail($id, EventRepository $eventRepository): Response
+  public function detail(UserInterface $participant, $id, EventRepository $eventRepository): Response
   {
+
+    /** @var User $participant */
+
     $event = $eventRepository->find($id);
     if (!$event) {
       throw new NotFoundHttpException();
     } else {
+
+      $event->setisInEvent($participant);      
+
       return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $id]);
     }
   }

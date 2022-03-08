@@ -1,12 +1,20 @@
 {% extends 'base.html.twig' %}
 {% block title %}
     Sortie
+                        
+                    
+                
+            
         
     
 {% endblock %}
 {% block body %}
     <h1>
         Sortie
+                                                
+                                            
+                                    
+                            
                     
             
     </h1>
@@ -17,17 +25,20 @@
             </div>
             <div class="mt-3">
                 {% if event.isActive %}
-                    {% if event.owner != app.user and event.state.name !="Activité en cours" %}                      
+                    {% if event.isInEvent %}
+                        <input
+                    type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path('add_participant', {id: event.id}) }}'" value="Se désinscrire" />
                         {% else %}
-                        <input type="button" class="mt-3 btn btn-dark" onclick="location.href='{{ path ('event_cancel', {'id':event.id}) }}'" value="Annuler" />
-                        <input type="button" class="mt-3 btn btn-dark" onclick="location.href='{{ path ('add_participant', {'id':event.id}) }}'" value="S'inscrire" />
-                        <input type="button" class="mt-3 btn btn-dark" onclick="#" value="Se désinscrire" />
-                        <input type="button" class="mt-3 btn btn-dark" onclick="location.href='{{ path ('event_update', {'id':event.id}) }}'" value="Modifier" />
-                        <input type="button" class="mt-3 btn btn-dark" onclick="location.href='{{ path ('event_remove', {'id':event.id})}}'" value="Supprimer" />
+                        <input type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path('add_participant', {id: event.id}) }}'" value="S'inscrire" />
+                    {% endif %}
+                    {% if event.owner == app.user %}
+                        <input type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path ('event_cancel', {'id':event.id}) }}'" value="Annuler" />
+                        <input type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path ('event_update', {'id':event.id}) }}'" value="Modifier" />
+                        <input type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path ('event_remove', {'id':event.id}) }}'" value="Supprimer" />
                     {% endif %}
                 {% else %}
                     <h5 class="text-danger">
-                        {{event.state.name}}
+                        {{ event.state.name }}
                     </h5>
                 {% endif %}
             </div>
@@ -38,49 +49,81 @@
             </div>
             <div class="mt-3">
                 Le 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.beginAt | date('d-m-Y à H:i') }}
             </div>
             <div class="mt-3">
                 Date limite d'inscritpion : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.limitInscriptionAt | date('d-m-Y') }}
             </div>
             <div class="mt-3">
                 Nombre de places : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.inscriptionMax }}
             </div>
             <div class="mt-3">
                 Durée : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.duration }}
                 minutes
-                                            
-                            
+                                                                                                                    
+                                                                                                    
+                                                                                    
+                                                                    
+                                                    
+                                
             </div>
             <div class="mt-3">
                 Description et infos : 
-                                            
-                            
+                                                                                                                    
+                                                                                                    
+                                                                                    
+                                                                    
+                                                    
+                                
             </div>
             <div class="mt-3">
                 {{ event.description }}
             </div>
             <div class="mt-3">
                 Organisation : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.owner.site.name }}
             </div>
             <div class="mt-3 text-primary font-weight-bold text-uppercase">
                 Lieu :
-                                            
-                            
+                                                                                                                    
+                                                                                                    
+                                                                                    
+                                                                    
+                                                    
+                                
             </div>
             <div class="mt-3">
                 {{ event.location.name }}
@@ -94,29 +137,56 @@
             </div>
             <div class="mt-3">
                 Latitude : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.location.latitude }}
             </div>
             <div class="mt-3">
                 Longitude : 
-                                                
-                                
+                                                                                                                        
+                                                                                                        
+                                                                                        
+                                                                        
+                                                        
+                                    
                 {{ event.location.latitude }}
             </div>
             {% if event.participants %}
                 <div class="mt-3">
                     <p class="text-primary font-weight-bold text-uppercase">
                         Liste des participants 
+                                                                                                                                
+                                                                                                        
+                                                                                
+                                                    
                         {{ event.participants | length }}
                         /
+                                                                                                                                
+                                                                                                        
+                                                                                
+                                                    
                         {{ event.inscriptionMax }}
                     </p>
                     <ul class="list-group">
                         {% for participant in event.participants %}
-                        <a href={{ path('profile', {'id':participant.id})}}> <li class="list-group-item">
-                        Pseudo : {{ participant.pseudo }} - {{ participant.name }}
-                            </li></a>
+                            <a href={{ path('profile', {'id':participant.id} )  }}>
+                                <li class="list-group-item">
+                                    Pseudo : 
+                                                                                                                                                        
+                                                                                                                    
+                                                                            
+                                    {{ participant.pseudo }}
+                                    - 
+                                                                                                                                                        
+                                                                                                                    
+                                                                            
+                                    {{ participant.name }}
+                                </li>
+                            </a>
                         {% endfor %}
                     {% endif %}
                 </div>
