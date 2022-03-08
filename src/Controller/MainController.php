@@ -102,37 +102,53 @@ class MainController extends AbstractController
   public function gestionDate($id, EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository) {
 
 
-    $date = new \DateTime('now');
-
+    $dateDuJour = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
+    
     $event = $eventRepository->findOneById($id);
-    $dateEvent = $event->getBeginAt();
+    $dateDebutEvent = $event->getBeginAt();
     $duree = $event->getDuration();
+
     $dateLimiteInscription = $event->getLimitInscriptionAt();
 
-    
+    $dateArchive = $event->getBeginAt()->modify('+ 1 month');
+    $datePast = $event->getBeginAt()->modify('+'.$duree.' minutes');
 
-    $dateArchive = $date->modify('+ 1 month');
-    $datePast = $date->modify('+'.$duree.' minutes');
+    var_dump($datePast);
+
     $eventState = $event->getState()->getName();
+
 
     if($eventState != 'Annulé'){
 
-        if($date >= $dateLimiteInscription && $date < $dateEvent ) {
+        // $state = $stateRepository->findById(1)[0];
+        // $event->setIsDisplay(1);
+        // $event->setState($state);
+        // $em->persist($event);
+        // $em->flush();  
+
+
+        if($dateDuJour > $dateLimiteInscription && $dateDuJour < $dateDebutEvent) {
             //fermé
           $state = $stateRepository->findById(2)[0];
           $event->setState($state);
+          var_dump('je passe dans fermé');
         } 
-        if ($date >= $dateEvent && $date < $datePast) {
+
+        if ($dateDuJour > $dateDebutEvent) {
             //En cours
           $state = $stateRepository->findById(5)[0];
           $event->setState($state);
+          var_dump('je passe dans en cours');
         } 
-        if ($date > $datePast && $date < $dateArchive) {
+
+        if ($dateDuJour > $datePast) {
             //passé
           $state = $stateRepository->findById(6)[0];
           $event->setState($state);
+          var_dump('je passe dans passé');
         } 
-        if ($date >= $dateArchive ) {
+
+        if ($dateDuJour > $dateArchive ) {
            //archivé
           $event->setIsDisplay(0);
             }
@@ -142,6 +158,7 @@ class MainController extends AbstractController
         }
 
     }
+}
 
     
-}
+

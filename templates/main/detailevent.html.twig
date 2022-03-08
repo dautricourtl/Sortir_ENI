@@ -12,7 +12,7 @@
                 <img class="img-fluid" src="{{ asset('/uploads/images/event/') }}{{ event.photo }}" alt="photo evenement" />
             </div>
             <div class="mt-3">
-                {% if event.isActive %}
+                {% if event.isActive and (date( event.limitInscriptionAt ) > date()) %}
                     {% if event.isInEvent %}
                         <input type="button" class="mt-3 btn btn-primary" onclick="location.href='{{ path('add_participant', {id: event.id}) }}'" value="Se désinscrire" />
                         {% else %}
@@ -42,7 +42,7 @@
             </div>
             <div class="mt-3">
                 Date limite d'inscritpion : 
-                {{ event.limitInscriptionAt | date('d-m-Y') }}
+                {{ event.limitInscriptionAt | date('d-m-Y à H:i') }}
             </div>
             <div class="mt-3">
                 Nombre de places : 

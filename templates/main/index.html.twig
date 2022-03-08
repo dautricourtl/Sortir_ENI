@@ -84,10 +84,14 @@
                         <button class="btn">Détails</button>
                     </a>
                     {% if app.user %}
-                    
                         {% if event.isActive == false %}
                         <button class="btn col-6">{{event.state.name}}</button>
                             {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
+                            {% if app.user.id == event.owner.id %}
+                    <a  class="col-6" href="{{ path ('event_update', {'id':event.id}) }}">
+                <button class="btn">Modifier</button>
+                </a>
+                            {% else %}
                             <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
                                 <button class="btn col-6">
                                     {% if event.isInEvent %}
@@ -99,7 +103,7 @@
                             </a>
                             {% endif %}
                         {% endif %}
-
+                    {% endif %}
                 </div>
         </div>
     {% endif %}
