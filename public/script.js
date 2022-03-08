@@ -22,529 +22,106 @@ let currentTemplateName = "";
 var websiteData = {
     City:[],
     Location:[],
-    User:[],
+    Users:[],
     Site:[],
     Event:[],
     State:[],
 }
 
-////// CITY /////////
 
-
-function newCityFormActive(icon){
-    newCityForm.style.display =  newCityForm.style.display== "block" ? "none":"block";
-    if(newCityForm.style.display == "block"){
-        icon.classList.add("cityIconRotate");
-    }
-    else{
-        icon.classList.remove("cityIconRotate");
-    }
-}
-
-function newLocationFormActive(icon){
-    newLocationForm.style.display =  newLocationForm.style.display== "block" ? "none":"block";
-    if(newLocationForm.style.display == "block"){
-        icon.classList.add("cityIconRotate");
-    }
-    else{
-        icon.classList.remove("cityIconRotate");
-    }
-}
-
-function newSiteFormActive(icon){
-    newformSite.style.display =  newformSite.style.display== "block" ? "none":"block";
-    if(newformSite.style.display == "block"){
-        icon.classList.add("cityIconRotate");
-    }
-    else{
-        icon.classList.remove("cityIconRotate");
-    }
-}
-
-function newformStateActive(icon){
-    newformState.style.display =  newformState.style.display== "block" ? "none":"block";
-    if(newformState.style.display == "block"){
-        icon.classList.add("cityIconRotate");
-    }
-    else{
-        icon.classList.remove("cityIconRotate");
-    }
-}
-
-function GetCity(){
+function AddCustom()
+{
     
-    newCityForm.style.display = "none";
-    axios({
-        method: 'get',
-        url: '/api/getCity/',
-        responseType: 'stream'
-      })
-        .then(function (response) {
-            websiteData.City=response.data;
-            console.log(websiteData.City);
-            let template = document.getElementById("templateCity");
-            document.getElementById("listCity").innerHTML = "";
-            for(let i =0; i<websiteData.City.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameCity")[0].innerHTML = websiteData.City[i].Name;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.City[i].Id );
-                button.innerHTML = websiteData.City[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.City[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-                listCity.appendChild(clone);
-            }
-        });
-}
-
-function AddCity() {
-    let newCityForm = document.getElementById('newCityForm');
-    
-    formData = new FormData(newCityForm);
-    let newCity = {
-        Name:formData.get("city[name]"), 
-        ZipCode:formData.get("city[zipCode]")
-    }
-    axios({
-        method: 'post',
-        url: '/api/newCity',
-        responseType: 'stream',
-        data: newCity
-      })
-      .then(function (response) {
-        websiteData.City=response.data;
-        let template = document.getElementById("templateCity");
-        document.getElementById("listCity").innerHTML = ""; 
-        for(let i =0; i<websiteData.City.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameCity")[0].innerHTML = websiteData.City[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.City[i].Id );
-            button.innerHTML = websiteData.City[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.City[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
-            }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
-            }
-            listCity.appendChild(clone);
-        }
-    });
-}
-
-
-function DeleteCity(id){
-    let idToDelete = id.getAttribute("js-id");
-    axios({
-        method: 'get',
-        url: '/api/deleteCity/'+idToDelete,
-        responseType: 'stream'
-      })
-      .then(function (response) {
-        websiteData.City=response.data;
-        let template = document.getElementById("templateCity");
-        document.getElementById("listCity").innerHTML = ""; 
-        for(let i =0; i<websiteData.City.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameCity")[0].innerHTML = websiteData.City[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.City[i].Id );
-            button.innerHTML = websiteData.City[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.City[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
-            }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
-            }
-            listCity.appendChild(clone);
-        }
-    });
-}
-
-
-/////// CITY ////////
-
-/////// LOCATION ////////
-
-
-
-
-function GetLocation(){
-    newLocationForm.style.display = "none";
-    axios({
-        method: 'get',
-        url: '/api/getLocation/',
-        responseType: 'stream'
-      })
-        .then(function (response) {
-            websiteData.Location=response.data;
-            document.getElementById("listLocation").innerHTML = "";
-            let template = document.getElementById("templateLocation");
-            for(let i =0; i<websiteData.Location.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameLocation")[0].innerHTML = websiteData.Location[i].Name;
-                clone.getElementsByClassName("cityLocation")[0].innerHTML = websiteData.Location[i].Ville;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.Location[i].Id );
-                button.innerHTML = websiteData.Location[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.Location[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-
-                
-                listLocation.appendChild(clone);
-            }
-        });
-}
-
-function AddLocation() {
-    let newLocationForm = document.getElementById('newLocationForm');
-    
-    formData = new FormData(newLocationForm);
-    let newLocation = {
-        Name:formData.get("location[name]"), 
-        Adress:formData.get("location[adress]"),
-        Latitude:formData.get("location[latitude]"),
-        Longitude:formData.get("location[longitude]"),
-        CityId:formData.get("location[city]"),
-    }
-    axios({
-        method: 'post',
-        url: '/api/newLocation',
-        responseType: 'stream',
-        data: newLocation
-      })
-      .then(function (response) {
-        websiteData.Location=response.data;
-        let template = document.getElementById("templateLocation");
-        document.getElementById("listLocation").innerHTML = ""; 
-        for(let i =0; i<websiteData.Location.length; i++){
-            var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameLocation")[0].innerHTML = websiteData.Location[i].Name;
-                clone.getElementsByClassName("cityLocation")[0].innerHTML = websiteData.Location[i].Ville;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.Location[i].Id );
-                button.innerHTML = websiteData.Location[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.Location[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-
-                
-                listLocation.appendChild(clone);
-        }
-    });
-}
-
-
-function DeleteLocation(id){
-    let idToDelete = id.getAttribute("js-id");
-    axios({
-        method: 'get',
-        url: '/api/deleteLocation/'+idToDelete,
-        responseType: 'stream'
-      })
-      .then(function (response) {
-        websiteData.Location=response.data;
-        let template = document.getElementById("templateLocation");
-        document.getElementById("listLocation").innerHTML = ""; 
-        for(let i =0; i<websiteData.Location.length; i++){
-            var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameLocation")[0].innerHTML = websiteData.Location[i].Name;
-                clone.getElementsByClassName("cityLocation")[0].innerHTML = websiteData.Location[i].Ville;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.Location[i].Id );
-                button.innerHTML = websiteData.Location[i].IsActive ? "desactiver":"reactiver";
-                button.setAttribute
-                if(websiteData.Location[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-
-                
-                listLocation.appendChild(clone);
-        }
-    });
-}
-
-
-/////// LOCATION ////////
-
-/////// USERS ////////
-
-function GetUsers(){
-    axios({
-        method: 'get',
-        url: '/api/getUsers/',
-        responseType: 'stream'
-      })
-        .then(function (response) {
-            websiteData.User=response.data;
-            document.getElementById("listUsers").innerHTML = "";
-            let template = document.getElementById("templateUsers");
-            for(let i =0; i<websiteData.User.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameUser")[0].innerHTML = websiteData.User[i].Name;
-                clone.getElementsByClassName("surnameUser")[0].innerHTML = websiteData.User[i].Surname;
-                clone.getElementsByClassName("pseudoUser")[0].innerHTML = websiteData.User[i].Pseudo;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.User[i].Id );
-                button.innerHTML = websiteData.User[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.User[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-
-                
-                listUsers.appendChild(clone);
-            }
-        });
-}
-
-function DeleteUser(id){
-    
-    let idToDelete = id.getAttribute("js-id");
-    axios({
-        method: 'get',
-        url: '/api/deleteUser/'+idToDelete,
-        responseType: 'stream'
-      })
-      .then(function (response) {
-          
-            websiteData.User=response.data;
-            document.getElementById("listUsers").innerHTML = "";
-            let template = document.getElementById("templateUsers");
-            for(let i =0; i<websiteData.User.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameUser")[0].innerHTML = websiteData.User[i].Name;
-                clone.getElementsByClassName("surnameUser")[0].innerHTML = websiteData.User[i].Surname;
-                clone.getElementsByClassName("pseudoUser")[0].innerHTML = websiteData.User[i].Pseudo;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.User[i].Id );
-                button.innerHTML = websiteData.User[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.User[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-
-                
-                listUsers.appendChild(clone);
-        }
-    });
-}
-
-////// USERS ///////
-
-/////// SITE ///////
-
-function GetSite(){
-    
-    axios({
-        method: 'get',
-        url: '/api/getSite/',
-        responseType: 'stream'
-      })
-        .then(function (response) {
-            websiteData.Site=response.data;
-            
-            let template = document.getElementById("templateSite");
-            document.getElementById("listSite").innerHTML = "";
-            for(let i =0; i<websiteData.Site.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameSite")[0].innerHTML = websiteData.Site[i].Name;
-                let button = clone.getElementsByClassName("btn")[0];
-                button.setAttribute("js-id",websiteData.Site[i].Id );
-                button.innerHTML = websiteData.Site[i].IsActive ? "desactiver":"reactiver";
-                if(websiteData.Site[i].IsActive ){
-                    button.classList.add("btn-danger");
-                    button.classList.remove("btn-success");
-                }else{
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-success");
-                }
-                listSite.appendChild(clone);
-            }
-        });
-}
-
-function AddSite() {
-    let newSiteForm = document.getElementById('newformSite');
-    
-    formData = new FormData(newSiteForm);
-    let newSite = {
-        Name:formData.get("site[name]")
-    }
-    axios({
-        method: 'post',
-        url: '/api/newSite',
-        responseType: 'stream',
-        data: newSite
-      })
-      .then(function (response) {
-        websiteData.Site=response.data;
-        let template = document.getElementById("templateSite");
-        document.getElementById("listSite").innerHTML = ""; 
-        for(let i =0; i<websiteData.Site.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameSite")[0].innerHTML = websiteData.Site[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.Site[i].Id );
-            button.innerHTML = websiteData.Site[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.Site[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
-            }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
-            }
-            listSite.appendChild(clone);
-        }
-    });
-}
-
-
-function DeleteSite(id){
-    let idToDelete = id.getAttribute("js-id");
-    axios({
-        method: 'get',
-        url: '/api/deleteSite/'+idToDelete,
-        responseType: 'stream'
-      })
-      .then(function (response) {
-        websiteData.Site=response.data;
-        let template = document.getElementById("templateSite");
-        document.getElementById("listSite").innerHTML = ""; 
-        for(let i =0; i<websiteData.Site.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameSite")[0].innerHTML = websiteData.Site[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.Site[i].Id );
-            button.innerHTML = websiteData.Site[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.Site[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
-            }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
-            }
-            listSite.appendChild(clone);
-        }
-    });
-}
-
-//////SITE/////
-/////STATE/////
-
-function GetState(){
-    
-    axios({
-        method: 'get',
-        url: '/api/getState/',
-        responseType: 'stream'
-      })
-        .then(function (response) {
-            console.log(response.data);
-            websiteData.State=response.data;
-            
-            let template = document.getElementById("templateState");
-            document.getElementById("listState").innerHTML = "";
-            for(let i =0; i<websiteData.State.length; i++){
-                var clone = template.cloneNode(true);
-                clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
-
-                listState.appendChild(clone);
-            }
-        });
-}
-
-function AddState() {
-    let newStateForm = document.getElementById('newformState');
-    
-    formData = new FormData(newStateForm);
     let newState = {
-        Name:formData.get("state[name]")
+        Name:document.getElementById("NameInput").value,
+        Latitude:document.getElementById("LatitudeInput").value,
+        Longitude:document.getElementById("LongitudeInput").value,
+        Adress:document.getElementById("AdressInput").value,
+        CityId:document.getElementById("CitySelect").value
     }
-    axios({
-        method: 'post',
-        url: '/api/newState',
-        responseType: 'stream',
-        data: newState
-      })
-      .then(function (response) {
-        websiteData.State=response.data;
-        let template = document.getElementById("templateState");
-        document.getElementById("listState").innerHTML = ""; 
-        for(let i =0; i<websiteData.State.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.State[i].Id );
-            button.innerHTML = websiteData.State[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.State[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
+    let mandatoryFields = {
+        City:["Name"],
+        Location:["Name","Latitude","Longitude","Adress","CityId"],
+        Site:["Name"],
+        State:["Name"]
+    };
+    for(let i =0; i<Object.entries(newState).length;i++)
+    {
+        if(mandatoryFields[currentTemplateName].includes(Object.entries(newState)[i][0])){
+            if(newState[Object.entries(newState)[i][0]] != ""){
+                axios({
+                        method: 'post',
+                        url: '/api/new'+currentTemplateName,
+                        responseType: 'stream',
+                        data:JSON.stringify(newState)
+                      })
+                        .then(function (response) {
+                            RefreshView(response);
+                            document.getElementById("NameInput").value ="";
+                            document.getElementById("LatitudeInput").value ="";
+                            document.getElementById("AdressInput").value = "";
+                            document.getElementById("LongitudeInput").value ="";
+                        });
             }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
+                console.log(Object.entries(newState)[i][0] + " est manquant");
             }
-            listState.appendChild(clone);
         }
-    });
+    }
 }
 
+function GetCustom(urlForce){
+    let getUrl = urlForce == null || urlForce == undefined ?  currentTemplateName : urlForce;
+    axios({
+        method: 'get',
+        url: '/api/get'+getUrl+'/',
+        responseType: 'stream'
+      })
+        .then(function (response) {
+            RefreshView(response, urlForce);
+        });
+}
 
-function DeleteState(id){
+function DeleteCustom(id){
     let idToDelete = id.getAttribute("js-id");
     axios({
         method: 'get',
-        url: '/api/deleteState/'+idToDelete,
+        url: '/api/delete'+currentTemplateName+'/'+idToDelete,
         responseType: 'stream'
       })
-      .then(function (response) {
-        websiteData.State=response.data;
-        let template = document.getElementById("templateState");
-        document.getElementById("listState").innerHTML = ""; 
-        for(let i =0; i<websiteData.State.length; i++){
-            var clone = template.cloneNode(true);
-            clone.getElementsByClassName("nameState")[0].innerHTML = websiteData.State[i].Name;
-            let button = clone.getElementsByClassName("btn")[0];
-            button.setAttribute("js-id",websiteData.State[i].Id );
-            button.innerHTML = websiteData.State[i].IsActive ? "desactiver":"reactiver";
-            if(websiteData.State[i].IsActive ){
-                button.classList.add("btn-danger");
-                button.classList.remove("btn-success");
-            }else{
-                button.classList.remove("btn-danger");
-                button.classList.add("btn-success");
-            }
-            listState.appendChild(clone);
-        }
-    });
+        .then(function (response) {
+            RefreshView(response, "");
+        });
 }
 
+function RefreshView(response, forcedUrl){
+    currentTemplateName = forcedUrl == null || forcedUrl == undefined || forcedUrl == "" ? currentTemplateName : forcedUrl;
+    let properties = ["Name","IsActive","Pseudo","Surname","Email"]
+    window["websiteData"][currentTemplateName]=response.data;
+    let template = document.getElementById("templateItem");
+    document.getElementById("list"+currentTemplateName).innerHTML = "";
+    for(let i =0; i<window["websiteData"][currentTemplateName].length; i++){
+        var clone = template.cloneNode(true);
+        let propertiesFilter = Object.entries(response.data[i]);
+        var propertiesFilterPair = propertiesFilter.filter(c=> properties.includes(c[0])).filter(c=> c[0]!= "IsActive");
+        for(let j = 0; j<propertiesFilterPair.length; j++){
+            let td = document.createElement("div");
+            td.innerHTML = propertiesFilterPair[j][1];
+            clone.prepend(td);
+        }
+        let button = clone.getElementsByClassName("btn")[0];
+        button.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
+        button.innerHTML = window["websiteData"][currentTemplateName][i]["IsActive"] ? "desactiver":"reactiver";
+        if(window["websiteData"][currentTemplateName][i]["IsActive"] ){
+            button.classList.add("btn-danger");
+            button.classList.remove("btn-success");
+        }else{
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-success");
+        }
+        document.getElementById("list"+currentTemplateName).appendChild(clone);
+    }
+    document.getElementById("CitySelect").innerHTML = websiteData.City.map(c=> "<option value="+c.Id+">"+c.Name+"</option>")
+}
 
 function SearchUsers(input){
     let template = document.getElementById("templateUsers");
@@ -583,7 +160,7 @@ var templates =
     [
         {Id : 0, Name:"City"},
         {Id : 1, Name:"Location"},
-        {Id : 2, Name:"User"},
+        {Id : 2, Name:"Users"},
         {Id : 3, Name:"Site"},
         {Id : 4, Name:"Event"},
         {Id : 5, Name:"State"},
@@ -593,31 +170,21 @@ SwitchTemplate(2);
 
 function SwitchTemplate(templateId)
 {
-    switch(templateId){
-        case 0:
-            GetCity();
-        break;
-        case 1:
-            GetLocation();
-        break;
-        case 2:
-            GetUsers();
-        break;
-        case 3:
-            GetSite();
-        break;
-        case 4:
-            
-        break;
-        case 5:
-            GetState();
-        break;
+    if(templateId == 1){
+        GetCustom("City");
     }
+    currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
+    GetCustom(currentTemplateName);
     let containers = document.getElementsByClassName("categoryContainer");
     for(let i =0; i<containers.length; i++){
         containers[i].classList.remove("d-block");
         containers[i].classList.add("d-none");
     }
-    currentTemplateName = templates.filter(c=>c.Id == templateId)[0];
-    document.getElementById(`${currentTemplateName.Name}Container`).classList.add("d-block");
+   
+    currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
+    document.getElementById(`${currentTemplateName}Container`).classList.add("d-block");
+
+    
+    
+
 }

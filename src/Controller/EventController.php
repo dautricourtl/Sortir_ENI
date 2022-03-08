@@ -45,7 +45,11 @@ class EventController extends AbstractController
     $em->persist($event);
     $em->flush();  
 
-    return $this->redirectToRoute('main');
+    return $this->render('main/index.html.twig', [
+      'events' =>$events,
+      'isInEvent' => $event->participantExistInEvent($participant),
+    ]);
+    
   }
 
   #[Route('/addEvent', name: 'app_event')]
