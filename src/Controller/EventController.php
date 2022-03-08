@@ -37,7 +37,9 @@ class EventController extends AbstractController
     if($exist){
       $event->removeParticipant($participant);
     }else{
-      $event->addParticipant($participant);
+      if( $event->getLimitInscriptionAt()  > date("Y-m-d H:i:s")){
+        $event->addParticipant($participant);
+      }
     }
 
     $em->persist($event);
