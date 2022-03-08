@@ -17,13 +17,14 @@ class UserController extends AbstractController
 {
     
     #[Route('/profile/{id}', name: 'profile', requirements: ['id'=> '\d+'])]
-    public function profile(Request $request,$id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
+    public function profile($id, UserRepository $userrepo): Response
     {
         $user = $userrepo ->findOneById($id);
        
 
-        return $this->render('main/profile.html.twig', compact("id", "user"));
+        return $this->render('main/profile.html.twig', ['user' =>$user, 'id' => $id]);
     }
+
    #[Route('/edit/{id}', name: 'edit' , requirements: ['id'=> '\d+'])]
     public function edit(Request $request, $id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
     {

@@ -14,38 +14,39 @@
         <div class="gauche col-12 col-md-4">
             <div class="show">
                 {# <div class="mt-3"> <img src='{{app.user.photo}}'/></div> #}
-                <img class="img-fluid" src="{{ asset('/uploads/images/profilepicture/') }}{{ app.user.photo }}" alt="" />
+                
+                <img class="img-fluid" src="{{ asset('/uploads/images/profilepicture/') }}{{ user.photo }}" alt="" />
                 <div class="mt-3">
                     Pseudo: 
                                                             
                                         
-                    {{ app.user.pseudo }}
+                    {{ user.pseudo }}
                 </div>
                 <div class="mt-3">
                     Surname: 
                                                             
                                         
-                    {{ app.user.surname }}
+                    {{ user.surname }}
                 </div>
                 <div class="mt-3">
                     Name: 
                                                             
                                         
-                    {{ app.user.name }}
+                    {{ user.name }}
                 </div>
                 <div class="mt-3">
                     Tel: 
                                                             
                                         
-                    {{ app.user.tel }}
+                    {{ user.tel }}
                 </div>
                 <div class="mt-3">
                     Email: 
                                                             
                                         
-                    {{ app.user.mail }}
+                    {{ user.mail }}
                 </div>
-                <a href="{{ path('edit', {id: app.user.id}) }}">
+                <a href="{{ path('edit', {id: user.id}) }}">
                     <button type="button" class="btn btn-primary mt-3">
                         Edit Profile
                                                                     
@@ -57,7 +58,9 @@
         <div class="droite col-12 col-md-8">
             <!-- LISTE DES SORTIES EFFECTUEES-->
             <div class="sortiesContainer container d-flex flex-row flex--md-col flex-wrap m-0 p-3">
-                {% for event in app.user.events %}
+           
+                {% for event in user.events %}
+                {% if event.isInEvent %}
                     <div class="sortie_item m-2 col-6 col-md-3 p-2 rounded border">
                         <img src="{{ asset('/uploads/images/event/') }}{{ event.photo }}" class="w-100" alt="miniature sortie" />
                         <div class="p-3 bg-white">
@@ -95,8 +98,10 @@
                             {% endif %}
                         </div>
                     </div>
+                {% endif %}
                 {% endfor %}
-                {% for event in app.user.organizedEvents %}
+           
+                {% for event in user.organizedEvents %}
                     <div class="sortie_item m-2 col-6 col-md-3 p-2 rounded border">
                         <img src="{{ asset('/uploads/images/event/') }}{{ event.photo }}" class="w-100" alt="miniature sortie" />
                         <div class="p-3 bg-white">
@@ -125,7 +130,7 @@
                         </div>
                         <div class="row">
                             <input type="button" class="btn col-6" onclick="location.href='{{ path('event_detail', {id: event.id}) }}'" value="Détail" />
-                            {% if app.user %}
+                            {% if app.user == event.owner %}
                                 {% if date( event.limitInscriptionAt ) > date() %}
                                     {% if event.isActive == true %}
                                         <input type="button" class="btn col-6" onclick="location.href='{{ path('event_cancel', {id: event.id}) }}'" value="Annuler" />
