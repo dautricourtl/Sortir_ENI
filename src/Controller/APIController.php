@@ -8,12 +8,14 @@ use App\Entity\User;
 use App\Entity\Event;
 use App\Entity\State;
 use App\Entity\Location;
+use App\Entity\Question;
 use App\Repository\CityRepository;
 use App\Repository\SiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
 use App\Repository\LocationRepository;
+use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -187,7 +189,45 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "Surname"=>$item->getSurname(), "Pseudo"=>$item->getPseudo(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array(
+                "Id"=>$item->getId(), 
+                "Name"=>$item->getName(), 
+                "Surname"=>$item->getSurname(), 
+                "Pseudo"=>$item->getPseudo(), 
+                "Roles"=>$item->getRoles(), 
+                "IsActive"=>$item->getIsActive()));
+        }
+        return $this->json($data);
+    }
+
+    #[Route('/grantUsers/{id}', name: 'grantUsers')]
+    public function grantUsers(int $id, UserRepository $UserRepository, EntityManagerInterface $em)
+    {
+        $user = $UserRepository->findOneById($id);
+        if( in_array("ROLE_ADMIN",$user->getRoles()) ){
+            $user->setRoles(["ROLE_USER"]);
+        }else{
+            $user->setRoles(["ROLE_ADMIN"]);
+        }
+        
+        $em->persist($user);
+        $em->flush();
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(User::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array(
+                "Id"=>$item->getId(), 
+                "Name"=>$item->getName(), 
+                "Surname"=>$item->getSurname(), 
+                "Pseudo"=>$item->getPseudo(), 
+                "Roles"=>$item->getRoles(), 
+                "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
@@ -213,7 +253,13 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "Surname"=>$item->getSurname(), "Pseudo"=>$item->getPseudo(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array(
+                "Id"=>$item->getId(), 
+                "Name"=>$item->getName(), 
+                "Surname"=>$item->getSurname(), 
+                "Pseudo"=>$item->getPseudo(), 
+                "Roles"=>$item->getRoles(), 
+                "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
@@ -451,6 +497,75 @@ class APIController extends AbstractController
         $data = [];
         foreach($result as $item){
             array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+        }
+        return $this->json($data);
+    }
+
+    #[Route('/getQuestion', name: 'getQuestion')]
+    public function getQuestion(QuestionRepository $QuestionRepository, EntityManagerInterface $em){
+        
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Question::class, 'c');
+            
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getQuestion()));
+        }
+        return $this->json($data);
+    }
+
+    #[Route('/deleteQuestion/{id}', name: 'deleteQuestion')]
+    public function deleteQuestion(int $id, QuestionRepository $QuestionRepository,EntityManagerInterface $em){
+
+        $toDelete = $QuestionRepository->findOneById($id);
+
+        
+        $em->persist($toDelete);
+        $em->flush();
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Question::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getQuestion()));
+        }
+        return $this->json($data);
+    }
+
+    /**
+     * @Route("/newQuestion", name="newQuestion", methods={"POST"})
+     */
+    public function newQuestion(Request $request, EntityManagerInterface $em): Response
+    {
+
+       $content = json_decode($request->getContent());
+       $newQuestion = new Question();
+       $newQuestion->setQuestion((string)$content->Name);
+        
+       $em->persist($newQuestion);
+       $em->flush();
+
+       $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Question::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getQuestion()));
         }
         return $this->json($data);
     }
