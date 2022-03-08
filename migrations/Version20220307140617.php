@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220303154955 extends AbstractMigration
+final class Version20220307140617 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,6 +20,7 @@ final class Version20220303154955 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE TABLE question (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, question VARCHAR(255) NOT NULL)');
         $this->addSql('ALTER TABLE city ADD COLUMN is_active BOOLEAN DEFAULT 1 NOT NULL');
         $this->addSql('DROP INDEX IDX_3BAE0AA77E3C61F9');
         $this->addSql('DROP INDEX IDX_3BAE0AA764D218E');
@@ -70,12 +71,13 @@ final class Version20220303154955 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM user');
         $this->addSql('DROP TABLE user');
-        $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
-        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_8D93D649F6BD1646 FOREIGN KEY (site_id) REFERENCES site (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, question_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
+        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL, CONSTRAINT FK_8D93D649F6BD1646 FOREIGN KEY (site_id) REFERENCES site (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_8D93D6491E27F6BF FOREIGN KEY (question_id) REFERENCES question (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO user (id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active) SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
         $this->addSql('CREATE INDEX IDX_8D93D649F6BD1646 ON user (site_id)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON user (pseudo)');
+        $this->addSql('CREATE INDEX IDX_8D93D6491E27F6BF ON user (question_id)');
         $this->addSql('DROP INDEX IDX_D96CF1FF71F7E88B');
         $this->addSql('DROP INDEX IDX_D96CF1FFA76ED395');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user_event AS SELECT user_id, event_id FROM user_event');
@@ -90,6 +92,7 @@ final class Version20220303154955 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP TABLE question');
         $this->addSql('CREATE TEMPORARY TABLE __temp__city AS SELECT id, name, zip_code FROM city');
         $this->addSql('DROP TABLE city');
         $this->addSql('CREATE TABLE city (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, zip_code VARCHAR(10) NOT NULL)');
@@ -146,6 +149,7 @@ final class Version20220303154955 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__site');
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
         $this->addSql('DROP INDEX IDX_8D93D649F6BD1646');
+        $this->addSql('DROP INDEX IDX_8D93D6491E27F6BF');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, pseudo, roles, password, name, surname, tel, mail, is_active FROM user');
         $this->addSql('DROP TABLE user');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)

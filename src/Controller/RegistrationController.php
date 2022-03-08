@@ -54,4 +54,11 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
+
+    #[Route('/forgotPassword', name: 'forgotpass')]
+public function forgotpass(): Response
+{
+
+    return $this->render('main/forgotPassword.html.twig');
+}
 }

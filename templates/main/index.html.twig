@@ -69,7 +69,7 @@
     <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
 
     {% for event in events %}
-  
+    {% if event.isDisplay == 1 %}
         <div class="sortie_item m-3 p-3 col-12 col-md-3 col-xl-2 rounded">
                 <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
                 <div class="p-3 bg-white">
@@ -84,26 +84,25 @@
                         <button class="btn">Détails</button>
                     </a>
                     {% if app.user %}
+                    
                         {% if event.isActive == false %}
                         <button class="btn col-6">{{event.state.name}}</button>
-
-                        {% else %}
-                        <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
-                            <button class="btn col-6">
-                                {% if event.isInEvent %}
-                                   Se désinscrire
-                                {% else %}
-                                    
-                                    S'inscrire
-                                {% endif %}
-                            </button>
-                        </a>
+                            {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
+                            <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
+                                <button class="btn col-6">
+                                    {% if event.isInEvent %}
+                                        Se désinscrire
+                                    {% else %}
+                                        S'inscrire
+                                    {% endif %}
+                                </button>
+                            </a>
+                            {% endif %}
                         {% endif %}
 
-                    {% endif %}
                 </div>
         </div>
-  
+    {% endif %}
     {% endfor %}
 
     </div>

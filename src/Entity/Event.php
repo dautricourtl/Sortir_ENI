@@ -300,9 +300,9 @@ class Event
     }
 
     public function isInEvent() : bool{
-        return $this->isInEvent;
+        return $this->isInEvent == null ? false : $this->isInEvent;
     }
-   public function setisInEvent(User $user) : bool{
+   public function setisInEvent(?User $user) : bool{
         $this->isInEvent =  $this->participantExistInEvent($user);
 
         return (bool)$this;

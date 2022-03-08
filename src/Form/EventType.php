@@ -2,17 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class EventType extends AbstractType
 {
@@ -42,7 +41,11 @@ class EventType extends AbstractType
                     ])
                 ]
             ])
+            ->add('save', SubmitType::class, ['label'=> 'Enregistrer'])
+            ->add('publish', SubmitType::class, ['label'=> 'Publier'])
+            ->getForm()
         ;
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

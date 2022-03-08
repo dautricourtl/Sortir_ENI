@@ -17,44 +17,55 @@ class UserController extends AbstractController
 {
     
     #[Route('/profile/{id}', name: 'profile', requirements: ['id'=> '\d+'])]
-    public function profile(Request $request,$id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
+    public function profile($id, UserRepository $userrepo): Response
     {
         $user = $userrepo ->findOneById($id);
        
 
-        return $this->render('main/profile.html.twig', compact("id", "user"));
+        return $this->render('main/profile.html.twig', ['user' =>$user, 'id' => $id]);
     }
+
    #[Route('/edit/{id}', name: 'edit' , requirements: ['id'=> '\d+'])]
     public function edit(Request $request, $id, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userrepo): Response
     {
+        $userActuel = $this->getUser();
+              
         $user = $userrepo ->findOneById($id);
-        $form = $this->createForm(ProfileType::class, $user);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            
-            // encode the plain password
-            $user->isActive(true);
-            $uploadedFile = $form['profilePicture']->getData();  
-        if($uploadedFile){
-        $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/profilepicture';  
-            $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
-            $uploadedFile->move(
-                $destination,
-                $newFilename
-            );
-        $user->setPhoto($newFilename);
-      }
-      $entityManager->persist($user);
-      $entityManager->flush();
-        $this ->addFlash('success', 'Profile Edited');
-        return $this->redirectToRoute('profile', ['user' =>$user, 'id' => $id]);
+        if($userActuel === $user ){
+            $user = $userrepo ->findOneById($id);
+            $form = $this->createForm(ProfileType::class, $user);
+            $form->handleRequest($request);
 
+            if ($form->isSubmitted() && $form->isValid()) {
+                
+                // encode the plain password
+                $user->isActive(true);
+                $uploadedFile = $form['profilePicture']->getData();  
+            if($uploadedFile){
+            $destination = $this->getParameter('kernel.project_dir').'/public/uploads/images/profilepicture';  
+                $newFilename = uniqid().'.'.$uploadedFile->guessExtension();
+                $uploadedFile->move(
+                    $destination,
+                    $newFilename
+                );
+            $user->setPhoto($newFilename);
+        }
+        $entityManager->persist($user);
+        $entityManager->flush();
+            $this ->addFlash('success', 'Profile Edited');
+            return $this->redirectToRoute('profile', ['user' =>$user, 'id' => $id]);
         
+            
+        }
+        return $this->render('main/edit.html.twig', [
+            'profileForm' => $form->createView(),
+        ]);
+    } else {
+        $this->addFlash('danger', "Vous n'avez pas les droits pour éditer ce profil");
+        return $this->redirectToRoute('profile', ['id' => $id]);
+
     }
-    return $this->render('main/edit.html.twig', [
-        'profileForm' => $form->createView(),
-    ]);
     
 }
     

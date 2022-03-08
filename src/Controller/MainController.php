@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Entity\Event;
 use App\Form\CityType;
+use App\Entity\State;
+use App\Entity\User;
 use App\Controller\CityController;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +19,35 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MainController extends AbstractController
 {
+    #[Route('/addState', name: 'main_state')]
+    public function addState(EntityManagerInterface $em)
+    {
+        $state = new State();
+        $state->setName('Ouvert');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Fermé');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('En création');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Annulé');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('En cours');
+        $em->persist($state);
+        $state = new State();
+        $state->setName('Passé');
+        $em->persist($state);
+        $em->flush();
+
+        $this->addFlash('success', 'Les états ont bien été enregistrés');
+
+        return $this->redirectToRoute('main');
+    }
+
+
     #[Route('/', name: 'main')]
     public function index(EventRepository $eventrepo, EntityManagerInterface $em): Response
     {
@@ -31,9 +62,10 @@ class MainController extends AbstractController
         $query = $qb->getQuery();
         $events = $query->getResult();
         
-        
-        foreach($events as $event){
-            $event->setisInEvent($participant);
+        if( $participant != null){
+            foreach($events as $event){
+                $event->setisInEvent($participant);
+            }
         }
         // dd($events);
         return $this->render('main/index.html.twig', [
