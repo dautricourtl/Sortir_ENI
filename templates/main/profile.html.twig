@@ -63,7 +63,7 @@
                             </div>
                             {% if app.user.id != event.owner.id %}
                             <div>
-                               Organisateur : {{event.owner.name}}
+                            <a href={{ path('profile', {'id':event.owner.id})}}> <div>Organisateur : {{ event.owner.name }}</div></a>
                             </div>
                         {% endif %}
                             <div>
@@ -104,18 +104,15 @@
                             </div>
                             <div>
                                 Statut : 
-                                                                                                        
-                                                                
+               
                                 {{ event.state.name }}
                             </div>
                             <div>
                                 Inscrits : 
-                                                                                                        
-                                                                
+                        
                                 {{ event.participants | length }}
                                 /
-                                                                                                        
-                                                                
+                           
                                 {{ event.inscriptionMax }}
                             </div>
                         </div>
