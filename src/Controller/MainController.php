@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\State;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\State;
 use App\Repository\EventRepository;
+use App\Repository\StateRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,7 +45,7 @@ class MainController extends AbstractController
 
 
     #[Route('/', name: 'main')]
-    public function index(EventRepository $eventrepo): Response
+    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
     {
         $events = $eventrepo ->findAll();
         /** @var User $participant */
@@ -55,10 +56,15 @@ class MainController extends AbstractController
                 $event->setisInEvent($participant);
             }
         }
+        foreach($events as $event){
+        $eventId = $event->getId();
+        self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+    }
         // dd($events);
         return $this->render('main/index.html.twig', [
             'events' =>$events,
         ]);
+   
     }
 
     #[Route('/login', name: 'login')]
@@ -90,5 +96,53 @@ class MainController extends AbstractController
     {
         return $this->render('user/user.html.twig');
     }
+
+
+    
+  public function gestionDate($id, EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository) {
+
+
+    $date = new \DateTime('now');
+
+    $event = $eventRepository->findOneById($id);
+    $dateEvent = $event->getBeginAt();
+    $duree = $event->getDuration();
+    $dateLimiteInscription = $event->getLimitInscriptionAt();
+
+    
+
+    $dateArchive = $date->modify('+ 1 month');
+    $datePast = $date->modify('+'.$duree.' minutes');
+    $eventState = $event->getState()->getName();
+
+    if($eventState != 'Annulé'){
+
+        if($date >= $dateLimiteInscription && $date < $dateEvent ) {
+            //fermé
+          $state = $stateRepository->findById(2)[0];
+          $event->setState($state);
+        } 
+        if ($date >= $dateEvent && $date < $datePast) {
+            //En cours
+          $state = $stateRepository->findById(5)[0];
+          $event->setState($state);
+        } 
+        if ($date > $datePast && $date < $dateArchive) {
+            //passé
+          $state = $stateRepository->findById(6)[0];
+          $event->setState($state);
+        } 
+        if ($date >= $dateArchive ) {
+           //archivé
+          $event->setIsDisplay(0);
+            }
+
+            $em->persist($event);
+            $em->flush();   
+        }
+
+    }
+
+}
     
 }
