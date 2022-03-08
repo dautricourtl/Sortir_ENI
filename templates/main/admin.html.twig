@@ -4,28 +4,8 @@
 
 {% block body %}
 <div id="storeTemplate" style="display:none">
-    <div class="d-flex justify-content-between cityTemplate template-stripped"  id="templateCity">
-        <div class="nameCity">Nom</div>
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteCity(this)">delete</button>
-    </div>
-    <div class="d-flex justify-content-between LocationTemplate template-stripped"  id="templateLocation">
-        <div class="nameLocation">Nom</div>
-        <div class="cityLocation">Ville</div>
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteLocation(this)">delete</button>
-    </div>
-    <div class="d-flex justify-content-between LocationTemplate template-stripped"  id="templateUsers">
-        <div class="nameUser">Nom</div>
-        <div class="surnameUser">Prenom</div>
-        <div class="pseudoUser">Pseudo</div>
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteUser(this)">delete</button>
-    </div>
-    <div class="d-flex justify-content-between SiteTemplate template-stripped"  id="templateSite">
-        <div class="nameSite">Nom</div>
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteSite(this)">delete</button>
-    </div>
-    <div class="d-flex justify-content-between StateTemplate template-stripped"  id="templateState">
-        <div class="nameState">Nom</div>
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteState(this)">delete</button>
+    <div class="d-flex justify-content-between LocationTemplate template-stripped"  id="templateItem">
+        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteCustom(this)">delete</button>
     </div>
 </div>
 
@@ -37,7 +17,17 @@
     <div class="cursor-pointer" onclick="SwitchTemplate(4)">Evenements</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(5)">Etats</div>
 </div>
+<form id="newform">
+        <input class="form-control mt-3" id="NameInput" placeholder="Nom"/>
+        <input class="form-control mt-3" id="LatitudeInput" placeholder="Latitude"/>
+        <input class="form-control mt-3" id="LongitudeInput" placeholder="Longitude"/>
+        <input class="form-control mt-3" id="AdressInput" placeholder="Adresse"/>
+        <select class="form-control mt-3" id="CitySelect">
+        </select>
+        <button type="button" class="btn btn-primary mt-3" onclick="AddCustom()">Envoyer</button>
+    </form>
 <div class="container">
+
 
 <!-- BLOC CONTAINER DE FORMS-->
     <div class="categoryContainer d-none py-3" id="CityContainer">
@@ -45,7 +35,7 @@
         <h3 class="flex-1">Ajouter une ville</h3>
         <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newCityFormActive(this)"></i>
     </div>
-    {{ form_start(new_cityForm, {'attr': {'id': 'newCityForm'}}) }}
+    {# {{ form_start(new_cityForm, {'attr': {'id': 'newCityForm'}}) }}
         <div class="form-outline mb-3">
             <label class="form-label" for="form3Example1cg">Name</label>
             {{ form_widget(new_cityForm.name, {'attr': {'class': 'form-control'}}) }}
@@ -55,7 +45,7 @@
             {{ form_widget(new_cityForm.zipCode, {'attr': {'class': 'form-control'}}) }}
         </div>
         <button type="button" class="btn btn-primary" onclick="AddCity()">Valider</button>
-    {{ form_end(new_cityForm) }}
+    {{ form_end(new_cityForm) }} #}
     <div id="listCity" class="stripped mt-3"></div>
 
 
@@ -69,7 +59,8 @@
             <h3 class="flex-1">Ajouter un lieu</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newLocationFormActive(this)"></i>
         </div>
-
+        
+{# 
         {{ form_start(newLocationForm, {'attr': {'id': 'newLocationForm'}}) }}
             <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Name</label>
@@ -92,12 +83,12 @@
                 {{ form_widget(newLocationForm.city, {'attr': {'class': 'form-control cursor-pointer'}}) }}
             </div>
             <button type="button" class="btn btn-primary" onclick="AddLocation()">Valider</button>
-        {{ form_end(newLocationForm) }}
+        {{ form_end(newLocationForm) }} #}
         <div id="listLocation" class="stripped mt-3"></div>
 
 
     </div>
-    <div class="categoryContainer d-none py-3" id="UserContainer">
+    <div class="categoryContainer d-none py-3" id="UsersContainer">
         
         
 
@@ -119,19 +110,19 @@
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newSiteFormActive(this)"></i>
         </div>
 
-        {{ form_start(newformSite, {'attr': {'id': 'newformSite'}}) }}
+        {# {{ form_start(newformSite, {'attr': {'id': 'newformSite'}}) }}
             <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Name</label>
                 {{ form_widget(newformSite.name, {'attr': {'class': 'form-control'}}) }}
             </div>
             <button type="button" class="btn btn-primary" onclick="AddSite()">Valider</button>
-        {{ form_end(newformSite) }}
+        {{ form_end(newformSite) }} #}
         <div id="listSite" class="stripped mt-3"></div>
 
 
     </div>
     <div class="categoryContainer d-none py-3" id="EventContainer">
-        EventContainer
+        <div id="listEvent" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="StateContainer">
         
@@ -141,13 +132,13 @@
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformStateActive(this)"></i>
         </div>
 
-        {{ form_start(newformState, {'attr': {'id': 'newformState'}}) }}
+        {# {{ form_start(newformState, {'attr': {'id': 'newformState'}}) }}
             <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Name</label>
                 {{ form_widget(newformState.name, {'attr': {'class': 'form-control'}}) }}
             </div>
             <button type="button" class="btn btn-primary" onclick="AddState()">Valider</button>
-        {{ form_end(newformState) }}
+        {{ form_end(newformState) }} #}
         <div id="listState" class="stripped mt-3"></div>
 
 
