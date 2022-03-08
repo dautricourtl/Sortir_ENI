@@ -72,6 +72,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private $question;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $token;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -414,6 +417,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setQuestion(?question $question): self
     {
         $this->question = $question;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
 
         return $this;
     }
