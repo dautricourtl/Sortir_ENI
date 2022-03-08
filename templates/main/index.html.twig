@@ -87,7 +87,7 @@
                     
                         {% if event.isActive == false %}
                         <button class="btn col-6">{{event.state.name}}</button>
-                            {% elseif date( event.limitInscriptionAt ) > date() %}
+                            {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
                             <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
                                 <button class="btn col-6">
                                     {% if event.isInEvent %}
