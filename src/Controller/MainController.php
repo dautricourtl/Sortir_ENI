@@ -46,13 +46,21 @@ class MainController extends AbstractController
     #[Route('/', name: 'main')]
     public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
     {
+        $token ="";
         $events = $eventrepo ->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
         
+        
         if( $participant != null){
             foreach($events as $event){
                 $event->setisInEvent($participant);
+            }
+            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" && $participant->getToken() != null)){
+                $token = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(40/strlen($x)) )),1,40);
+                $participant->setToken($token);
+                $em->persist($participant);
+                $em->flush();
             }
         }
         foreach($events as $event){
@@ -62,6 +70,7 @@ class MainController extends AbstractController
         // dd($events);
         return $this->render('main/index.html.twig', [
             'events' =>$events,
+            'token' => $token,
         ]);
    
     }

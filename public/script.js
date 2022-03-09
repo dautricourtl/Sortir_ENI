@@ -26,6 +26,7 @@ var websiteData = {
     Site:[],
     Event:[],
     State:[],
+    Question: []
 }
 
 
@@ -43,7 +44,8 @@ function AddCustom()
         City:["Name"],
         Location:["Name","Latitude","Longitude","Adress","CityId"],
         Site:["Name"],
-        State:["Name"]
+        State:["Name"],
+        Question:["Name"]
     };
     for(let i =0; i<Object.entries(newState).length;i++)
     {
@@ -93,24 +95,65 @@ function DeleteCustom(id){
         });
 }
 
+function GrantUser(id){
+    axios({
+        method: 'get',
+        url: '/api/grant'+currentTemplateName+'/'+id,
+        responseType: 'stream'
+      })
+        .then(function (response) {
+            RefreshView(response, "");
+        });
+}
+
 function RefreshView(response, forcedUrl){
+
     currentTemplateName = forcedUrl == null || forcedUrl == undefined || forcedUrl == "" ? currentTemplateName : forcedUrl;
-    let properties = ["Name","IsActive","Pseudo","Surname","Email"]
+    let properties = ["Name","IsActive","Pseudo","Surname","Email","Roles"]
     window["websiteData"][currentTemplateName]=response.data;
     let template = document.getElementById("templateItem");
     document.getElementById("list"+currentTemplateName).innerHTML = "";
     for(let i =0; i<window["websiteData"][currentTemplateName].length; i++){
+        
         var clone = template.cloneNode(true);
         let propertiesFilter = Object.entries(response.data[i]);
         var propertiesFilterPair = propertiesFilter.filter(c=> properties.includes(c[0])).filter(c=> c[0]!= "IsActive");
+        
         for(let j = 0; j<propertiesFilterPair.length; j++){
-            let td = document.createElement("div");
-            td.innerHTML = propertiesFilterPair[j][1];
-            clone.prepend(td);
+            
+            
+            
+            if(propertiesFilterPair[j][0].toString() == "Roles"){
+                if(propertiesFilterPair[j][1].includes('ROLE_ADMIN')){
+                    //admin
+                    let td = document.createElement("button");
+                    td.innerHTML = "Make user";
+                    td.classList.add('btn','btn-danger','btn-grant');
+                    td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
+                    clone.prepend(td);
+                }else{
+                    //pad admin
+                    let td = document.createElement("button");
+                    td.innerHTML = "Make admin";
+                    td.classList.add('btn','btn-success','btn-grant');
+                    td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
+                    clone.prepend(td);
+                }
+            }else{
+                let td = document.createElement("div");
+                td.innerHTML = propertiesFilterPair[j][1];
+                clone.prepend(td);
+            }
+            
         }
-        let button = clone.getElementsByClassName("btn")[0];
+        // let buttonGrant = clone.getElementsByClassName("btn-grant")[0];
+        // buttonGrant.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
+        
+
+        let button = clone.getElementsByClassName("btn-delete")[0];
         button.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
         button.innerHTML = window["websiteData"][currentTemplateName][i]["IsActive"] ? "desactiver":"reactiver";
+
         if(window["websiteData"][currentTemplateName][i]["IsActive"] ){
             button.classList.add("btn-danger");
             button.classList.remove("btn-success");
@@ -164,6 +207,7 @@ var templates =
         {Id : 3, Name:"Site"},
         {Id : 4, Name:"Event"},
         {Id : 5, Name:"State"},
+        {Id : 6, Name:"Question"},
     ];
 
 SwitchTemplate(2);

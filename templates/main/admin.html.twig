@@ -5,7 +5,7 @@
 {% block body %}
 <div id="storeTemplate" style="display:none">
     <div class="d-flex justify-content-between LocationTemplate template-stripped"  id="templateItem">
-        <button type="button" class="btn btn-danger" js-id="0" onclick="DeleteCustom(this)">delete</button>
+        <button type="button" class="btn btn-danger btn-delete" js-id="0" onclick="DeleteCustom(this)">delete</button>
     </div>
 </div>
 
@@ -16,6 +16,7 @@
     <div class="cursor-pointer" onclick="SwitchTemplate(3)">Organisations</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(4)">Evenements</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(5)">Etats</div>
+    <div class="cursor-pointer" onclick="SwitchTemplate(6)">Questions</div>
 </div>
 <form id="newform">
         <input class="form-control mt-3" id="NameInput" placeholder="Nom"/>
@@ -109,14 +110,6 @@
             <h3 class="flex-1">Ajouter un Site</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newSiteFormActive(this)"></i>
         </div>
-
-        {# {{ form_start(newformSite, {'attr': {'id': 'newformSite'}}) }}
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Name</label>
-                {{ form_widget(newformSite.name, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <button type="button" class="btn btn-primary" onclick="AddSite()">Valider</button>
-        {{ form_end(newformSite) }} #}
         <div id="listSite" class="stripped mt-3"></div>
 
 
@@ -125,23 +118,18 @@
         <div id="listEvent" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="StateContainer">
-        
-        
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un State</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformStateActive(this)"></i>
         </div>
-
-        {# {{ form_start(newformState, {'attr': {'id': 'newformState'}}) }}
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Name</label>
-                {{ form_widget(newformState.name, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <button type="button" class="btn btn-primary" onclick="AddState()">Valider</button>
-        {{ form_end(newformState) }} #}
         <div id="listState" class="stripped mt-3"></div>
-
-
+    </div>
+    <div class="categoryContainer d-none py-3" id="QuestionContainer">
+        <div class="d-flex justify-content-between ">
+            <h3 class="flex-1">Ajouter un Question</h3>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformQuestionActive(this)"></i>
+        </div>
+        <div id="listQuestion" class="stripped mt-3"></div>
     </div>
 </div>
 
