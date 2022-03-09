@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\State;
 use App\Repository\EventRepository;
+use App\Repository\SiteRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,10 +45,11 @@ class MainController extends AbstractController
 
 
     #[Route('/', name: 'main')]
-    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
+    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
         $token ="";
         $events = $eventrepo ->findAll();
+        $sites = $siteRepository->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
         
@@ -71,6 +73,7 @@ class MainController extends AbstractController
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,
+            'sites' => $sites
         ]);
    
     }
@@ -169,6 +172,21 @@ class MainController extends AbstractController
         }
 
     }
+
+    public function getFilter($id, EntityManagerInterface $em, EventRepository $eventRepository){
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Event::class, 'c');
+            //->where('c.isActive = 1');
+
+        $query = $qb->getQuery();
+
+        $result = $query->getResult();
+
+    }
+   
+    
 }
 
     
