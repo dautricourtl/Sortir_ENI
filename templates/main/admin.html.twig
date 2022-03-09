@@ -18,23 +18,25 @@
     <div class="cursor-pointer" onclick="SwitchTemplate(5)">Etats</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(6)">Questions</div>
 </div>
-<form id="newform">
+
+<div class="container">
+<form id="newform" class="d-none">
         <input class="form-control mt-3" id="NameInput" placeholder="Nom"/>
         <input class="form-control mt-3" id="LatitudeInput" placeholder="Latitude"/>
         <input class="form-control mt-3" id="LongitudeInput" placeholder="Longitude"/>
+        <input class="form-control mt-3" id="ZipCodeInput" placeholder="ZipCode"/>
         <input class="form-control mt-3" id="AdressInput" placeholder="Adresse"/>
-        <select class="form-control mt-3" id="CitySelect">
+        <select class="form-control mt-3" id="CityIdInput">
         </select>
         <button type="button" class="btn btn-primary mt-3" onclick="AddCustom()">Envoyer</button>
     </form>
-<div class="container">
 
 
 <!-- BLOC CONTAINER DE FORMS-->
     <div class="categoryContainer d-none py-3" id="CityContainer">
     <div class="d-flex justify-content-between ">
         <h3 class="flex-1">Ajouter une ville</h3>
-        <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newCityFormActive(this)"></i>
+        <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
     </div>
     {# {{ form_start(new_cityForm, {'attr': {'id': 'newCityForm'}}) }}
         <div class="form-outline mb-3">
@@ -58,7 +60,7 @@
         
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un lieu</h3>
-            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newLocationFormActive(this)"></i>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         
 {# 
@@ -108,7 +110,7 @@
         
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un Site</h3>
-            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newSiteFormActive(this)"></i>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listSite" class="stripped mt-3"></div>
 
@@ -120,14 +122,14 @@
     <div class="categoryContainer d-none py-3" id="StateContainer">
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un State</h3>
-            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformStateActive(this)"></i>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listState" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="QuestionContainer">
         <div class="d-flex justify-content-between ">
             <h3 class="flex-1">Ajouter un Question</h3>
-            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="newformQuestionActive(this)"></i>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listQuestion" class="stripped mt-3"></div>
     </div>

@@ -259,21 +259,7 @@ class EventController extends AbstractController
     }
   }
 
-
-
-  // #[Route('/publishEvent/{id}', name: 'event_publish', requirements: ['id' => '\d+'])]
-  // public function publish($id, EventRepository $eventRepository, EntityManagerInterface $em): Response
-  // {
-  //     $event = $eventRepository->find($id);
-  //     $event->getState()->setName("Ouvert");
-  //     $event->setIsDisplay(0);
-  //     $em->persist($event);
-  //     $em->flush();
-  //     $this->addFlash('success', 'La sortie est publiée');
-  //     return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $id]);
-  //   }
  
-  
 
 
 }
