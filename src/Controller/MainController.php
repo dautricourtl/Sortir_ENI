@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\City;
+use App\data\MyFilterCustom;
 use App\Entity\User;
-use App\Entity\Event;
 use App\Entity\State;
+use App\Form\FilterType;
 use App\Repository\SiteRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
@@ -50,12 +50,18 @@ class MainController extends AbstractController
     #[Route('/', name: 'main')]
     public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
+        $filter = new MyFilterCustom();
+        $formbuilder = $this->createForm(FilterType::class, $filter);
+        $formbuilder->handleRequest($request);
+        
+        if ($formbuilder->isSubmitted() ) { 
 
-        $content = json_decode($request->getContent());
-       $newCity = new City();
-       $newCity->setName((string)$content->Name);
+            if($filter->getName() != null){
+                $name = $filter->getName();
+                $eventrepo->filterAndSearch($name);
+            }
 
-
+        } else {
         $token ="";
         $events = $eventrepo ->findAll();
         $sites = $siteRepository->findAll();
@@ -67,26 +73,27 @@ class MainController extends AbstractController
             foreach($events as $event){
                 $event->setisInEvent($participant);
             }
-            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" || $participant->getToken() == null)){
+            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" && $participant->getToken() != null)){
                 $token = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(40/strlen($x)) )),1,40);
                 $participant->setToken($token);
                 $em->persist($participant);
                 $em->flush();
-            }else if($participant->getToken() != "" && $participant->getToken() != null){
-                $token = $participant->getToken();
             }
         }
         foreach($events as $event){
         $eventId = $event->getId();
         self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
     }
+    $filterForm = $formbuilder->createView();
         // dd($events);
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,
-            'sites' => $sites
+            'sites' => $sites,
+            'filterForm' => $filterForm
         ]);
-   
+    }
+
     }
 
     #[Route('/login', name: 'login')]
@@ -184,18 +191,7 @@ class MainController extends AbstractController
 
     }
 
-    public function getFilter($id, EntityManagerInterface $em, EventRepository $eventRepository){
-
-        $qb = $em->createQueryBuilder();
-        $qb->select('c')
-            ->from(Event::class, 'c');
-            //->where('c.isActive = 1');
-
-        $query = $qb->getQuery();
-
-        $result = $query->getResult();
-
-    }
+ 
    
     
 }

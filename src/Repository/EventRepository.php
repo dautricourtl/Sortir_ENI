@@ -73,4 +73,13 @@ class EventRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function filterAndSearch()
+    {
+        return $this->createQueryBuilder('e')
+        ->andWhere('e.name LIKE :name')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }
