@@ -143,7 +143,7 @@ class EventController extends AbstractController
       throw new NotFoundHttpException();
     } else {
 
-      $event->setisInEvent($participant);      
+      $event->isInEvent();      
 
       return $this->render('main/detailevent.html.twig', ['event' => $event, 'id' => $id]);
     }
