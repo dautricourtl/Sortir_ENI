@@ -51,8 +51,7 @@
 							<img src="{{ asset('/uploads/images/event/') }}{{ event.photo }}" class="w-100" alt="miniature sortie"/>
 							<div class="p-3 bg-white">
 								<h4 class="text-primary">{{ event.name }}</h4>
-								<div>Le
-									{{ event.beginAt | date('d-m-Y à H:i')}}</div>
+								<div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
 								<div>{{ event.description }}</div>
 								<div>Statut :
 									{{ event.state.name }}</div>
@@ -75,6 +74,7 @@
 			</div>
 			<div class="container row">
             <h3>Mes inscriptions</h3>
+            <div class="d-flex flex-row flex-wrap m-0 p-3">
 				{% for event in user.events %}
 					<div class="m-2 col-6 col-md-3 p-2 rounded border">
 						<img src="{{ asset('/uploads/images/event/') }}{{ event.photo }}" class="w-100" alt="miniature sortie"/>
@@ -82,6 +82,7 @@
 							<h4 class="text-primary">
 								{{ event.name }}
 							</h4>
+                            <div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
 							<div>
 								{{ event.description }}
 							</div>
