@@ -69,11 +69,12 @@
     <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
 
     {% for event in events %}
-    {% if event.isDisplay == 1 %}
+    {# {% if event.isDisplay == 1 %} #}
         <div class="sortie_item m-3 p-3 col-12 col-md-3 col-xl-2 rounded">
                 <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
                 <div class="p-3 bg-white">
                     <h4 class="text-primary">{{ event.name }}</h4>
+                <div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
                     <div>{{ event.description }}</div>
                     <div>Statut : {{ event.state.name }}</div>
                     <a href={{ path('profile', {'id':event.owner.id})}}> <div>Organisateur : {{ event.owner.name }}</div></a>
@@ -106,7 +107,7 @@
                     {% endif %}
                 </div>
         </div>
-    {% endif %}
+    {# {% endif %} #}
     {% endfor %}
 
     </div>
