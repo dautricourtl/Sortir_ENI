@@ -417,7 +417,7 @@ class APIController extends AbstractController
     
 
     #[Route('/uploadFileUser', name: 'uploadFileUser', methods:['POST'])]
-    public function uploadFileUser(Request $request, EntityManagerInterface $em, SiteRepository $siteRepository):Response {
+    public function uploadFileUser(Request $request, EntityManagerInterface $em, SiteRepository $siteRepository, QuestionRepository $questionRepository):Response {
 
         $content = json_decode($request->getContent());
 
@@ -440,6 +440,9 @@ class APIController extends AbstractController
             $user->setPassword(str_getcsv($csvFile[$i])[3]);
             $site = $siteRepository->findOneById(str_getcsv($csvFile[$i])[4]);
             $user->setSite($site);
+            $question = $questionRepository->findOneById(str_getcsv($csvFile[$i])[5]);
+            $user->setQuestion($question);
+            $user->setReponse(str_getcsv($csvFile[$i])[6]);
             $user->setTel("0606060606");
             $user->isActive(true);
             $em->persist($user);

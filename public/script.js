@@ -13,6 +13,33 @@ function SearchVisibility() {
     }
 }
 
+
+
+function searchMainPage(){
+    axios({
+        method: 'post',
+        url: '/',
+        responseType: 'stream',
+        data : {Name:document.getElementById("searchInputMain").value}
+      })
+        .then(function (response) {
+            document.querySelector('html').innerText = response.data;
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function showAddForm(){
     let form = document.getElementById("newform").classList.toggle("d-none");
 }
@@ -39,6 +66,35 @@ let mandatoryFields = {
     Users:[],
     Event:[],
 };
+
+function fileToBase64(){
+    file = document.getElementById('fileInput').files[0]
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        let dataobj = reader.result; 
+        console.log(dataobj);
+        dataobj = "data:@file/vnd.ms-excel;base64,"+dataobj.split(',')[1];
+
+
+        let obj = {Base64: dataobj};
+
+        console.log(JSON.stringify(obj));
+        axios({
+            method: 'post',
+            url: '/api/uploadFileUser',
+            responseType: 'stream',
+            data:JSON.stringify(obj)
+          })
+            .then(function (response) {
+                RefreshView(response);
+          });
+
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+}
 
 
 function AddCustom()

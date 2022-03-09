@@ -47,22 +47,34 @@ class MainController extends AbstractController
     }
 
 
-    #[Route('/', name: 'main')]
+    /**
+     * @Route("/", name="main", methods={"POST","GET"})
+     */
     public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
 
-        $content = json_decode($request->getContent());
-       $newCity = new City();
-       $newCity->setName((string)$content->Name);
-
-
         $token ="";
-        $events = $eventrepo ->findAll();
+        $events = null;
+        if($request->getMethod() == "POST"){
+            $content = json_decode($request->getContent());
+            $name = (string)$content->Name;
+            // si jamais ya une recherche
+            $qb = $em->createQueryBuilder();
+            $qb->select('c')
+                ->from(Event::class, 'c')
+                ->where('c.isActive = 1')
+                ->where('c.name LIKE :searchName')
+                ->setParameter('searchName','%'.$name.'%');
+            $query = $qb->getQuery();
+            $events = $query->getResult();
+            
+        }else{
+            $events = $eventrepo ->findAll();
+        }
+        
         $sites = $siteRepository->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
-        
-        
         if( $participant != null){
             foreach($events as $event){
                 $event->setisInEvent($participant);
@@ -77,10 +89,10 @@ class MainController extends AbstractController
             }
         }
         foreach($events as $event){
-        $eventId = $event->getId();
-        self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
-    }
-        // dd($events);
+            $eventId = $event->getId();
+            self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+        }
+        
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,

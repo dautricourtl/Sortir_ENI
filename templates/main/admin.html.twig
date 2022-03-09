@@ -34,17 +34,6 @@
         <h3 class="flex-1">Ajouter une ville</h3>
         <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
     </div>
-    {# {{ form_start(new_cityForm, {'attr': {'id': 'newCityForm'}}) }}
-        <div class="form-outline mb-3">
-            <label class="form-label" for="form3Example1cg">Name</label>
-            {{ form_widget(new_cityForm.name, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-outline mb-3">
-            <label class="form-label" for="form3Example1cg">ZipCode</label>
-            {{ form_widget(new_cityForm.zipCode, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <button type="button" class="btn btn-primary" onclick="AddCity()">Valider</button>
-    {{ form_end(new_cityForm) }} #}
     <div id="listCity" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none  py-3" id="LocationContainer">
@@ -62,6 +51,13 @@
             <h3 class="flex-1">Utilisateurs</h3>
         </div>
        <input class="form-control" placeholder="Rechercher" id="searchUser" onkeyup="SearchUsers(this.value)"/>
+
+       <div class="input-group mb-3 mt-3">
+        <input type="file" class="form-control" id="fileInput" onchange="fileToBase64()" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" >Button</button>
+        </div>
+        </div>
         <div id="listUsers" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="SiteContainer">
