@@ -50,7 +50,7 @@ function AddCustom()
         Longitude:document.getElementById("LongitudeInput").value,
         ZipCode:document.getElementById("ZipCodeInput").value,
         Adress:document.getElementById("AdressInput").value,
-        CityId:document.getElementById("CityId").value
+        CityId:document.getElementById("CityIdInput").value
     }
     
     let approvedSend = true;

@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\City;
 use App\Entity\User;
+use App\Entity\Event;
 use App\Entity\State;
-use App\Repository\EventRepository;
 use App\Repository\SiteRepository;
+use App\Repository\EventRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,8 +48,14 @@ class MainController extends AbstractController
 
 
     #[Route('/', name: 'main')]
-    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
+    public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
+
+        $content = json_decode($request->getContent());
+       $newCity = new City();
+       $newCity->setName((string)$content->Name);
+
+
         $token ="";
         $events = $eventrepo ->findAll();
         $sites = $siteRepository->findAll();
