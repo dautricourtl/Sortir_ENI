@@ -103,9 +103,7 @@ class EventController extends AbstractController
         );
         $event->setPhoto($newFilename);
       } else {
-        $this->addFlash('danger', 'Format de photo jpg, png, 500Ko maximum');
-        $eventForm = $formbuilder->createView();
-        return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
+        $event->setPhoto('62286ac7498f5.png');      
       }
 
      if($formbuilder instanceof Form) {
