@@ -8,7 +8,6 @@
         <button type="button" class="btn btn-danger btn-delete" js-id="0" onclick="DeleteCustom(this)">delete</button>
     </div>
 </div>
-
 <div class="col-12 d-flex justify-content-around mb-3" >
     <div class="cursor-pointer" onclick="SwitchTemplate(0)">Villes</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(1)">Endroits</div>
@@ -18,7 +17,6 @@
     <div class="cursor-pointer" onclick="SwitchTemplate(5)">Etats</div>
     <div class="cursor-pointer" onclick="SwitchTemplate(6)">Questions</div>
 </div>
-
 <div class="container">
 <form id="newform" class="d-none">
         <input class="form-control mt-3" id="NameInput" placeholder="Nom"/>
@@ -30,8 +28,6 @@
         </select>
         <button type="button" class="btn btn-primary mt-3" onclick="AddCustom()">Envoyer</button>
     </form>
-
-
 <!-- BLOC CONTAINER DE FORMS-->
     <div class="categoryContainer d-none py-3" id="CityContainer">
     <div class="d-flex justify-content-between ">
@@ -50,85 +46,48 @@
         <button type="button" class="btn btn-primary" onclick="AddCity()">Valider</button>
     {{ form_end(new_cityForm) }} #}
     <div id="listCity" class="stripped mt-3"></div>
-
-
-
-
     </div>
     <div class="categoryContainer d-none  py-3" id="LocationContainer">
         
         
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un lieu</h3>
+            <h3 class="flex-1">Lieux</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         
-{# 
-        {{ form_start(newLocationForm, {'attr': {'id': 'newLocationForm'}}) }}
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Name</label>
-                {{ form_widget(newLocationForm.name, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Adresse</label>
-                {{ form_widget(newLocationForm.adress, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Latitude</label>
-                {{ form_widget(newLocationForm.latitude, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Longitude</label>
-                {{ form_widget(newLocationForm.longitude, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">City</label>
-                {{ form_widget(newLocationForm.city, {'attr': {'class': 'form-control cursor-pointer'}}) }}
-            </div>
-            <button type="button" class="btn btn-primary" onclick="AddLocation()">Valider</button>
-        {{ form_end(newLocationForm) }} #}
         <div id="listLocation" class="stripped mt-3"></div>
-
-
     </div>
     <div class="categoryContainer d-none py-3" id="UsersContainer">
-        
-        
-
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un utilisateur</h3>
+            <h3 class="flex-1">Utilisateurs</h3>
         </div>
-
        <input class="form-control" placeholder="Rechercher" id="searchUser" onkeyup="SearchUsers(this.value)"/>
         <div id="listUsers" class="stripped mt-3"></div>
-
-
-
     </div>
     <div class="categoryContainer d-none py-3" id="SiteContainer">
-        
-        
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un Site</h3>
+            <h3 class="flex-1">Sites</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listSite" class="stripped mt-3"></div>
-
-
     </div>
     <div class="categoryContainer d-none py-3" id="EventContainer">
+        <div class="d-flex justify-content-between ">
+            <h3 class="flex-1">Evenements</h3>
+            <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
+        </div>
         <div id="listEvent" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="StateContainer">
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un State</h3>
+            <h3 class="flex-1">Etats</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listState" class="stripped mt-3"></div>
     </div>
     <div class="categoryContainer d-none py-3" id="QuestionContainer">
         <div class="d-flex justify-content-between ">
-            <h3 class="flex-1">Ajouter un Question</h3>
+            <h3 class="flex-1">Questions</h3>
             <i class="bi bi-plus-circle mr-2 cursor-pointer" onclick="showAddForm()"></i>
         </div>
         <div id="listQuestion" class="stripped mt-3"></div>
