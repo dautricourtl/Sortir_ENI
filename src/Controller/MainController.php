@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\State;
 use App\Repository\EventRepository;
+use App\Repository\SiteRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -45,10 +45,11 @@ class MainController extends AbstractController
 
 
     #[Route('/', name: 'main')]
-    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository): Response
+    public function index(EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
         $token ="";
         $events = $eventrepo ->findAll();
+        $sites = $siteRepository->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
         
@@ -74,6 +75,7 @@ class MainController extends AbstractController
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,
+            'sites' => $sites
         ]);
    
     }
@@ -113,20 +115,25 @@ class MainController extends AbstractController
   public function gestionDate($id, EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository) {
 
 
-    $dateDuJour = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
-    
+    $dateDuJour = new \DateTime('now');
     $event = $eventRepository->findOneById($id);
-    $dateDebutEvent = $event->getBeginAt();
     $duree = $event->getDuration();
+    $dateDebutEvent = $event->getBeginAt();
+
+
+    $dateDebutEventTemp = $dateDebutEvent->format('Y-m-d H:i:s');
+
+    $datePast = new \DateTime($dateDebutEventTemp);
+    $datePast->modify('+'.$duree. ' minutes');
+
+    $dateArchive = new \DateTime($dateDebutEventTemp);
+    $dateArchive->modify('+ 1 month');
+ 
 
     $dateLimiteInscription = $event->getLimitInscriptionAt();
 
-    $dateArchive = $event->getBeginAt()->modify('+ 1 month');
-    $datePast = $event->getBeginAt()->modify('+'.$duree.' minutes');
 
-    var_dump($datePast);
-
-    $eventState = $event->getState()->getName();
+       $eventState = $event->getState()->getName();
 
 
     if($eventState != 'Annulé'){
@@ -138,25 +145,23 @@ class MainController extends AbstractController
         // $em->flush();  
 
 
-        if($dateDuJour > $dateLimiteInscription && $dateDuJour < $dateDebutEvent) {
+        if($dateDuJour > $dateLimiteInscription) {
             //fermé
           $state = $stateRepository->findById(2)[0];
           $event->setState($state);
-          var_dump('je passe dans fermé');
         } 
 
-        if ($dateDuJour > $dateDebutEvent) {
+        if ($dateDuJour > $dateDebutEvent and $dateDuJour < $datePast) {
             //En cours
           $state = $stateRepository->findById(5)[0];
-          $event->setState($state);
-          var_dump('je passe dans en cours');
+          $event->setState($state);     
         } 
 
-        if ($dateDuJour > $datePast) {
+        if ($dateDuJour > $datePast and $dateDuJour < $dateArchive) {
             //passé
           $state = $stateRepository->findById(6)[0];
           $event->setState($state);
-          var_dump('je passe dans passé');
+     
         } 
 
         if ($dateDuJour > $dateArchive ) {
@@ -169,6 +174,21 @@ class MainController extends AbstractController
         }
 
     }
+
+    public function getFilter($id, EntityManagerInterface $em, EventRepository $eventRepository){
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Event::class, 'c');
+            //->where('c.isActive = 1');
+
+        $query = $qb->getQuery();
+
+        $result = $query->getResult();
+
+    }
+   
+    
 }
 
     

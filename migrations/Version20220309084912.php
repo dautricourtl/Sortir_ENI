@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220308131053 extends AbstractMigration
+final class Version20220309084912 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -39,7 +39,7 @@ final class Version20220308131053 extends AbstractMigration
         $this->addSql('CREATE TABLE site (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL)');
         $this->addSql('CREATE TABLE state (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, question_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
-        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL)');
+        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL, token VARCHAR(255) DEFAULT NULL)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON user (pseudo)');
         $this->addSql('CREATE INDEX IDX_8D93D649F6BD1646 ON user (site_id)');
         $this->addSql('CREATE INDEX IDX_8D93D6491E27F6BF ON user (question_id)');

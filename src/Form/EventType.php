@@ -33,11 +33,11 @@ class EventType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Image([
-                        'maxSize' => '500K',
+                        'maxSize' => '1024K',
                         'mimeTypes' => [
                             'image/*'
                         ],
-                        'mimeTypesMessage' => 'Téléchargez une image en .jpg ou .png de max 500k uniquement'
+                        'mimeTypesMessage' => 'Téléchargez une image en .jpg ou .png de max 1024K uniquement'
                     ])
                 ]
             ])
