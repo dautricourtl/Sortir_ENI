@@ -57,11 +57,13 @@ class MainController extends AbstractController
             foreach($events as $event){
                 $event->setisInEvent($participant);
             }
-            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" && $participant->getToken() != null)){
+            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" || $participant->getToken() == null)){
                 $token = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(40/strlen($x)) )),1,40);
                 $participant->setToken($token);
                 $em->persist($participant);
                 $em->flush();
+            }else if($participant->getToken() != "" && $participant->getToken() != null){
+                $token = $participant->getToken();
             }
         }
         foreach($events as $event){

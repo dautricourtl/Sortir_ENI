@@ -11,10 +11,11 @@ function SearchVisibility() {
     }else if(BtnFilter.classList.contains('fa-sort-desc')){
         BtnFilter.classList.replace("fa-sort-desc", "fa-sort-asc");
     }
-
-
 }
 
+function showAddForm(){
+    let form = document.getElementById("newform").classList.toggle("d-none");
+}
 
 let currentTemplateName = "";
 
@@ -29,6 +30,16 @@ var websiteData = {
     Question: []
 }
 
+let mandatoryFields = {
+    City:["Name","ZipCode"],
+    Location:["Name","Latitude","Longitude","Adress","CityId"],
+    Site:["Name"],
+    State:["Name"],
+    Question:["Name"],
+    Users:[],
+    Event:[],
+};
+
 
 function AddCustom()
 {
@@ -37,38 +48,40 @@ function AddCustom()
         Name:document.getElementById("NameInput").value,
         Latitude:document.getElementById("LatitudeInput").value,
         Longitude:document.getElementById("LongitudeInput").value,
+        ZipCode:document.getElementById("ZipCodeInput").value,
         Adress:document.getElementById("AdressInput").value,
-        CityId:document.getElementById("CitySelect").value
+        CityId:document.getElementById("CityId").value
     }
-    let mandatoryFields = {
-        City:["Name"],
-        Location:["Name","Latitude","Longitude","Adress","CityId"],
-        Site:["Name"],
-        State:["Name"],
-        Question:["Name"]
-    };
+    
+    let approvedSend = true;
     for(let i =0; i<Object.entries(newState).length;i++)
     {
         if(mandatoryFields[currentTemplateName].includes(Object.entries(newState)[i][0])){
             if(newState[Object.entries(newState)[i][0]] != ""){
-                axios({
-                        method: 'post',
-                        url: '/api/new'+currentTemplateName,
-                        responseType: 'stream',
-                        data:JSON.stringify(newState)
-                      })
-                        .then(function (response) {
-                            RefreshView(response);
-                            document.getElementById("NameInput").value ="";
-                            document.getElementById("LatitudeInput").value ="";
-                            document.getElementById("AdressInput").value = "";
-                            document.getElementById("LongitudeInput").value ="";
-                        });
+                
             }else{
                 console.log(Object.entries(newState)[i][0] + " est manquant");
+                approvedSend = false;
             }
         }
     }
+    if(approvedSend){
+        axios({
+            method: 'post',
+            url: '/api/new'+currentTemplateName,
+            responseType: 'stream',
+            data:JSON.stringify(newState)
+          })
+            .then(function (response) {
+                RefreshView(response);
+                document.getElementById("NameInput").value ="";
+                document.getElementById("LatitudeInput").value ="";
+                document.getElementById("AdressInput").value = "";
+                document.getElementById("LongitudeInput").value ="";
+                document.getElementById("ZipCodeInput").value ="";
+            });
+    }
+    
 }
 
 function GetCustom(urlForce){
@@ -106,10 +119,22 @@ function GrantUser(id){
         });
 }
 
+function ChangeEventStatus(EventId){
+    let StateId= document.getElementById("Select"+EventId).value;
+    axios({
+        method: 'get',
+        url: '/api/changeEventStatus/'+EventId+'/'+StateId,
+        responseType: 'stream'
+      })
+        .then(function (response) {
+            RefreshView(response, "");
+        });
+}
+
 function RefreshView(response, forcedUrl){
 
     currentTemplateName = forcedUrl == null || forcedUrl == undefined || forcedUrl == "" ? currentTemplateName : forcedUrl;
-    let properties = ["Name","IsActive","Pseudo","Surname","Email","Roles"]
+    let properties = ["Name","IsActive","Pseudo","Surname","Email","Roles","State"]
     window["websiteData"][currentTemplateName]=response.data;
     let template = document.getElementById("templateItem");
     document.getElementById("list"+currentTemplateName).innerHTML = "";
@@ -139,7 +164,23 @@ function RefreshView(response, forcedUrl){
                     td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
                     clone.prepend(td);
                 }
-            }else{
+            }else if(propertiesFilterPair[j][0].toString() == "State"){
+                let td = document.createElement("select");
+                td.classList.add("form-control","col-md-2");
+                for(let k =0; k<websiteData.State.length; k++){
+                    let opt = document.createElement("option");
+                    opt.setAttribute("value",websiteData.State[k].Id);
+                    if(propertiesFilterPair[j][1] == websiteData.State[k].Id){
+                        opt.setAttribute("selected","selected");
+                    }
+                    opt.innerHTML = websiteData.State[k].Name;
+                    td.prepend(opt);
+                }
+                td.setAttribute("id","Select"+window["websiteData"][currentTemplateName][i].Id);
+                td.setAttribute("onchange","ChangeEventStatus("+window["websiteData"][currentTemplateName][i].Id+")");
+                clone.prepend(td);
+            }
+            else{
                 let td = document.createElement("div");
                 td.innerHTML = propertiesFilterPair[j][1];
                 clone.prepend(td);
@@ -163,7 +204,7 @@ function RefreshView(response, forcedUrl){
         }
         document.getElementById("list"+currentTemplateName).appendChild(clone);
     }
-    document.getElementById("CitySelect").innerHTML = websiteData.City.map(c=> "<option value="+c.Id+">"+c.Name+"</option>")
+    document.getElementById("CityIdInput").innerHTML = websiteData.City.map(c=> "<option value="+c.Id+">"+c.Name+"</option>")
 }
 
 function SearchUsers(input){
@@ -216,6 +257,8 @@ function SwitchTemplate(templateId)
 {
     if(templateId == 1){
         GetCustom("City");
+    }else if(templateId == 4){
+        GetCustom("State");
     }
     currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
     GetCustom(currentTemplateName);
@@ -224,8 +267,17 @@ function SwitchTemplate(templateId)
         containers[i].classList.remove("d-block");
         containers[i].classList.add("d-none");
     }
-   
     currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
+    document.getElementById("NameInput").style.display = "none";
+    document.getElementById("LatitudeInput").style.display = "none";
+    document.getElementById("LongitudeInput").style.display = "none";
+    document.getElementById("ZipCodeInput").style.display = "none";
+    document.getElementById("AdressInput").style.display = "none";
+    document.getElementById("CityIdInput").style.display = "none";
+    for(let i=0; i<mandatoryFields[currentTemplateName].length;i++){
+        document.getElementById(mandatoryFields[currentTemplateName][i]+"Input").style.display = "block";
+    }
+   
     document.getElementById(`${currentTemplateName}Container`).classList.add("d-block");
 
     

@@ -28,6 +28,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class APIController extends AbstractController
 {
+    
+
+
     #[Route('/getCity', name: 'getCity')]
     public function getCity(CityRepository $cityRepository, EntityManagerInterface $em){
         
@@ -77,7 +80,7 @@ class APIController extends AbstractController
     /**
      * @Route("/newCity", name="newCity", methods={"POST"})
      */
-    public function newCity(CityRepository $cityRepository,Request $request, EntityManagerInterface $em): Response
+    public function newCity(Request $request, EntityManagerInterface $em): Response
     {
 
        $content = json_decode($request->getContent());
@@ -149,19 +152,22 @@ class APIController extends AbstractController
     /**
      * @Route("/newLocation", name="newLocation", methods={"POST"})
      */
-    public function newLocation(CityRepository $cityRepository,Request $request, EntityManagerInterface $em): Response
+    public function newLocation(CityRepository $cityRepository,Request $request,SiteRepository $siteRepository, EntityManagerInterface $em): Response
     {
-        
-       $content = json_decode($request->getContent());
-       $newLocation = new Location();
-       $newLocation->setName((string)$content->Name ?? "");
-       $newLocation->setAdress((string)$content->Adress ?? "");
-       $newLocation->setLatitude((string)$content->Latitude ?? "");
-       $newLocation->setLongitude((string)$content->Longitude ?? "");
-       $newLocation->setCity($cityRepository->findOneById($content->CityId));
-        
-       $em->persist($newLocation);
-       $em->flush();
+      
+        $content = json_decode($request->getContent());
+        if($siteRepository->findByName((string)$content->Name) == null){
+            $newLocation = new Location();
+            $newLocation->setName((string)$content->Name ?? "");
+            $newLocation->setAdress((string)$content->Adress ?? "");
+            $newLocation->setLatitude((string)$content->Latitude ?? "");
+            $newLocation->setLongitude((string)$content->Longitude ?? "");
+            $newLocation->setCity($cityRepository->findOneById($content->CityId));
+                
+            $em->persist($newLocation);
+            $em->flush();
+        }
+       
 
        $qb = $em->createQueryBuilder();
         $qb->select('c')
@@ -416,8 +422,10 @@ class APIController extends AbstractController
         $content = json_decode($request->getContent());
 
         $path = $this->getParameter('kernel.project_dir').'/public/uploads/csv/users/user.csv';  
+
         $ifp = fopen( $path , 'wb' ); 
         $data = explode( ',', (string)$content->Base64);
+
         fwrite( $ifp, base64_decode( $data[ 1 ] ) );
         fclose( $ifp );
 
@@ -468,7 +476,7 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "State"=>$item->getState()->getId() , "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
@@ -496,7 +504,30 @@ class APIController extends AbstractController
 
         $data = [];
         foreach($result as $item){
-            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "IsActive"=>$item->getIsActive()));
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "State"=>$item->getState()->getId(), "IsActive"=>$item->getIsActive()));
+        }
+        return $this->json($data);
+    }
+
+    #[Route('/changeEventStatus/{eventId}/{statusId}', name:'changeEventStatus')]
+    public function changeEventStatus(int $eventId, int $statusId, EventRepository $eventRepository, StateRepository $stateRepository, EntityManagerInterface $em){
+        $eventToUpdate = $eventRepository->findOneById($eventId);
+        $state = $stateRepository->findOneById($statusId);
+        $eventToUpdate->setState($state);
+        $em->persist($eventToUpdate);
+
+
+        $em->flush();
+        $qb = $em->createQueryBuilder();
+        $qb->select('c')
+            ->from(Event::class, 'c');
+            //->where('c.isActive = 1');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        $data = [];
+        foreach($result as $item){
+            array_push($data, array("Id"=>$item->getId(), "Name"=>$item->getName(), "State"=>$item->getState()->getId(), "IsActive"=>$item->getIsActive()));
         }
         return $this->json($data);
     }
