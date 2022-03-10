@@ -49,37 +49,15 @@
                 <label class="form-label" for="form3Example1cg">Site organisateur : </label>
                     {{app.user.site.name }}              
                 </div> 
-
-                {# <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Ville</label>
-                    {{ form_widget(eventForm.city, {'attr': {'class': 'form-control'}}) }}
-                </div>   #}
+                <div class="form-outline mb-3">
+                <label class="form-label" for="form3Example1cg">privé : </label>
+                    {{ form_widget(eventForm.privateEvent, {'attr': {'class': 'form-control'}}) }}            
+                </div>
 
                 <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Lieu</label>
                     {{ form_widget(eventForm.location, {'attr': {'class': 'form-control'}}) }}
                 </div>
-
-                  {#<div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Rue</label>
-                      {{ eventForm.location.adress}}      
-                </div>  #}
-
-                {# <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Code Postal</label>
-                    {{  }}              
-                </div> #}
-
-                {# <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Latitude</label>
-                    {{  }}              
-                </div> #}
-
-                {# <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Longitude</label>
-                    {{ }}              
-                </div> #}
-
 
                 <div class="form-outline mb-3">
                 <label class="form-label" for="form3Example1cg">Ajout d'une photo</label>
@@ -92,10 +70,7 @@
                 <div class="form-outline m-3">
                 {{ form_widget(eventForm.publish, {'attr': {'class': 'form-control'}}) }}                
                 </div>
-
-            
   {{ form_end(eventForm) }}
-
 </div>
 
 
