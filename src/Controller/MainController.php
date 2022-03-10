@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\data\MyFilterCustom;
 use App\Entity\User;
 use App\Entity\State;
 use App\Form\FilterType;
+use App\data\MyFilterCustom;
 use App\Repository\SiteRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
@@ -50,25 +50,30 @@ class MainController extends AbstractController
     #[Route('/', name: 'main')]
     public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
-        $filter = new MyFilterCustom();
-        $formbuilder = $this->createForm(FilterType::class, $filter);
-        $formbuilder->handleRequest($request);
-        
-        if ($formbuilder->isSubmitted() ) { 
-
-            if($filter->getName() != null){
-                $name = $filter->getName();
-                $eventrepo->filterAndSearch($name);
-            }
-
-        } else {
-        $token ="";
-        $events = $eventrepo ->findAll();
         $sites = $siteRepository->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
-        
-        
+        $token ="";
+
+       
+            
+        if($request)
+        { 
+        $name =  $request->query->get('name', '');
+        $site =  $request->query->get('site', '');
+        $dateDebut =  $request->query->get('dateDebut', '');
+        $dateFin =  $request->query->get('dateFin', '');
+        $isOwner =  $request->query->get('isOwner', '');
+        $isInscrit =  $request->query->get('isInscrit', '');
+        $isNotInscrit =  $request->query->get('isNotInscrit', '');
+        $pastEvent =  $request->query->get('pastEvent', '');
+
+            $events = $eventrepo->filterAndSearch($em, $name, $site, $dateDebut, $dateFin, $isOwner, $isInscrit, $isNotInscrit, $pastEvent);   
+
+        } else {
+            $events = $eventrepo ->findAll();  
+        }     
+    
         if( $participant != null){
             foreach($events as $event){
                 $event->setisInEvent($participant);
@@ -83,18 +88,16 @@ class MainController extends AbstractController
         foreach($events as $event){
         $eventId = $event->getId();
         self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
-    }
-    $filterForm = $formbuilder->createView();
-        // dd($events);
+        }
+
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,
             'sites' => $sites,
-            'filterForm' => $filterForm
         ]);
-    }
+   
 
-    }
+}
 
     #[Route('/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils): Response

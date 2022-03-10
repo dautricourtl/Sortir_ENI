@@ -9,6 +9,7 @@ use App\Form\EventType;
 use Symfony\Component\Form\Form;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
+use App\Repository\SiteRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,11 +24,11 @@ class EventController extends AbstractController
 
 
   #[Route('/addParticipant/{id}', name: 'add_participant')]
-  public function addParticipant(Event $event, UserInterface $participant, EventRepository $eventRepository, UserRepository $userRepository, EntityManagerInterface $em):Response
+  public function addParticipant(Event $event, UserInterface $participant, EventRepository $eventRepository, SiteRepository $siteRepository, EntityManagerInterface $em):Response
   {
 
     /** @var User $participant */
-
+    $sites = $siteRepository->findAll();
     $events = $eventRepository->findAll();
     
     $exist = false;
@@ -48,6 +49,7 @@ class EventController extends AbstractController
     return $this->render('main/index.html.twig', [
       'events' =>$events,
       'isInEvent' => $event->participantExistInEvent($participant),
+      'sites' =>$sites
     ]);
     
   }
