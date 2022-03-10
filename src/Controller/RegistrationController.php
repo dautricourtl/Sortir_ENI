@@ -89,8 +89,15 @@ class RegistrationController extends AbstractController
                         new NotBlank(),
                         new Length(['max' => 255]),
                     ],
+                    'attr' => [
+                        'class' => 'form-control',
+                    ]
                 ])
-                ->add('Envoyer', SubmitType::class)
+                ->add('Envoyer', SubmitType::class,[
+                    'attr' => [
+                        'class' => 'btn btn-primary'
+                    ]
+                ])
                 ->getForm();
 
             $form->handleRequest($request);
@@ -104,7 +111,9 @@ class RegistrationController extends AbstractController
             }
             
             $formView = $form->createView();
+            
         }
+        
         return $this->render('/main/forgotPassword.html.twig', 
         [
             'user' => $user,
@@ -129,7 +138,9 @@ class RegistrationController extends AbstractController
             );
             $em->persist($user);
             $em->flush();
+            $this->addFlash('success', 'Mot de passe modifié');
             return $this->redirectToRoute('main');
+
         }
         // do anything else you need here, like send an email
         return $this->render('main/newPassword.html.twig', [
