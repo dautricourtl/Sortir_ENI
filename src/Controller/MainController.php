@@ -92,10 +92,6 @@ class MainController extends AbstractController
         $eventId = $event->getId();
         self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
         }
-
-            $eventId = $event->getId();
-            self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
-        
         
         return $this->render('main/index.html.twig', [
             'events' =>$events,
