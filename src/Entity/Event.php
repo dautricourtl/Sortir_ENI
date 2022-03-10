@@ -65,6 +65,9 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
+    #[ORM\Column(type: 'boolean')]
+    private $privateEvent;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -305,6 +308,18 @@ class Event
         $this->isInEvent =  $this->participantExistInEvent($user);
 
         return (bool)$this;
+   }
+
+   public function getPrivateEvent(): ?bool
+   {
+       return $this->privateEvent;
+   }
+
+   public function setPrivateEvent(bool $privateEvent): self
+   {
+       $this->privateEvent = $privateEvent;
+
+       return $this;
    }
 
 }

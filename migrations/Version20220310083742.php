@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220308155401 extends AbstractMigration
+final class Version20220310083742 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,7 +25,7 @@ final class Version20220308155401 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_3BAE0AA75D83CC1');
         $this->addSql('CREATE TEMPORARY TABLE __temp__event AS SELECT id, state_id, location_id, owner_id, name, begin_at, limit_inscription_at, duration, inscription_max, description, photo, is_display, is_active FROM event');
         $this->addSql('DROP TABLE event');
-        $this->addSql('CREATE TABLE event (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, state_id INTEGER NOT NULL, location_id INTEGER DEFAULT NULL, owner_id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, begin_at DATETIME NOT NULL, limit_inscription_at DATETIME NOT NULL, duration INTEGER NOT NULL, inscription_max INTEGER NOT NULL, description VARCHAR(255) DEFAULT NULL, photo VARCHAR(255) DEFAULT NULL, is_display INTEGER NOT NULL, is_active BOOLEAN NOT NULL, CONSTRAINT FK_3BAE0AA75D83CC1 FOREIGN KEY (state_id) REFERENCES state (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_3BAE0AA764D218E FOREIGN KEY (location_id) REFERENCES location (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_3BAE0AA77E3C61F9 FOREIGN KEY (owner_id) REFERENCES user (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        $this->addSql('CREATE TABLE event (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, state_id INTEGER NOT NULL, location_id INTEGER DEFAULT NULL, owner_id INTEGER NOT NULL, name VARCHAR(255) NOT NULL, begin_at DATETIME NOT NULL, limit_inscription_at DATETIME NOT NULL, duration INTEGER NOT NULL, inscription_max INTEGER NOT NULL, description VARCHAR(255) DEFAULT NULL, photo VARCHAR(255) DEFAULT NULL, is_display INTEGER NOT NULL, is_active BOOLEAN NOT NULL, private_event BOOLEAN NOT NULL, CONSTRAINT FK_3BAE0AA75D83CC1 FOREIGN KEY (state_id) REFERENCES state (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_3BAE0AA764D218E FOREIGN KEY (location_id) REFERENCES location (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_3BAE0AA77E3C61F9 FOREIGN KEY (owner_id) REFERENCES user (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('INSERT INTO event (id, state_id, location_id, owner_id, name, begin_at, limit_inscription_at, duration, inscription_max, description, photo, is_display, is_active) SELECT id, state_id, location_id, owner_id, name, begin_at, limit_inscription_at, duration, inscription_max, description, photo, is_display, is_active FROM __temp__event');
         $this->addSql('DROP TABLE __temp__event');
         $this->addSql('CREATE INDEX IDX_3BAE0AA77E3C61F9 ON event (owner_id)');
@@ -66,11 +66,11 @@ final class Version20220308155401 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_8D93D6491E27F6BF');
         $this->addSql('DROP INDEX IDX_8D93D649F6BD1646');
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
-        $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse FROM user');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token FROM user');
         $this->addSql('DROP TABLE user');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, question_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
         , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL, token VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_8D93D649F6BD1646 FOREIGN KEY (site_id) REFERENCES site (id) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_8D93D6491E27F6BF FOREIGN KEY (question_id) REFERENCES question (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
-        $this->addSql('INSERT INTO user (id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse) SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse FROM __temp__user');
+        $this->addSql('INSERT INTO user (id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token) SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
         $this->addSql('CREATE INDEX IDX_8D93D6491E27F6BF ON user (question_id)');
         $this->addSql('CREATE INDEX IDX_8D93D649F6BD1646 ON user (site_id)');
@@ -135,11 +135,11 @@ final class Version20220308155401 extends AbstractMigration
         $this->addSql('DROP INDEX UNIQ_8D93D64986CC499D');
         $this->addSql('DROP INDEX IDX_8D93D649F6BD1646');
         $this->addSql('DROP INDEX IDX_8D93D6491E27F6BF');
-        $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse FROM user');
+        $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token FROM user');
         $this->addSql('DROP TABLE user');
         $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, site_id INTEGER NOT NULL, question_id INTEGER NOT NULL, pseudo VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
-        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL)');
-        $this->addSql('INSERT INTO user (id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse) SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse FROM __temp__user');
+        , password VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, is_active BOOLEAN DEFAULT 1 NOT NULL, photo VARCHAR(255) DEFAULT NULL, reponse VARCHAR(255) NOT NULL, token VARCHAR(255) DEFAULT NULL)');
+        $this->addSql('INSERT INTO user (id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token) SELECT id, site_id, question_id, pseudo, roles, password, name, surname, tel, mail, is_active, photo, reponse, token FROM __temp__user');
         $this->addSql('DROP TABLE __temp__user');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON user (pseudo)');
         $this->addSql('CREATE INDEX IDX_8D93D649F6BD1646 ON user (site_id)');

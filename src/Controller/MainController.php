@@ -47,7 +47,9 @@ class MainController extends AbstractController
     }
 
 
-    #[Route('/', name: 'main')]
+    /**
+     * @Route("/", name="main", methods={"POST","GET"})
+     */
     public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
         $sites = $siteRepository->findAll();
@@ -57,8 +59,7 @@ class MainController extends AbstractController
 
        
             
-        if($request)
-        { 
+        if($request){ 
         $name =  $request->query->get('name', '');
         $site =  $request->query->get('site', '');
         $dateDebut =  $request->query->get('dateDebut', '');
@@ -74,6 +75,7 @@ class MainController extends AbstractController
             $events = $eventrepo ->findAll();  
         }     
     
+
         if( $participant != null){
             foreach($events as $event){
                 $event->setisInEvent($participant);
@@ -86,10 +88,15 @@ class MainController extends AbstractController
             }
         }
         foreach($events as $event){
+
         $eventId = $event->getId();
         self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
         }
 
+            $eventId = $event->getId();
+            self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+        
+        
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,

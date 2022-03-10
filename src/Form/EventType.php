@@ -7,6 +7,7 @@ use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -41,6 +42,7 @@ class EventType extends AbstractType
                     ])
                 ]
             ])
+            ->add('privateEvent', ChoiceType::class,['choices'=>['privé'=>true,'public'=>false],'expanded'=>true])
             ->add('save', SubmitType::class, ['label'=> 'Enregistrer'])
             ->add('publish', SubmitType::class, ['label'=> 'Publier'])
             ->getForm()

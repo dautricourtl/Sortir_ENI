@@ -17,6 +17,7 @@ use App\Repository\StateRepository;
 use App\Repository\LocationRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -417,7 +418,7 @@ class APIController extends AbstractController
     
 
     #[Route('/uploadFileUser', name: 'uploadFileUser', methods:['POST'])]
-    public function uploadFileUser(Request $request, EntityManagerInterface $em, SiteRepository $siteRepository):Response {
+    public function uploadFileUser(Request $request, EntityManagerInterface $em, SiteRepository $siteRepository, QuestionRepository $questionRepository):Response {
 
         $content = json_decode($request->getContent());
 
@@ -432,17 +433,25 @@ class APIController extends AbstractController
         $csvFile = file($path);
         for($i = 1; $i < count($csvFile); $i++)
         {
-            $user = new User();
-            $user->setSurname(str_getcsv($csvFile[$i])[0]);
-            $user->setName(str_getcsv($csvFile[$i])[1]);
-            $user->setMail(str_getcsv($csvFile[$i])[2]);
-            $user->setPseudo(str_getcsv($csvFile[$i])[3]);
-            $user->setPassword(str_getcsv($csvFile[$i])[3]);
-            $site = $siteRepository->findOneById(str_getcsv($csvFile[$i])[4]);
-            $user->setSite($site);
-            $user->setTel("0606060606");
-            $user->isActive(true);
-            $em->persist($user);
+            try{
+                $user = new User();
+                $user->setSurname(str_getcsv($csvFile[$i])[0]);
+                $user->setName(str_getcsv($csvFile[$i])[1]);
+                $user->setMail(str_getcsv($csvFile[$i])[2]);
+                $user->setPseudo(str_getcsv($csvFile[$i])[3]);
+                $user->setPassword(str_getcsv($csvFile[$i])[3]);
+                $site = $siteRepository->findOneById(str_getcsv($csvFile[$i])[4]);
+                $user->setSite($site);
+                $question = $questionRepository->findOneById(str_getcsv($csvFile[$i])[5]);
+                $user->setQuestion($question);
+                $user->setReponse(str_getcsv($csvFile[$i])[6]);
+                $user->setTel("0606060606");
+                $user->isActive(true);
+                $em->persist($user);
+            }catch(Exception $e){
+
+            }
+            
        
         }
         $em->flush();

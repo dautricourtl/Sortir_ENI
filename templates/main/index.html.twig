@@ -10,6 +10,7 @@
             <div class="col-11 align-self-center">
             <form action="{{path ('main')}}" method="GET">
                 <div class="container">
+
                     <div class="row">
                         <div class="col-11 align-self-center">
                             <input class="form-control" type="text" name='name' placeholder="Search" aria-label="Search">
@@ -72,12 +73,14 @@
                     <button type="submit" class="btn border mb-3">Rechercher</button>
                 </div>
             </form>
+ 
 
 <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
     {% for event in events %}
     {% if event.isDisplay == 1 %}
-    <div class="sortie_item m-3 col-12 col-md-6 col-xl-3 rounded p-0">
-                <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="w-100" alt="miniature sortie"/>
+        <div class="sortie_item m-3 col-12 col-md-6 col-xl-3 rounded p-0">
+                <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="p-0 img-fluid col-12" alt="miniature sortie"/>
+
                 <div class="p-3 bg-white">
                     <h4 class="text-primary">{{ event.name }}</h4>
                 <div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
@@ -86,28 +89,26 @@
                     <a href={{ path('profile', {'id':event.owner.id})}}> <div>Organisateur : {{ event.owner.name }}</div></a>
                     <div>Inscrits : {{ event.participants | length }}/{{ event.inscriptionMax }}</div>
                 </div>
-                <div class="row">
-                    <a class="col-6" href="{{ path('event_detail', {id: event.id}) }}" >
-                        <button class="btn">Détails</button>
+                <div class="row d-flex justify-items-center border-top">
+                    <a class="col-6 text-center p-3" href="{{ path('event_detail', {id: event.id}) }}" >
+                        Détails
                     </a>
                     {% if app.user %}
                         {% if event.isActive == false %}
-                        <button class="btn col-6">{{event.state.name}}</button>
-                            {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
-                            {% if app.user.id == event.owner.id %}
-                    <a  class="col-6" href="{{ path ('event_update', {'id':event.id}) }}">
-                <button class="btn">Modifier</button>
-                </a>
-                                 {% else %}
-                            <a class="col-6" href="{{ path('add_participant', {id: event.id}) }}" >
-                                <button class="btn col-6">
-                                    {% if event.isInEvent %}
-                                        Se désinscrire
-                                    {% else %}
-                                        S'inscrire
-                                    {% endif %}
-                                </button>
-                            </a>
+                            {{event.state.name}}
+                        {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
+                        {% if app.user.id == event.owner.id %}
+                    <a  class="col-6 text-center p-3" href="{{ path ('event_update', {'id':event.id}) }}">
+                         Modifier
+                    </a>
+                        {% else %}
+                        <a class="col-6 text-center p-3" href="{{ path('add_participant', {id: event.id}) }}" >
+                        {% if event.isInEvent %}
+                            Se désinscrire
+                        {% else %}
+                            S'inscrire
+                        {% endif %}
+                    </a>
                             {% endif %}
                         {% endif %}
                     {% endif %}

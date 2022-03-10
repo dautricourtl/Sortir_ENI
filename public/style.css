@@ -17,6 +17,7 @@ a{
 
 .sortie_item{
     box-shadow: 00px 0px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
 }
 
 .cursor-pointer{
