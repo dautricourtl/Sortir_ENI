@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ForgotPassType;
 use App\Form\NewPasswordType;
+use App\Form\ForgotPassPseudoType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
@@ -61,10 +62,10 @@ class RegistrationController extends AbstractController
     }
 
 
-    #[Route('/forgotPassword', name: 'forgotpass')]
-    public function forgotpass(Request $request, UserRepository $userRepository, EntityManagerInterface $em): Response
+    #[Route('/forgotPassword/{pseudo}', name: 'forgotpass')]
+    public function forgotpass(Request $request, UserRepository $userRepository, EntityManagerInterface $em, string $pseudo): Response
     {
-        $user = $userRepository->findOneByPseudo("Coco");
+        $user = $userRepository->findOneByPseudo($pseudo);
         $tmpUser = new User();
         $form = $this->createForm(ForgotPassType::class, $tmpUser);
         $form->handleRequest($request);
@@ -118,6 +119,25 @@ class RegistrationController extends AbstractController
 
            
        }
+
+       #[Route('/forgotPassPseudo', name: 'forgotpasspseudo')]
+       public function profile(Request $request ): Response
+       {
+           
+        $tmpUser = new User(); 
+        $form = $this->createForm(ForgotPassPseudoType::class, $tmpUser);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted()) {
+        return $this->redirectToRoute('forgotpass', ['pseudo' =>$tmpUser->getPseudo()]);
+        }
+        return $this->render('main/forgotPasswordPseudo.html.twig', [
+            'ForgotPassPseudoForm' => $form->createView(),
+
+            
+        ]);
+       }
+
 }
 
   
