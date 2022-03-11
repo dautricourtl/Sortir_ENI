@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -73,4 +74,74 @@ class EventRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function filterAndSearch($em, $name, $site, $dateDebut, $dateFin, $isOwner, $isInscrit, $isNotInscrit, $pastEvent)
+    {
+
+        $expr = $em->getExpressionBuilder();
+        $em->createQueryBuilder();
+        $qb = $this->createQueryBuilder('e');
+
+        if($name)
+        {
+            $qb->andWhere('e.name LIKE :name')
+            ->setParameter('name', '%'.$name.'%');
+        }
+         if($site)
+         {
+            $qb
+            ->andWhere('e.owner_id')
+            ->join('e.owner', 'u')
+            ->join('u.site', 's')
+            ->where('s.id = :id')
+            ->setParameter('id', $site)
+            ;
+         }
+        if($dateDebut && $dateFin)
+        {
+            $qb->andWhere('e.beginAt BETWEEN :dateDebut and :dateFin')
+            ->setParameter('dateDebut', $dateDebut) 
+            ->setParameter('dateFin', $dateFin); 
+        }
+        if($isOwner)
+        {
+            $qb->andWhere('e.owner = :id')
+            ->setParameter('id', $isOwner);
+        }
+        if($isInscrit)
+        {
+            $qb
+            ->join('e.participants', 'p')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $isInscrit);
+        }
+        if($isNotInscrit)
+        {
+            $qb
+            ->andWhere($expr->notIn(
+                'e.id',
+                $em->createQueryBuilder()
+                                ->select('e2.id')
+                                ->from(Event::class, 'e2')
+                                ->join('e2.participants', 'p2')
+                                ->andWhere('p2 = :user')
+                        ->getDQL()
+            ))
+            ->setParameter(':user', $isNotInscrit)
+            ;
+        }
+
+        if($pastEvent)
+        {
+            $qb->andWhere('e.state = :id')
+            ->setParameter('id', $pastEvent);
+        }
+
+        return $qb
+        ->getQuery()
+        ->getResult()
+        ;
+
+
+    }
 }

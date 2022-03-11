@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\City;
 use App\Entity\User;
-use App\Entity\Event;
 use App\Entity\State;
+use App\Form\FilterType;
+use App\data\MyFilterCustom;
 use App\Repository\SiteRepository;
 use App\Repository\EventRepository;
 use App\Repository\StateRepository;
@@ -52,54 +52,55 @@ class MainController extends AbstractController
      */
     public function index(Request $request, EventRepository $eventrepo,  EntityManagerInterface $em, EventRepository $eventRepository, StateRepository $stateRepository, SiteRepository $siteRepository): Response
     {
-
-        $token ="";
-        $events = null;
-        if($request->getMethod() == "POST"){
-            $content = json_decode($request->getContent());
-            $name = (string)$content->Name;
-            // si jamais ya une recherche
-            $qb = $em->createQueryBuilder();
-            $qb->select('c')
-                ->from(Event::class, 'c')
-                ->where('c.isActive = 1')
-                ->where('c.name LIKE :searchName')
-                ->setParameter('searchName','%'.$name.'%');
-            $query = $qb->getQuery();
-            $events = $query->getResult();
-            
-        }else{
-            $events = $eventrepo ->findAll();
-        }
-        
         $sites = $siteRepository->findAll();
         /** @var User $participant */
         $participant = $this->getUser();
+        $token ="";
+
+       
+            
+        if($request){ 
+        $name =  $request->query->get('name', '');
+        $site =  $request->query->get('site', '');
+        $dateDebut =  $request->query->get('dateDebut', '');
+        $dateFin =  $request->query->get('dateFin', '');
+        $isOwner =  $request->query->get('isOwner', '');
+        $isInscrit =  $request->query->get('isInscrit', '');
+        $isNotInscrit =  $request->query->get('isNotInscrit', '');
+        $pastEvent =  $request->query->get('pastEvent', '');
+
+            $events = $eventrepo->filterAndSearch($em, $name, $site, $dateDebut, $dateFin, $isOwner, $isInscrit, $isNotInscrit, $pastEvent);   
+
+        } else {
+            $events = $eventrepo ->findAll();  
+        }     
+    
+
         if( $participant != null){
             foreach($events as $event){
                 $event->setisInEvent($participant);
             }
-            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" || $participant->getToken() == null)){
+            if( in_array("ROLE_ADMIN",$participant->getRoles()) && ($participant->getToken() == "" && $participant->getToken() != null)){
                 $token = substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(40/strlen($x)) )),1,40);
                 $participant->setToken($token);
                 $em->persist($participant);
                 $em->flush();
-            }else if($participant->getToken() != "" && $participant->getToken() != null){
-                $token = $participant->getToken();
             }
         }
         foreach($events as $event){
-            $eventId = $event->getId();
-            self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+
+        $eventId = $event->getId();
+        self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
         }
         
         return $this->render('main/index.html.twig', [
             'events' =>$events,
             'token' => $token,
-            'sites' => $sites
+            'sites' => $sites,
         ]);
    
-    }
+
+}
 
     #[Route('/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -196,18 +197,7 @@ class MainController extends AbstractController
 
     }
 
-    public function getFilter($id, EntityManagerInterface $em, EventRepository $eventRepository){
-
-        $qb = $em->createQueryBuilder();
-        $qb->select('c')
-            ->from(Event::class, 'c');
-            //->where('c.isActive = 1');
-
-        $query = $qb->getQuery();
-
-        $result = $query->getResult();
-
-    }
+ 
    
     
 }
