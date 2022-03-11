@@ -111,19 +111,36 @@ class EventController extends AbstractController
         $state = $stateRepository->findById(3)[0];
         $event->setState($state);
         $event->setIsDisplay(0);
+        
         $em->persist($event);
         $em->flush();
         $this->addFlash('success', 'La sortie a bien été enregistrée');
         $eventId = $event->getId();
         return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $eventId]);
-       } else {
+       } else if($formbuilder->getClickedButton() && 'addToWhiteList' === $formbuilder->getClickedButton()->getName())
+       {
+        $state = $stateRepository->findById(3)[0];
+          $event->setState($state);  
+          $event->setIsDisplay(0);    
+          $em->persist($event);
+          $em->flush();
+          $this->addFlash('success', 'La sortie a bien été enregistrée');
+          $eventId = $event->getId();
+          return $this->redirectToRoute('usersToWhiteList', ['eventId' => $event->getId()]);
+       }
+       else{
         $state = $stateRepository->findById(1)[0];
         $event->setState($state);
         $event->setIsDisplay(1);
         $em->persist($event);
         $em->flush();
         $this->addFlash('success', 'La sortie a bien été publiée');
-        return $this->redirectToRoute('main');
+        if($event->getPrivateEvent()){
+          
+          return $this->redirectToRoute('addUsersToWhiteList', ['eventId'=>$event->getId()]);
+        }else{
+          return $this->redirectToRoute('main');
+        }
        }
      }
     }
@@ -131,6 +148,46 @@ class EventController extends AbstractController
     return $this->render('main/event.html.twig', ['eventForm' => $eventForm]);
   }
 
+  #[Route("/addUserToWhiteList/{eventId}/{userId}", name:"addUserToWhiteList")]
+  public function addUserToWhiteList(int $eventId, int $userId,UserRepository $ur, EventRepository $er, EntityManagerInterface $em){
+    $user = $ur->findOneById($userId);
+    $event = $er->findOneById($eventId);
+    $alreadyHere = false;
+    foreach($event->getWhiteList() as $userInWL){
+      if($userInWL->getId() == $userId){
+        $alreadyHere = true;
+      }
+    }
+    if($alreadyHere){
+      $event->removeWhiteList($user);
+    }else{
+      $event->addWhiteList($user);
+    }
+    $em->persist($event);
+    $em->flush();
+
+    return $this->redirectToRoute('usersToWhiteList', ['eventId' => $event->getId()]);
+  }
+
+  #[Route("/usersToWhiteList/{eventId}", name:"usersToWhiteList")]
+  public function usersToWhiteList(int $eventId, EventRepository $eventRepository, UserRepository $userRepository){
+    $event = $eventRepository->findOneById($eventId);
+
+    $userNotInWhiteList= [];
+    $allusers = $userRepository->findAll();
+    foreach($allusers as $user)
+    {
+      if(!$event->participantIsInWhiteList($user)){
+        $userNotInWhiteList[]=$user;
+      }
+    }
+    
+
+    return $this->render('main/addUserToWhiteList.html.twig', [
+      'event' =>$event,
+      'users' =>$userNotInWhiteList
+    ]);
+  }
 
   #[Route('/detailEvent/{id}', name: 'event_detail', requirements: ['id' => '\d+'])]
   public function detail(UserInterface $participant, $id, EventRepository $eventRepository): Response
@@ -200,7 +257,18 @@ class EventController extends AbstractController
          $this->addFlash('success', 'La sortie a bien été enregistrée');
          $eventId = $event->getId();
          return $this->redirectToRoute('event_detail', ['event' => $event, 'id' => $eventId]);
-        } else {
+        } else if($formbuilder->getClickedButton() && 'addToWhiteList' === $formbuilder->getClickedButton()->getName()){
+          $state = $stateRepository->findById(3)[0];
+          $event->setState($state);  
+          $event->setIsDisplay(0);    
+          $em->persist($event);
+          $em->flush();
+          $this->addFlash('success', 'La sortie a bien été enregistrée');
+          $eventId = $event->getId();
+          return $this->redirectToRoute('usersToWhiteList', ['eventId' => $event->getId()]);
+        }
+        
+        else{
          $state = $stateRepository->findById(1)[0];
          $event->setState($state);
          $event->setIsDisplay(1);

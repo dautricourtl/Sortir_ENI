@@ -14,6 +14,27 @@ function SearchVisibility() {
 }
 
 
+try {
+document.getElementById("event_privateEvent_0").addEventListener("click", function() {
+    document.getElementById("event_save").classList.remove("d-block");
+    document.getElementById("event_publish").classList.remove("d-block");
+    document.getElementById("event_addToWhiteList").classList.remove("d-none");
+    document.getElementById("event_save").classList.add("d-none");
+    document.getElementById("event_publish").classList.add("d-none");
+    document.getElementById("event_addToWhiteList").classList.add("d-block");
+});
+document.getElementById("event_privateEvent_1").addEventListener("click", function() {
+    document.getElementById("event_save").classList.remove("d-none");
+    document.getElementById("event_publish").classList.remove("d-none");
+    document.getElementById("event_addToWhiteList").classList.remove("d-block");
+    document.getElementById("event_save").classList.add("d-block");
+    document.getElementById("event_publish").classList.add("d-block");
+    document.getElementById("event_addToWhiteList").classList.add("d-none");
+});
+}catch(error){
+
+}
+
 
 function searchMainPage(){
     axios({
@@ -188,79 +209,84 @@ function ChangeEventStatus(EventId){
 }
 
 function RefreshView(response, forcedUrl){
+    try{
 
-    currentTemplateName = forcedUrl == null || forcedUrl == undefined || forcedUrl == "" ? currentTemplateName : forcedUrl;
-    let properties = ["Name","IsActive","Pseudo","Surname","Email","Roles","State"]
-    window["websiteData"][currentTemplateName]=response.data;
-    let template = document.getElementById("templateItem");
-    document.getElementById("list"+currentTemplateName).innerHTML = "";
-    for(let i =0; i<window["websiteData"][currentTemplateName].length; i++){
-        
-        var clone = template.cloneNode(true);
-        let propertiesFilter = Object.entries(response.data[i]);
-        var propertiesFilterPair = propertiesFilter.filter(c=> properties.includes(c[0])).filter(c=> c[0]!= "IsActive");
-        
-        for(let j = 0; j<propertiesFilterPair.length; j++){
+    
+        currentTemplateName = forcedUrl == null || forcedUrl == undefined || forcedUrl == "" ? currentTemplateName : forcedUrl;
+        let properties = ["Name","IsActive","Pseudo","Surname","Email","Roles","State"]
+        window["websiteData"][currentTemplateName]=response.data;
+        let template = document.getElementById("templateItem");
+        document.getElementById("list"+currentTemplateName).innerHTML = "";
+        for(let i =0; i<window["websiteData"][currentTemplateName].length; i++){
             
+            var clone = template.cloneNode(true);
+            let propertiesFilter = Object.entries(response.data[i]);
+            var propertiesFilterPair = propertiesFilter.filter(c=> properties.includes(c[0])).filter(c=> c[0]!= "IsActive");
             
-            
-            if(propertiesFilterPair[j][0].toString() == "Roles"){
-                if(propertiesFilterPair[j][1].includes('ROLE_ADMIN')){
-                    //admin
-                    let td = document.createElement("button");
-                    td.innerHTML = "Make user";
-                    td.classList.add('btn','btn-danger','btn-grant');
-                    td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
-                    clone.prepend(td);
-                }else{
-                    //pad admin
-                    let td = document.createElement("button");
-                    td.innerHTML = "Make admin";
-                    td.classList.add('btn','btn-success','btn-grant');
-                    td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
-                    clone.prepend(td);
-                }
-            }else if(propertiesFilterPair[j][0].toString() == "State"){
-                let td = document.createElement("select");
-                td.classList.add("form-control","col-md-2");
-                for(let k =0; k<websiteData.State.length; k++){
-                    let opt = document.createElement("option");
-                    opt.setAttribute("value",websiteData.State[k].Id);
-                    if(propertiesFilterPair[j][1] == websiteData.State[k].Id){
-                        opt.setAttribute("selected","selected");
+            for(let j = 0; j<propertiesFilterPair.length; j++){
+                
+                
+                
+                if(propertiesFilterPair[j][0].toString() == "Roles"){
+                    if(propertiesFilterPair[j][1].includes('ROLE_ADMIN')){
+                        //admin
+                        let td = document.createElement("button");
+                        td.innerHTML = "Make user";
+                        td.classList.add('btn','btn-danger','btn-grant');
+                        td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
+                        clone.prepend(td);
+                    }else{
+                        //pad admin
+                        let td = document.createElement("button");
+                        td.innerHTML = "Make admin";
+                        td.classList.add('btn','btn-success','btn-grant');
+                        td.setAttribute("onclick", "GrantUser("+window["websiteData"][currentTemplateName][i].Id+")");
+                        clone.prepend(td);
                     }
-                    opt.innerHTML = websiteData.State[k].Name;
-                    td.prepend(opt);
+                }else if(propertiesFilterPair[j][0].toString() == "State"){
+                    let td = document.createElement("select");
+                    td.classList.add("form-control","col-md-2");
+                    for(let k =0; k<websiteData.State.length; k++){
+                        let opt = document.createElement("option");
+                        opt.setAttribute("value",websiteData.State[k].Id);
+                        if(propertiesFilterPair[j][1] == websiteData.State[k].Id){
+                            opt.setAttribute("selected","selected");
+                        }
+                        opt.innerHTML = websiteData.State[k].Name;
+                        td.prepend(opt);
+                    }
+                    td.setAttribute("id","Select"+window["websiteData"][currentTemplateName][i].Id);
+                    td.setAttribute("onchange","ChangeEventStatus("+window["websiteData"][currentTemplateName][i].Id+")");
+                    clone.prepend(td);
                 }
-                td.setAttribute("id","Select"+window["websiteData"][currentTemplateName][i].Id);
-                td.setAttribute("onchange","ChangeEventStatus("+window["websiteData"][currentTemplateName][i].Id+")");
-                clone.prepend(td);
+                else{
+                    let td = document.createElement("div");
+                    td.innerHTML = propertiesFilterPair[j][1];
+                    clone.prepend(td);
+                }
+                
             }
-            else{
-                let td = document.createElement("div");
-                td.innerHTML = propertiesFilterPair[j][1];
-                clone.prepend(td);
-            }
+            // let buttonGrant = clone.getElementsByClassName("btn-grant")[0];
+            // buttonGrant.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
             
+
+            let button = clone.getElementsByClassName("btn-delete")[0];
+            button.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
+            button.innerHTML = window["websiteData"][currentTemplateName][i]["IsActive"] ? "desactiver":"reactiver";
+
+            if(window["websiteData"][currentTemplateName][i]["IsActive"] ){
+                button.classList.add("btn-danger");
+                button.classList.remove("btn-success");
+            }else{
+                button.classList.remove("btn-danger");
+                button.classList.add("btn-success");
+            }
+            document.getElementById("list"+currentTemplateName).appendChild(clone);
         }
-        // let buttonGrant = clone.getElementsByClassName("btn-grant")[0];
-        // buttonGrant.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
+        document.getElementById("CityIdInput").innerHTML = websiteData.City.map(c=> "<option value="+c.Id+">"+c.Name+"</option>");
+    }catch(error){
         
-
-        let button = clone.getElementsByClassName("btn-delete")[0];
-        button.setAttribute("js-id",window["websiteData"][currentTemplateName][i].Id );
-        button.innerHTML = window["websiteData"][currentTemplateName][i]["IsActive"] ? "desactiver":"reactiver";
-
-        if(window["websiteData"][currentTemplateName][i]["IsActive"] ){
-            button.classList.add("btn-danger");
-            button.classList.remove("btn-success");
-        }else{
-            button.classList.remove("btn-danger");
-            button.classList.add("btn-success");
-        }
-        document.getElementById("list"+currentTemplateName).appendChild(clone);
     }
-    document.getElementById("CityIdInput").innerHTML = websiteData.City.map(c=> "<option value="+c.Id+">"+c.Name+"</option>")
 }
 
 function SearchUsers(input){
@@ -311,31 +337,36 @@ SwitchTemplate(2);
 
 function SwitchTemplate(templateId)
 {
-    if(templateId == 1){
-        GetCustom("City");
-    }else if(templateId == 4){
-        GetCustom("State");
-    }
-    currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
-    GetCustom(currentTemplateName);
-    let containers = document.getElementsByClassName("categoryContainer");
-    for(let i =0; i<containers.length; i++){
-        containers[i].classList.remove("d-block");
-        containers[i].classList.add("d-none");
-    }
-    currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
-    document.getElementById("NameInput").style.display = "none";
-    document.getElementById("LatitudeInput").style.display = "none";
-    document.getElementById("LongitudeInput").style.display = "none";
-    document.getElementById("ZipCodeInput").style.display = "none";
-    document.getElementById("AdressInput").style.display = "none";
-    document.getElementById("CityIdInput").style.display = "none";
-    for(let i=0; i<mandatoryFields[currentTemplateName].length;i++){
-        document.getElementById(mandatoryFields[currentTemplateName][i]+"Input").style.display = "block";
-    }
-   
-    document.getElementById(`${currentTemplateName}Container`).classList.add("d-block");
+    try{
 
+    
+        if(templateId == 1){
+            GetCustom("City");
+        }else if(templateId == 4){
+            GetCustom("State");
+        }
+        currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
+        GetCustom(currentTemplateName);
+        let containers = document.getElementsByClassName("categoryContainer");
+        for(let i =0; i<containers.length; i++){
+            containers[i].classList.remove("d-block");
+            containers[i].classList.add("d-none");
+        }
+        currentTemplateName = templates.filter(c=>c.Id == templateId)[0].Name;
+        document.getElementById("NameInput").style.display = "none";
+        document.getElementById("LatitudeInput").style.display = "none";
+        document.getElementById("LongitudeInput").style.display = "none";
+        document.getElementById("ZipCodeInput").style.display = "none";
+        document.getElementById("AdressInput").style.display = "none";
+        document.getElementById("CityIdInput").style.display = "none";
+        for(let i=0; i<mandatoryFields[currentTemplateName].length;i++){
+            document.getElementById(mandatoryFields[currentTemplateName][i]+"Input").style.display = "block";
+        }
+    
+        document.getElementById(`${currentTemplateName}Container`).classList.add("d-block");
+    }catch(error){
+        
+    }
     
     
 

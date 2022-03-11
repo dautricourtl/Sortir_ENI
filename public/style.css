@@ -43,3 +43,19 @@ a{
     transition: all 0.5s;
     transform: rotate(45deg);
 }
+
+.overlayImg{
+    position: absolute;
+    top: 0;
+    background-color: white;
+    padding: 10px;
+    border-radius: 0 0 10px 0px;
+    width: 30%;
+    text-align: center;
+}
+
+.wrapper{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+}

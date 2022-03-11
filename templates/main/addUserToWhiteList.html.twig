@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+
+<h1 class="m-3">{{event.Name}}</h1>
+
+<div class="container col-12 row mt-5">
+    <div class="col-12 col-md-8">
+    <h4>Membres</h4>
+        <div class="wrapper ">
+            {% for user in users %}
+                <a href="{{ path('addUserToWhiteList', {eventId: event.id, userId:user.id}) }}">{{user.Pseudo}}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+    <h4>Invités</h4>
+        <div class="d-flex  flex-column">
+            {% for userWL in event.whiteList %}
+                <a href="{{ path('addUserToWhiteList', {eventId: event.id, userId:userWL.id}) }}" class="py-2">{{userWL.Pseudo}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

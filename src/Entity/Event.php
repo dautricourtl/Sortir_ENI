@@ -290,6 +290,19 @@ class Event
 
         return $this;
     }
+
+    public function participantIsInWhiteList(?User $user): bool
+    {
+        foreach($this->getWhiteList() as $participant){
+            if($participant->getId() == $user->getId()){
+                return true;
+            }
+        }
+        $this->isInEvent = false;
+        return false;
+    }
+
+
     public function participantExistInEvent(?User $user): bool
     {
         foreach($this->getParticipants() as $participant){
@@ -305,11 +318,11 @@ class Event
     public function isInEvent() : bool{
         return $this->isInEvent == null ? false : $this->isInEvent;
     }
-   public function setisInEvent(?User $user) : bool{
-        $this->isInEvent =  $this->participantExistInEvent($user);
+    public function setisInEvent(?User $user) : bool{
+            $this->isInEvent =  $this->participantExistInEvent($user);
 
-        return (bool)$this;
-   }
+            return (bool)$this;
+    }
 
    public function getPrivateEvent(): ?bool
    {

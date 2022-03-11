@@ -44,6 +44,7 @@ class EventType extends AbstractType
             ])
             ->add('privateEvent', ChoiceType::class,['choices'=>['privé'=>true,'public'=>false],'expanded'=>true])
             ->add('save', SubmitType::class, ['label'=> 'Enregistrer'])
+            ->add('addToWhiteList', SubmitType::class, ['label'=>'Ajouter des invités'])
             ->add('publish', SubmitType::class, ['label'=> 'Publier'])
             ->getForm()
         ;
