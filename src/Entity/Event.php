@@ -292,13 +292,19 @@ class Event
 
     public function participantIsInWhiteList(?User $user): bool
     {
-        foreach($this->getWhiteList() as $participant){
-            if($participant->getId() == $user->getId()){
-                return true;
+        try{
+            foreach($this->getWhiteList() as $participant){
+                if($participant != null && $user != null){
+                    if($participant->getId() == $user->getId()){
+                        return true;
+                    }
+                }
             }
+            $this->isInEvent = false;
+            return false;
+        }catch(\Exception $error){
+            return false;
         }
-        $this->isInEvent = false;
-        return false;
     }
 
 

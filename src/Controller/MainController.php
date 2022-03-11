@@ -87,10 +87,16 @@ class MainController extends AbstractController
                 $em->flush();
             }
         }
-        foreach($events as $event){
-
-        $eventId = $event->getId();
-        self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+        foreach($events as $event)
+        {
+            $eventId = $event->getId();
+            self::gestionDate($eventId, $em, $eventRepository, $stateRepository);
+            if($event->getPrivateEvent()){
+                $event->setIsDisplay(false);
+            }
+            if($event->participantIsInWhiteList($participant) || $event->getOwner() == $participant){
+                $event->setIsDisplay(true);
+            }
         }
         
         return $this->render('main/index.html.twig', [
