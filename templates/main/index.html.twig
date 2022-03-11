@@ -86,7 +86,10 @@
                 <div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
                     <div>{{ event.description }}</div>
                     <div>Statut : {{ event.state.name }}</div>
-                    <a href={{ path('profile', {'id':event.owner.id})}}> <div>Organisateur : {{ event.owner.name }}</div></a>
+                        {% if app.user %}
+                    <a href="{{ path ('profile', {'id':event.owner.id}) }}"> <div>Organisateur : {{ event.owner.name }}</div></a>
+                    {% endif %}
+                    <div>{{ event.owner.site.name }}</div>
                     <div>Inscrits : {{ event.participants | length }}/{{ event.inscriptionMax }}</div>
                 </div>
                 <div class="row d-flex justify-items-center border-top">
@@ -95,7 +98,7 @@
                     </a>
                     {% if app.user %}
                         {% if event.isActive == false %}
-                            {{event.state.name}}
+                <p class="col-6 text-center p-3">{{event.state.name}}</p>
                         {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
                         {% if app.user.id == event.owner.id %}
                     <a  class="col-6 text-center p-3" href="{{ path ('event_update', {'id':event.id}) }}">
