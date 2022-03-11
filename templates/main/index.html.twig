@@ -77,8 +77,8 @@
 
 <div class="sortiesContainer flex-wrap container d-flex col-12 m-0 p-3">
     {% for event in events %}
-    {% if event.isDisplay == 1 %}
-        <div class="sortie_item m-3 col-12 col-md-6 col-xl-3 rounded p-0">
+        {% if event.isDisplay == 1 %}
+            <div class="sortie_item m-3 col-12 col-md-6 col-xl-3 rounded p-0">
                 <img src="{{asset('/uploads/images/event/')}}{{event.photo}}" class="p-0 img-fluid col-12 position-relative" alt="miniature sortie">
                     {% if event.privateEvent %}
                         <div class="overlayImg">Privé</div>
@@ -90,38 +90,40 @@
                 <div>Le {{ event.beginAt | date('d-m-Y à H:i')}}</div>
                     <div>{{ event.description }}</div>
                     <div>Statut : {{ event.state.name }}</div>
-                        {% if app.user %}
-                    <a href="{{ path ('profile', {'id':event.owner.id}) }}"> <div>Organisateur : {{ event.owner.name }}</div></a>
+                    {% if app.user %}
+                        <a href="{{ path ('profile', {'id':event.owner.id}) }}"> <div>Organisateur : {{ event.owner.name }}</div></a>
                     {% endif %}
                     <div>{{ event.owner.site.name }}</div>
                     <div>Inscrits : {{ event.participants | length }}/{{ event.inscriptionMax }}</div>
                 </div>
+                
                 <div class="row d-flex justify-items-center border-top">
-                    <a class="col-6 text-center p-3" href="{{ path('event_detail', {id: event.id}) }}" >
-                        Détails
-                    </a>
                     {% if app.user %}
+                        <a class="col-6 text-center p-3" href="{{ path('event_detail', {id: event.id}) }}" >
+                            Détails
+                        </a>
+                    
                         {% if event.isActive == false %}
-                <p class="col-6 text-center p-3">{{event.state.name}}</p>
+                            <p class="col-6 text-center p-3">{{event.state.name}}</p>
                         {% elseif (date( event.limitInscriptionAt ) > date()) and (event.participants | length < event.inscriptionMax) %}
-                        {% if app.user.id == event.owner.id %}
-                    <a  class="col-6 text-center p-3" href="{{ path ('event_update', {'id':event.id}) }}">
-                         Modifier
-                    </a>
-                        {% else %}
-                        <a class="col-6 text-center p-3" href="{{ path('add_participant', {id: event.id}) }}" >
-                        {% if event.isInEvent %}
-                            Se désinscrire
-                        {% else %}
-                            S'inscrire
-                        {% endif %}
-                    </a>
-                            {% endif %}
-                        {% endif %}
-                    {% endif %}
+                            {% if app.user.id == event.owner.id %}
+                                <a  class="col-6 text-center p-3" href="{{ path ('event_update', {'id':event.id}) }}">
+                                    Modifier
+                                </a>
+                            {% else %}
+                                <a class="col-6 text-center p-3" href="{{ path('add_participant', {id: event.id}) }}" >
+                                {% if event.isInEvent %}
+                                    Se désinscrire
+                                {% else %}
+                                    S'inscrire
+                                {% endif %}
+                                </a>
+                             {% endif %}
+                        {% endif %}   
+                    {% endif %}                       
                 </div>
-        </div>
-    {% endif %}
+            </div>
+        {% endif %}
     {% endfor %}
 
     </div>

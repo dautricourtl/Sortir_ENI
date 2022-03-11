@@ -16,13 +16,13 @@
                 </div>
 
                 <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Name</label>
+                <label class="form-label" for="form3Example1cg">Prénom</label>
                     {{ form_widget(profileForm.name, {'attr': {'class': 'form-control'}}) }}
                   {# <input type="text" id="form3Example1cg" class="form-control" /> #}
                 </div>
 
                 <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Surname</label>
+                <label class="form-label" for="form3Example1cg">Nom</label>
                     {{ form_widget(profileForm.surname, {'attr': {'class': 'form-control'}}) }}
                   {# <input type="text" id="form3Example1cg" class="form-control" /> #}
                 </div>
@@ -41,14 +41,14 @@
                 {# </div> #}
 
                 <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Phone Number</label>
+                <label class="form-label" for="form3Example1cg">Tel</label>
                                       {{ form_widget(profileForm.tel, {'attr': {'class': 'form-control'}}) }}
 
                   {# <input type="text" id="form3Example4cdg" class="form-control" /> #}
                 </div>
 
                 <div class="form-outline mb-3">
-                <label class="form-label" for="form3Example1cg">Site</label>
+                <label class="form-label" for="form3Example1cg">Ville de rattachement</label>
                                       {{ form_widget(profileForm.site, {'attr': {'class': 'form-control'}}) }}
   
                   {# <input type="text" id="form3Example4cdg" class="form-control" /> #}
@@ -61,7 +61,7 @@
     
 
                 <div class="d-flex justify-content-center">
-                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Save Changes</button>
+                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body">Sauvegarder</button>
                 </div>
 
   {{ form_end(profileForm) }}
