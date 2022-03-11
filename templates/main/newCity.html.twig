@@ -4,7 +4,16 @@
 
 {% block body %}
  {{ form_start(form_city) }}
-    {{ form_widget(form_city) }}
+    
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Name</label>
+        {{ form_widget(form_city.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-outline mb-3">
+        <label class="form-label" for="form3Example1cg">Code Postal</label>
+        {{ form_widget(form_city.zipCode, {'attr': {'class': 'form-control'}}) }}
+    </div>
     {# <input class="btn btn-outline-primary" type="submit" value="Send !"> #}
+    <button type="submit" class="btn btn-primary">Envoyer</button>
     {{ form_end(form_city) }}
 {% endblock %}

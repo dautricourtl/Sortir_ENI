@@ -27,9 +27,7 @@
         <label class="form-label" for="form3Example1cg">Ville</label>
         {{ form_widget(form_location.city, {'attr': {'class': 'form-control'}}) }}
     </div>
-    <div class="form-outline mb-3">
-        {{ form_widget(form_location.submit, {'attr': {'class': 'btn btn-primary form-control'}}) }}
-    </div>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
 
 
     {{ form_end(form_location) }}

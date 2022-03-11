@@ -25,9 +25,10 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
           
-          
+          $location->setIsActive(false);
           $em->persist($location);
           $em->flush();
+          return $this->redirectToRoute('main');
         }
 
 

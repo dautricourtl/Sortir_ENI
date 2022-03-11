@@ -7,8 +7,13 @@ body::-webkit-scrollbar {
     display: none;
 }
 nav{
-    height:50px;
+    height:auto;
+    min-height: 50px;
     position: relative;
+}
+
+#sec_menu{
+    display: none;
 }
 
 a{

@@ -1,16 +1,18 @@
-
+document.getElementById("open_sec_menu").addEventListener("click", function() {
+    document.getElementById("sec_menu").classList.toggle("d-flex");
+});
 
 try {
 document.getElementById("event_privateEvent_0").addEventListener("click", function() {
     document.getElementById("event_save").classList.remove("d-block");
     document.getElementById("event_publish").classList.remove("d-block");
     document.getElementById("event_addToWhiteList").classList.remove("d-none");
-    document.getElementById("event_save").classList.add("d-none");
+    document.getElementById("event_save").classList.add("d-block");
     document.getElementById("event_publish").classList.add("d-none");
     document.getElementById("event_addToWhiteList").classList.add("d-block");
 });
 document.getElementById("event_privateEvent_1").addEventListener("click", function() {
-    document.getElementById("event_save").classList.remove("d-none");
+    document.getElementById("event_save").classList.remove("d-block");
     document.getElementById("event_publish").classList.remove("d-none");
     document.getElementById("event_addToWhiteList").classList.remove("d-block");
     document.getElementById("event_save").classList.add("d-block");

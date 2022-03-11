@@ -28,9 +28,10 @@ class CityController extends AbstractController
         {
           
           $em = $this->getDoctrine()->getManager();
-          
+          $city->setIsActive(false);
           $em->persist($city);
           $em->flush();
+          return $this->redirectToRoute('main');
         }
 
         return $this->render('main/newCity.html.twig', [
