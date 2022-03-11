@@ -10,21 +10,21 @@
 		<div class="col-12 col-md-3">
 			<img class="img-fluid" src="{{ asset('/uploads/images/profilepicture/') }}{{ user.photo }}" alt=""/>
 			<div class="mt-3">
-				Nom :
-				{{ user.surname }}
-			</div>
-			<div class="mt-3">
 				Prénom :
 
 				{{ user.name }}
 			</div>
 			<div class="mt-3">
-				Tel:
+			Nom :
+			{{ user.surname }}
+		</div>
+			<div class="mt-3">
+				Tel :
 
 				{{ user.tel }}
 			</div>
 			<div class="mt-3">
-				Email:
+				Email :
 				{{ user.mail }}
 			</div>
 			{% if app.user.id == user.id %}
