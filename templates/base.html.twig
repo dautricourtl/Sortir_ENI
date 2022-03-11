@@ -23,6 +23,7 @@
         <div class="col-12 row justify-content-center">
         <a href="{{ path('main') }}" class="text-white col-2 d-flex align-items-center justify-content-center">Home</a>
         {% if app.user %}
+            <p class="mb-0 mr-3 text-white col-2 d-flex align-items-center justify-content-center">Bonjour {{app.user.pseudo}} !</p>
             <a class="text-white col-2 d-flex align-items-center justify-content-center cursor-pointer" id="open_sec_menu">Ajouter</a>
             <a href="{{ path('profile', {id: app.user.id}) }}" class="text-white col-2 d-flex align-items-center justify-content-center"><img class="w-25 p-3 rounded-circle" src="{{asset('/uploads/images/profilepicture/')}}{{app.user.photo}}" alt="" /> Profil</a>
             <a href="{{ path('logout') }}" class="text-white col-2 d-flex align-items-center justify-content-center">Deconnexion</a>
